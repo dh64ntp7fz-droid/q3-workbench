@@ -349,7 +349,7 @@ function delTemp(id){const s=load();s.tm=s.tm||{};delete s.tm[id];save(s);render
 function editTemp(id){const s=load();const tsk=s.tm[id];if(!tsk)return;const nt=prompt('编辑：',tsk.text);if(nt!==null){tsk.text=nt.trim();save(s);renderAll();toast('✅ 已更新')}}
 
 // Store visit
-const SV_NAMES={花:'长安花园',厦:'长安锦厦',环:'环球',河:'黄河',天:'天安'};
+const SV_NAMES={长安花园:'长安花园',长安锦厦:'长安锦厦',环球:'环球',黄河:'黄河',天安:'天安'};
 
 // Full inspection form data matching 区域经理巡店表.xlsx
 const SV_FORM=[
@@ -407,7 +407,7 @@ const SV_FORM=[
   },
 ];
 
-let svDraft={store:'花',checks:{},notes:{},numbers:{},resolved:''};
+let svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};
 function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];renderSV()}
 function svSetNumber(id,val){svDraft.numbers[id]=val;renderSV()}
 // svDraft: store, results (id→'pass'|'fail'|''), details (id→note), notes, resolved
@@ -419,17 +419,17 @@ function svSave(){
   Object.keys(svDraft.notes).forEach(id=>{if(svDraft.notes[id])noteSummary.push(id+':'+svDraft.notes[id].substring(0,40));});
   s.sv.unshift({store:svDraft.store,date:todayStr(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),checks:{...svDraft.checks},notes:{...svDraft.notes},numbers:{...svDraft.numbers},resolved:svDraft.resolved,checkCount:totalChecks,summary:noteSummary.join('; ')});
   if(s.sv.length>30)s.sv=s.sv.slice(0,30);
-  save(s);svDraft={store:'花',checks:{},notes:{},numbers:{},resolved:''};renderSV();toast('✅ 驻店记录已保存');
+  save(s);svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};renderSV();toast('✅ 驻店记录已保存');
 }
 function svExportCSV(){
   const s=load();s.sv=s.sv||[];if(!s.sv.length){toast('暂无记录可导出');return;}
-  const BOM='﻿'; // UTF-8 BOM for Excel
-  let csv=BOM+'日期,门店,合格数,不合格数,问题与整改,帮门店解决了什么,明细备注\n';
+  const BOM='﻿';
+  let csv=BOM+'日期,门店,合格项数,与店长沟通要点,明细备注\n';
   s.sv.forEach(r=>{
-    csv+=[r.date,SV_NAMES[r.store]||r.store,r.total||0,r.fails||0,(r.notes||'').replace(/,/g,'，'),(r.resolved||'').replace(/,/g,'，'),(r.detailSummary||'').replace(/,/g,'，')].join(',')+'\n';
+    csv+=[r.date,r.store,r.checkCount||0,(r.resolved||'').replace(/,/g,'，').replace(/\n/g,' '),(r.summary||'').replace(/,/g,'，')].join(',')+'\n';
   });
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='驻店记录_'+todayStr()+'.csv';a.click();toast('✅ 导出完成');
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='驻店记录_'+todayStr()+'.csv';a.click();toast('✅ CSV导出完成');
 }
 function svDelete(i){const s=load();s.sv=s.sv||[];s.sv.splice(i,1);save(s);renderSV()}
 
@@ -530,7 +530,7 @@ function renderAll(){
 function renderSV(){
   const s=load();s.sv=s.sv||[];
   let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-size:14px;background:#f8fafc;color:#1e293b">`;
-  Object.entries(SV_NAMES).forEach(([k,v])=>{h+=`<option value="${k}"${svDraft.store===k?' selected':''}>${v}</option>`;});
+  ['长安花园','长安锦厦','环球','黄河','天安'].forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
   h+=`</select><span style="font-size:12px;color:#64748b;white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
 
   SV_FORM.forEach(section=>{
@@ -571,7 +571,7 @@ function renderSV(){
   // History
   if(s.sv.length>0){
     h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b">📜 最近记录</div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
-    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${SV_NAMES[r.store]||r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:#94a3b8;margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
+    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:#94a3b8;margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
   }
   document.getElementById('svZone').innerHTML=h;
 }
