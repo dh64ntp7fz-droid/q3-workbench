@@ -482,16 +482,31 @@ function svSave(){
   // Send to WeChat Work webhook
   const WECOM_URL='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d35ec9fd-b3e2-4132-848c-0fbc7ab38107';
   const now=new Date().toLocaleString('zh-CN');
-  let bulletList=SV_DIMENSIONS.map(dim=>dim.items.map(it=>{
-    if(it.checks)return it.checks.map(ch=>`${ch.text.substring(0,20)}：`+(record.checks[ch.key]?'✓':'✗')).join('\n');
-    if(it.type==='number')return it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
-    if(it.type==='text')return it.label+'：'+((record.notes||{})[it.key]||'未填').substring(0,30);
-    return '';
-  }).join('\n')).join('\n\n');
+  // 构建检查详情 — 按维度分组带区域名，对齐巡店表
+  let bulletList=SV_DIMENSIONS.map(dim=>{
+    const dimLabel=dim.label.replace(/[🌀🍽️🧹【】]/g,'').trim();
+    let section=dimLabel+'\n';
+    section+=dim.items.map(it=>{
+      if(it.checks){
+        return it.checks.map(ch=>{
+          const prefix=(ch.text==='达标'||ch.text==='达标？') ? it.label+'→' : '';
+          return prefix+ch.text.substring(0,22)+'：'+(record.checks[ch.key]?'✓':'✗');
+        }).join('\n');
+      }
+      if(it.type==='number')return it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
+      if(it.type==='text'){
+        const txt=(record.notes||{})[it.key];
+        return it.label+'：'+(txt?txt.substring(0,40):'未填');
+      }
+      return '';
+    }).filter(Boolean).join('\n');
+    return section;
+  }).join('\n\n');
   fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     store:record.store,date:record.date,time:record.time,
     checkCount:totalChecks,totalItems:totalItems,
-    resolved:svDraft.resolved,notes:svDraft.notes,
+    resolved:svDraft.resolved||'',
+    notes:{zhenggai:svDraft.notes.zhenggai||'',wenti:svDraft.notes.wenti||'',daijiao:svDraft.notes.daijiao||''},
     bulletList:bulletList,pushSummary:getPushSummary()
   })}).then(r=>r.json()).then(j=>{
     if(j.errcode===0)toast('✅ 已保存并发送至企业微信');
@@ -684,7 +699,24 @@ function renderSV(){
 // Init
 function boot(){
   renderAll();
-  fetch('/api/workflow').then(r=>r.json()).then(j=>{if(j.data&&Object.keys(j.data).length>0){try{localStorage.setItem(KEY,JSON.stringify(j.data))}catch(e){}renderAll()}}).catch(()=>{});
+  // 从服务器加载数据时，合并而非覆盖本地数据（服务器可能缺少字段）
+  fetch('/api/workflow').then(r=>r.json()).then(j=>{
+    if(j.data&&Object.keys(j.data).length>0){
+      try{
+        const existing=JSON.parse(localStorage.getItem(KEY))||{};
+        // 只补充本地缺失的字段，不覆盖本地已有的数据
+        const merged={...j.data};
+        Object.keys(merged).forEach(k=>{
+          // 本地已有此字段时跳过（本地是源）
+          if(existing[k]!==undefined)delete merged[k];
+        });
+        if(Object.keys(merged).length>0){
+          localStorage.setItem(KEY,JSON.stringify({...existing,...merged}));
+          renderAll();
+        }
+      }catch(e){/*ignore*/}
+    }
+  }).catch(()=>{});
   setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
   setInterval(renderAll,60000);
 }
