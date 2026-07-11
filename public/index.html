@@ -168,22 +168,22 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 <div class="stats" id="statsZone"></div>
 
-<div class="hint">🔴 每日必交 · 不交有后果</div>
+<div class="hint" id="h_must" style="cursor:pointer;user-select:none" onclick="toggleSection('must')"><span id="a_must">▼</span> 🔴 每日必交 · 不交有后果</div>
 <div class="card grp-must" id="mustZone"></div>
 
-<div class="hint">🔧 每日动作 · 自查</div>
+<div class="hint" id="h_daily" style="cursor:pointer;user-select:none" onclick="toggleSection('daily')"><span id="a_daily">▼</span> 🔧 每日动作 · 自查</div>
 <div class="card grp-daily" id="dailyZone"></div>
 
-<div class="hint">📅 每周固定动作 · 自查（周一重置）</div>
+<div class="hint" id="h_wact" style="cursor:pointer;user-select:none" onclick="toggleSection('wact')"><span id="a_wact">▼</span> 📅 每周固定动作 · 自查（周一重置）</div>
 <div class="card grp-weekly" id="wactZone"></div>
 
-<div class="hint">📋 临时事项 · 随手添加，自动同步</div>
+<div class="hint" id="h_temp" style="cursor:pointer;user-select:none" onclick="toggleSection('temp')"><span id="a_temp">▼</span> 📋 临时事项 · 随手添加，自动同步</div>
 <div class="card" id="tempZone"></div>
 
-<div class="hint">📤 周期交付 · 赵总/运营部检核</div>
+<div class="hint" id="h_cycle" style="cursor:pointer;user-select:none" onclick="toggleSection('cycle')"><span id="a_cycle">▼</span> 📤 周期交付 · 赵总/运营部检核</div>
 <div id="cycleZone"></div>
 
-<div class="hint">⏰ 截止 & 日程</div>
+<div class="hint" id="h_dl" style="cursor:pointer;user-select:none" onclick="toggleSection('dl')"><span id="a_dl">▼</span> ⏰ 截止 & 日程</div>
 <div class="card" id="dlZone"></div>
 
 <div class="hint" id="svToggle" style="cursor:pointer;user-select:none" onclick="toggleSV()">
@@ -191,7 +191,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 </div>
 <div class="sv-card" id="svZone"></div>
 
-<div class="hint">📁 简易台账 · 每日提交累计</div>
+<div class="hint" id="h_ledger" style="cursor:pointer;user-select:none" onclick="toggleSection('ledger')"><span id="a_ledger">▼</span> 📁 简易台账 · 每日提交累计</div>
 <div class="card" id="ledgerZone"></div>
 
 <div class="btns">
@@ -469,7 +469,29 @@ const SV_DIMENSIONS=[
 let svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};
 function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];renderSV()}
 
-let svCollapsed=localStorage.getItem('zm_sv_collapsed')==='1';
+let sections={};
+function initSections(){
+  // 默认全部折叠
+  ['must','daily','wact','temp','cycle','dl','ledger'].forEach(k=>{
+    sections[k]=localStorage.getItem('sec_'+k)!=='0'?false:true; // 默认false=折叠
+    applySec(k);
+  });
+  // 驻店记录特殊处理：默认折叠
+  svCollapsed=localStorage.getItem('zm_sv_collapsed')!=='0'; // 默认true=折叠
+  if(document.getElementById('svArrow'))document.getElementById('svArrow').textContent=svCollapsed?'▶':'▼';
+  if(document.getElementById('svZone'))document.getElementById('svZone').style.display=svCollapsed?'none':'block';
+}
+function applySec(k){
+  const a=document.getElementById('a_'+k);if(a)a.textContent=sections[k]?'▼':'▶';
+  const ids={must:'mustZone',daily:'dailyZone',wact:'wactZone',temp:'tempZone',cycle:'cycleZone',dl:'dlZone',ledger:'ledgerZone'};
+  const el=document.getElementById(ids[k]);if(el)el.style.display=sections[k]?'block':'none';
+}
+function toggleSection(k){
+  sections[k]=!sections[k];
+  localStorage.setItem('sec_'+k,sections[k]?'1':'0');
+  applySec(k);
+}
+let svCollapsed;
 function toggleSV(){
   svCollapsed=!svCollapsed;
   localStorage.setItem('zm_sv_collapsed',svCollapsed?'1':'0');
@@ -716,6 +738,7 @@ function renderSV(){
 // Init
 function boot(){
   renderAll();
+  initSections();
   // 从服务器加载数据时，合并而非覆盖本地数据（服务器可能缺少字段）
   fetch('/api/workflow').then(r=>r.json()).then(j=>{
     if(j.data&&Object.keys(j.data).length>0){

@@ -75,8 +75,7 @@ ${dj}
 
 📌 今日已完成：
 ${ps}
-
-👤 邹慧明 · 三季度工作台`;
+`;
       payload = { msgtype: 'text', text: { content } };
     }
     const resp = await fetch('https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d35ec9fd-b3e2-4132-848c-0fbc7ab38107', {
