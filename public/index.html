@@ -80,7 +80,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .edit-btn{background:none;border:none;font-size:11px;cursor:pointer;padding:2px 5px;border-radius:4px;color:#cbd5e1;transition:.2s;flex-shrink:0}
 .edit-btn:hover{color:#64748b;background:#f1f5f9}
 
-.dl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s;min-height:48px}
+.dl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--bd,#f8fafc);cursor:pointer;transition:background .15s;min-height:48px}
 .dl:last-child{border-bottom:none}
 .dl.done{background:#f0fdf4}
 .dl:active{background:#f8fafc}
@@ -93,8 +93,8 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .dl-i{flex:1;min-width:0}
 .dl-t{font-size:13px;font-weight:700}
 .dl-m{font-size:10px;color:#94a3b8;margin-top:2px}
-.dl-c{width:24px;height:24px;min-width:24px;border:2px solid #cbd5e1;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;background:#fff;transition:.25s}
-.dl.done .dl-c{border-color:#10b981;background:#10b981}
+.dl-c{width:28px;height:28px;min-width:28px;border:2px solid var(--chk,#cbd5e1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;background:var(--card,#fff);transition:.25s}
+.dl.done .dl-c{border-color:#10b981;background:#10b981;animation:pop .3s ease}
 .evt .dl-n .num{color:#6366f1;font-size:16px}
 
 /* Temp tasks */
