@@ -564,7 +564,7 @@ const SV_DIMENSIONS=[
   ]},
 ];
 
-let localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
+localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
 function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));renderSV()}
 
 let sections={};
