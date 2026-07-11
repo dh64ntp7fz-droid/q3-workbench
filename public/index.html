@@ -843,60 +843,47 @@ function toggleGame(){
   var w=document.getElementById('gameWrap');
   if(w)w.classList.toggle('show');
 }
+var _gRun=false,_gScore=0,_gOver=false,_gF=0;
+var _gP={x:30,y:82,w:10,h:10};
+var _gO=[];
 function startGame(){
-  if(gameRun)return;
-  gameRun=true;gameOver=false;gameScore=0;player.y=80;player.vy=0;player.jumping=false;obstacles=[];frame=0;
-  drawGame();
-  gameLoop();
+  _gRun=true;_gOver=false;_gScore=0;_gO=[];_gF=0;_gP.y=82;
+  drawGame();requestAnimationFrame(_gLoop);
 }
-function gameLoop(){
-  if(!gameRun)return;
+function _gLoop(){
+  if(!_gRun)return;
+  _gF++;_gP.y+=_gP.y<82?2:0;if(_gP.y>82)_gP.y=82;
+  if(_gF%40===0)_gO.push({x:320,y:88,w:8,h:10});
+  for(var i=_gO.length-1;i>=0;i--){_gO[i].x-=3;if(_gO[i].x+_gO[i].w<0)_gO.splice(i,1);}
+  for(var i=0;i<_gO.length;i++){var o=_gO[i];if(_gP.x+_gP.w>o.x&&_gP.x<o.x+o.w&&_gP.y+_gP.h>o.y){_gOver=true;_gRun=false;}}
+  if(!_gOver)_gScore+=1;
   drawGame();
-  frame++;
-  // gravity
-  if(player.jumping){
-    player.vy+=0.4;
-    player.y+=player.vy;
-    if(player.y>=80){player.y=80;player.jumping=false;player.vy=0;}
-  }
-  // obstacles
-  if(gameRun&&frame%50===0){
-    obstacles.push({x:320,y:88,w:8,h:10});
-  }
-  for(var i=obstacles.length-1;i>=0;i--){
-    obstacles[i].x-=gameSpeed;
-    if(obstacles[i].x+obstacles[i].w<0)obstacles.splice(i,1);
-  }
-  // collision
-  if(!gameOver){
-    for(var i=0;i<obstacles.length;i++){
-      var o=obstacles[i];
-      if(player.x+player.w>o.x&&player.x<o.x+o.w&&player.y+player.h>o.y){
-        gameOver=true;gameRun=false;
-        setTimeout(function(){gameRun=false;drawGame();},100);
-        break;
-      }
-    }
-    if(!gameOver)gameScore+=1;
-  }
-  drawGame();
-  if(gameRun)requestAnimationFrame(gameLoop);
+  if(!_gOver)requestAnimationFrame(_gLoop);
 }
 function drawGame(){
-  var c=document.getElementById('gameCanvas');
-  if(!c||!c.getContext)return;
+  var c=document.getElementById('gameCanvas');if(!c||!c.getContext)return;
   var ctx=c.getContext('2d');
   ctx.clearRect(0,0,320,120);
-  ctx.fillStyle='#f0f0f0';ctx.fillRect(0,0,320,120);
-  ctx.fillStyle='#ddd';ctx.fillRect(0,100,320,20);
-  ctx.fillStyle='#e94560';
-  ctx.fillRect(player.x,player.y,player.w,player.h);
-  ctx.fillStyle='#fff';ctx.fillRect(player.x+2,player.y+2,3,3);ctx.fillRect(player.x+7,player.y+2,3,3);
-  ctx.fillStyle='#888';
-  for(var i=0;i<obstacles.length;i++){
-    var o=obstacles[i];
-    ctx.fillRect(o.x,o.y,o.w,o.h);
+  ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,320,120);
+  ctx.fillStyle='#e2e8f0';ctx.fillRect(0,100,320,2);
+  ctx.fillStyle='#94a3b8';ctx.font='10px monospace';
+  ctx.fillText('🏆 '+(_gRun?Math.floor(_gScore/5):_gOver?'game over':'0'),260,15);
+  ctx.fillStyle='#6366f1';
+  ctx.fillRect(_gP.x,_gP.y,_gP.w,_gP.h);
+  ctx.fillStyle='#fff';ctx.fillRect(_gP.x+2,_gP.y+2,3,3);ctx.fillRect(_gP.x+5,_gP.y+2,3,3);
+  ctx.fillStyle='#94a3b8';
+  for(var i=0;i<_gO.length;i++)ctx.fillRect(_gO[i].x,_gO[i].y,_gO[i].w,_gO[i].h);
+}
+document.addEventListener('keydown',function(e){
+  if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();
+    if(_gOver||!_gRun){startGame();return;}if(_gP.y>=80)_gP.y-=18;
   }
-  if(gameRun){ctx.fillStyle='#333';ctx.font='10px monospace';ctx.fillText('分数:'+Math.floor(gameScore/5),260,20);}
-  if(gameOver){ctx.fillStyle='#e94560';ctx.font='bold 14px monospace';ctx.textAlign='center';ctx.fillText('游戏结束',160,50);ctx.fillStyle='#888';ctx.font='10px monospace';ctx.fillText('点击/空格 重新开始',160,70);ctx.textAlign='left';}
-}>
+});
+document.addEventListener('click',function(e){
+  var c=document.getElementById('gameCanvas');
+  if(c&&c.contains(e.target)){if(!_gRun){startGame();return;}if(_gP.y>=80)_gP.y-=18;}
+});
+setTimeout(function(){drawGame();},200);
+</script>
+</body>
+</html>
