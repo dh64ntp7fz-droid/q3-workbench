@@ -122,10 +122,14 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .btns button:active{background:var(--dim);transform:scale(.96)}
 .foot{text-align:center;font-size:10px;color:#cbd5e1;margin-top:12px;line-height:1.6}
 
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.15)}
-.toast.show{opacity:1}
+.toast-wrap{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.toast-wrap.show{display:flex}
+.toast-box{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:48px 40px;border-radius:24px;font-size:28px;font-weight:800;text-align:center;max-width:88%;box-shadow:0 24px 80px rgba(99,102,241,.5);line-height:1.5;animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both}
+.toast-box .sub{font-size:14px;font-weight:400;opacity:.8;margin-top:12px;display:block}
+@keyframes popIn{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-.toast.show{font-size:15px;padding:14px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 32px rgba(99,102,241,.4)}
+.toast-close{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);color:#fff;padding:12px 36px;border-radius:30px;font-size:16px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:.2s}
+.toast-close:active{transform:translateX(-50%) scale(.95)}
 
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -203,7 +207,10 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
 <div class="foot">数据自动保存到服务器 &nbsp;|&nbsp; 配套Excel表在桌面「三季度工具表格」文件夹</div>
 <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"><div class="settings-panel" onclick="event.stopPropagation()"><h3 id="settingsTitle"></h3><div id="settingsItems"></div><button class="settings-close" onclick="closeSettings()">关闭</button></div></div>
-<div class="toast" id="toast"></div>
+<div class="toast-wrap" id="toastWrap">
+  <div class="toast-box" id="toastBox">🎉</div>
+  <div class="toast-close" onclick="closeBigToast()">✕ 知道啦</div>
+</div>
 
 <script>
 const KEY='zm_hub_v5';
@@ -294,20 +301,46 @@ function getPushSummary(){var s=load();s.pushItems=s.pushItems||{};var t=todaySt
 
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2500)}
+function toast(msg,isBig){
+  const wrap=document.getElementById('toastWrap');
+  const box=document.getElementById('toastBox');
+  if(isBig){
+    // 满屏情绪弹窗
+    const emoji=['🎉','🎊','✨','💫','🌟','⭐','🔥','💪','🏆'];
+    const bigEmoji=emoji[Math.floor(Math.random()*emoji.length)];
+    box.innerHTML=msg+'<span class="sub">邹慧明 · 今天也很棒 ✨</span>';
+    box.style.fontSize=window.innerWidth<480?'22px':'28px';
+    wrap.classList.add('show');
+    clearTimeout(wrap._to);
+    wrap._to=setTimeout(()=>wrap.classList.remove('show'),5000);
+  }else{
+    // 普通小提示（非情绪类）
+    const old=document.getElementById('toastOld');
+    if(!old){
+      const el=document.createElement('div');
+      el.id='toastOld';el.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:600;z-index:10000;transition:opacity .3s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.15)';
+      document.body.appendChild(el);
+    }
+    const t=document.getElementById('toastOld');
+    t.textContent=msg;t.style.opacity='1';clearTimeout(t._to);
+    t._to=setTimeout(()=>t.style.opacity='0',2500);
+  }
+}
+function closeBigToast(){document.getElementById('toastWrap').classList.remove('show')}
 const C_MSGS=['👏 漂亮！又搞定一个','✨ 邹慧明今天手感真好','🎯 准！赵总看到得加分','🔥 势不可挡，继续冲','💎 小事做到位，大事自然成','🚀 这执行力，谁不服','🏆 你就是Q3最稳的小区经理','🌟 每一步都在为团队加分'];
 const BIG_MSGS=['🏆🏆🏆 今日必交全部完成！邹慧明你太离谱了，赵总不给你加分说不过去 🏆🏆🏆','🔥🔥 全部清空！今天你就是最靠谱的小区经理 🔥🔥','💪💪 全清了！晚上可以安心睡觉了 💪💪','🎉🎉 完美收工！你就是团队的定海神针 🎉🎉'];
 function emoToast(){
   const s=load();const t=todayStr();const muDone=MUST.filter(m=>s.mu[m.id]===t).length;
-  let msg;
+  let msg,big=false;
   if(muDone===MUST.length){
     msg=BIG_MSGS[Math.floor(Math.random()*BIG_MSGS.length)];
+    big=true;
     confetti();
-    setTimeout(()=>toast(msg),200);
+    setTimeout(()=>toast(msg,true),200);
     return;
-  }else if(muDone>=MUST.length-1)msg='🔥 还差一个就全清了，邹慧明冲！';
+  }else if(muDone>=MUST.length-1){msg='🔥 还差一个就全清了，邹慧明冲！';big=true;}
   else msg=C_MSGS[Math.floor(Math.random()*C_MSGS.length)];
-  toast(msg);
+  toast(msg,big);
 }
 function confetti(){
   for(let i=0;i<20;i++){
