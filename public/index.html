@@ -473,11 +473,13 @@ let sections={};
 function initSections(){
   // 其他分类默认展开（除非用户手动折叠过）
   ['must','daily','wact','temp','cycle','dl','ledger'].forEach(k=>{
-    sections[k]=localStorage.getItem('sec_'+k)==='0'?false:true;
+    const v=localStorage.getItem('sec_'+k);
+    sections[k]=v===null?true:v==='1';
     applySec(k);
   });
   // 驻店记录：默认折叠
-  svCollapsed=localStorage.getItem('zm_sv_collapsed')!=='0';
+  const sv=localStorage.getItem('zm_sv_collapsed');
+  svCollapsed=sv===null?true:sv!=='0';
   if(document.getElementById('svArrow'))document.getElementById('svArrow').textContent=svCollapsed?'▶':'▼';
   if(document.getElementById('svZone'))document.getElementById('svZone').style.display=svCollapsed?'none':'block';
 }
