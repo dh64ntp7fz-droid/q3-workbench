@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:var(--txt);padding:12px 11px 48px;max-width:860px;margin:0 auto;-webkit-font-smoothing:antialiased}
 
-.header{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px;padding:18px 16px 14px;margin-bottom:14px;box-shadow:0 4px 16px rgba(99,102,241,.25)}
+.header{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px;padding:18px 16px 14px;margin-bottom:14px;box-shadow:0 4px 16px rgba(99,102,241,.25);animation:shimmer 8s ease infinite;background-size:200% 200%!important}
 .header h1{font-size:19px;font-weight:800;letter-spacing:-.3px}
 .header .sub{font-size:11px;opacity:.8;margin-top:4px}
 .header .quote{font-size:10px;opacity:.6;margin-top:8px;font-style:italic}
@@ -162,7 +162,6 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 @keyframes shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes streakGlow{0%,100%{box-shadow:0 0 8px rgba(251,191,36,.3)}50%{box-shadow:0 0 20px rgba(251,191,36,.6)}}
-.header{animation:shimmer 8s ease infinite;background-size:200% 200%!important}
 .streak-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(251,191,36,.25);color:#fbbf24;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;animation:streakGlow 2s ease infinite;cursor:pointer;transition:.2s}
 .streak-badge:active{transform:scale(.9)}
 .cheer-btn{background:none;border:none;font-size:24px;cursor:pointer;transition:.2s;color:rgba(255,255,255,.7);min-width:44px;min-height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center}
