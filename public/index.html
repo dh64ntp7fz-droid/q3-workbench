@@ -14,7 +14,6 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .header .sub{font-size:11px;opacity:.8;margin-top:4px}
 .header .quote{font-size:10px;opacity:.6;margin-top:8px;font-style:italic}
 
-
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .stat-card{background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .stat-card .l{font-size:10px;color:var(--t3);font-weight:600}
@@ -131,7 +130,6 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .toast-close{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);color:#fff;padding:12px 36px;border-radius:30px;font-size:16px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:.2s}
 .toast-close:active{transform:translateX(-50%) scale(.95)}
 
-
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .card,.sv-card{animation:fadeIn .4s ease both}
 .card:nth-child(2){animation-delay:.04s}
@@ -160,7 +158,6 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .settings-del{background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;padding:4px 8px}
 .settings-close{width:100%;padding:10px;border:none;border-radius:10px;background:#f1f5f9;font-weight:700;margin-top:12px;cursor:pointer;font-size:14px}
 .gear-btn{background:none;border:none;font-size:14px;cursor:pointer;padding:2px 6px;opacity:.6;transition:.2s;color:#fff;min-width:32px;min-height:32px}
-
 
 /* ── 情绪价值 ── */
 @keyframes floatUp{0%{transform:translateY(0) scale(0);opacity:0}20%{transform:translateY(-10px) scale(1);opacity:1}100%{transform:translateY(-160px) scale(.3);opacity:0}}
@@ -219,7 +216,6 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 <div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h1>🧭 邹慧明 · 三季度工作台</h1>
   <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
   <div class="quote" id="dailyQuote"></div></div><button id="dmBtn" onclick="var h=document.documentElement;var cur=h.getAttribute('data-theme')||'light';var nxt=cur==='dark'?'light':'dark';h.setAttribute('data-theme',nxt);this.textContent=nxt==='dark'?'☀️':'🌙';localStorage.setItem('zm_theme',nxt)" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;cursor:pointer;min-width:48px;min-height:48px;border-radius:50%;flex-shrink:0">🌙</button></div></div>
-
 
 <div class="stats" id="statsZone"></div>
 
@@ -345,7 +341,6 @@ function monthStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMo
 function daysLeft(due){const d=new Date(due);d.setHours(0,0,0,0);return Math.round((d-new Date(new Date().setHours(0,0,0,0)))/86400000)}
 function decadeStr(){return String(Math.floor((new Date()-new Date('2026-01-01'))/86400000/10))}
 
-
 const ALL_ITEMS = { must: MUST, daily: DAILY, wact: WACT, cycle: CYCLES, dl: DEADLINES };
 const CAT_NAMES = { must: '每日必交', daily: '每日动作', wact: '每周固定动作', cycle: '周期交付', dl: '截止&日程' };
 function openSettings(cat){var items=ALL_ITEMS[cat]||[];var s=load();s.pushItems=s.pushItems||{};document.getElementById('settingsTitle').textContent='⚙ '+(CAT_NAMES[cat]||'')+' 设置';var html='';items.forEach(function(it){var id=it.id;var label=it.title||it.text||'';var isPush=s.pushItems[id];html+='<div class="settings-row"><span>'+label+'</span><button class="settings-toggle '+(isPush?'on':'off')+'" onclick="togglePush(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)"></button><button class="settings-del" onclick="deleteItem(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)">✕</button></div>';});document.getElementById('settingsItems').innerHTML=html||'<div style="padding:10px;color:#94a3b8;text-align:center">暂无项目</div>';document.getElementById('settingsOverlay').classList.add('show');}
@@ -360,7 +355,6 @@ function toast(msg,isBig){
   const wrap=document.getElementById('toastWrap');
   const box=document.getElementById('toastBox');
   if(isBig){
-    // 满屏情绪弹窗
     const emoji=['🎉','🎊','✨','💫','🌟','⭐','🔥','💪','🏆'];
     const bigEmoji=emoji[Math.floor(Math.random()*emoji.length)];
     box.innerHTML=msg+'<span class="sub">邹慧明 · 今天也很棒 ✨</span>';
@@ -369,7 +363,6 @@ function toast(msg,isBig){
     clearTimeout(wrap._to);
     wrap._to=setTimeout(()=>wrap.classList.remove('show'),5000);
   }else{
-    // 普通小提示（非情绪类）
     const old=document.getElementById('toastOld');
     if(!old){
       const el=document.createElement('div');
@@ -386,16 +379,15 @@ const C_MSGS=['👏 漂亮！又搞定一个','✨ 邹慧明今天手感真好',
 const BIG_MSGS=['🏆🏆🏆 今日必交全部完成！邹慧明你太离谱了，赵总不给你加分说不过去 🏆🏆🏆','🔥🔥 全部清空！今天你就是最靠谱的小区经理 🔥🔥','💪💪 全清了！晚上可以安心睡觉了 💪💪','🎉🎉 完美收工！你就是团队的定海神针 🎉🎉'];
 function emoToast(){
   const s=load();const t=todayStr();const muDone=MUST.filter(m=>s.mu[m.id]===t).length;
-  let msg,big=false;
+  let msg;
   if(muDone===MUST.length){
     msg=BIG_MSGS[Math.floor(Math.random()*BIG_MSGS.length)];
-    big=true;
     confetti();
     setTimeout(()=>toast(msg,true),200);
-    return;
-  }else if(muDone>=MUST.length-1){msg='🔥 还差一个就全清了，邹慧明冲！';big=true;}
-  else msg=C_MSGS[Math.floor(Math.random()*C_MSGS.length)];
-  toast(msg,big);
+  }else{
+    msg=C_MSGS[Math.floor(Math.random()*C_MSGS.length)];
+    toast(msg,true);
+  }
 }
 function confetti(){
   for(let i=0;i<20;i++){
@@ -406,9 +398,6 @@ function confetti(){
     setTimeout(()=>e.remove(),3000);
   }
 }
-
-// Emotional cheer messages
-
 
 // Toggles
 function tMust(id){
@@ -488,7 +477,6 @@ function delTemp(id){if(!confirm("确定删除？"))return;const s=load();s.tm=s
 function editTemp(id){const s=load();const tsk=s.tm[id];if(!tsk)return;const nt=prompt('编辑：',tsk.text);if(nt!==null){tsk.text=nt.trim();save(s);renderAll();toast('✅ 已更新')}}
 
 // Store visit
-// ── 巡店记录数据（完全对齐区域经理巡店表.xlsx）──
 const SV_NAMES={长安花园:'长安花园',长安锦厦:'长安锦厦',大朗环球:'大朗环球',凤岗黄河:'凤岗黄河',凤岗天安:'凤岗天安'};
 
 const SV_DIMENSIONS=[
@@ -559,13 +547,11 @@ function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];renderSV()}
 
 let sections={};
 function initSections(){
-  // 其他分类默认展开（除非用户手动折叠过）
   ['must','daily','wact','temp','cycle','dl','ledger'].forEach(k=>{
     const v=localStorage.getItem('sec_'+k);
     sections[k]=v===null?true:v==='1';
     applySec(k);
   });
-  // 驻店记录：默认折叠
   const sv=localStorage.getItem('zm_sv_collapsed');
   svCollapsed=sv===null?true:sv!=='0';
   if(document.getElementById('svArrow'))document.getElementById('svArrow').textContent=svCollapsed?'▶':'▼';
@@ -604,7 +590,6 @@ function svSave(){
   // Send to WeChat Work webhook
   const WECOM_URL='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d35ec9fd-b3e2-4132-848c-0fbc7ab38107';
   const now=new Date().toLocaleString('zh-CN');
-  // 构建检查详情 — 按维度分组带区域名，对齐巡店表
   let bulletList=SV_DIMENSIONS.map(dim=>{
     const dimLabel=dim.label.replace(/[🌀🍽️🧹【】]/g,'').trim();
     let section=dimLabel+'\n';
@@ -623,7 +608,6 @@ function svSave(){
         const txt=(record.notes||{})[it.key];
         lines=it.label+'：'+(txt?txt.substring(0,40):'未填');
       }
-      // 如果该检查项有补充备注，追加到后面
       const noteKey='note_'+it.id;
       const noteVal=(record.notes||{})[noteKey];
       if(noteVal)lines+='  ⚡备注：'+noteVal.substring(0,40);
@@ -643,7 +627,6 @@ function svSave(){
   }).catch(e=>{toast('✅ 已保存')});
 
   svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};
-  // 提交后自动展开
   if(svCollapsed){svCollapsed=false;localStorage.setItem('zm_sv_collapsed','0');document.getElementById('svArrow').textContent='▼';document.getElementById('svZone').style.display='block';}
   renderSV();
 }
@@ -667,7 +650,6 @@ function exportData(){
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const j=JSON.parse(ev.target.result);const d=j.data||j;localStorage.setItem(KEY,JSON.stringify(d));renderAll();toast('✅ 备份已恢复')}catch(e){toast('❌ 格式错误')}};r.readAsText(f);e.target.value=''}
 function resetAll(){localStorage.removeItem(KEY);renderAll();toast('已清空')}
 
-// ── RENDER ──
 function renderAll(){
   const s=load();s.mu=s.mu||{};s.dy=s.dy||{};s.wk=s.wk||{};s.cy=s.cy||{};s.dl=s.dl||{};s.lg=s.lg||{};s.cust=s.cust||{};s.cust2=s.cust2||{};s.tm=s.tm||{};s.sv=s.sv||[];s.delIds=s.delIds||[];
   const t=todayStr();const wcur=weekStr();
@@ -755,7 +737,6 @@ function renderAll(){
 // Render Store Visit (separate to avoid ES escaping issues with svToggle)
 function renderSV(){
   const s=load();s.sv=s.sv||[];
-  // 折叠状态初始化
   document.getElementById('svArrow').textContent=svCollapsed?'▶':'▼';
   if(svCollapsed){document.getElementById('svZone').style.display='none';return;}
   document.getElementById('svZone').style.display='block';
@@ -834,7 +815,6 @@ function renderSV(){
 }
 // Init
 
-// ── 情绪价值交互 ──
 const SPLASH_MSGS=[
   {emoji:'🚀',title:'今天也要认真搞钱',sub:'邹慧明，开工！'},
   {emoji:'⚡',title:'能量满格的一天',sub:'每一张表都在为Q3加分'},
@@ -893,10 +873,8 @@ function cheerMe(){
   toast(m.emoji+' '+m.title+'<br>'+extra,true);
 }
 // Click title for cheer
-// 点击splash标题可重播
 document.getElementById('splashTitle').onclick=initSplash;
 document.getElementById('mainTitle').onclick=function(){cheerMe()};
-// 连续天数统计
 function calcStreak(){
   const s=load();const t=todayStr();let streak=0,firstMiss=false;
   for(let d=new Date(t);;d.setDate(d.getDate()-1)){
@@ -922,15 +900,12 @@ function boot(){
   initSplash();
   renderAll();
   initSections();
-  // 从服务器加载数据时，合并而非覆盖本地数据（服务器可能缺少字段）
   fetch('/api/workflow').then(r=>r.json()).then(j=>{
     if(j.data&&Object.keys(j.data).length>0){
       try{
         const existing=JSON.parse(localStorage.getItem(KEY))||{};
-        // 只补充本地缺失的字段，不覆盖本地已有的数据
         const merged={...j.data};
         Object.keys(merged).forEach(k=>{
-          // 本地已有此字段时跳过（本地是源）
           if(existing[k]!==undefined)delete merged[k];
         });
         if(Object.keys(merged).length>0){
