@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>邹慧明 · 三季度工作台</title>
 <style>
+:root{--bg:#f0f3f8;--card:#fff;--txt:#1e293b;--t2:#64748b;--t3:#94a3b8;--bd:#e2e8f0}[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--txt:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--bd:#334155}body{background:var(--bg);color:var(--txt);transition:background .3s,color .3s}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f0f3f8;color:#1e293b;padding:12px 11px 48px;max-width:860px;margin:0 auto;-webkit-font-smoothing:antialiased}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:var(--txt);padding:12px 11px 48px;max-width:860px;margin:0 auto;-webkit-font-smoothing:antialiased}
 
 .header{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px;padding:18px 16px 14px;margin-bottom:14px;box-shadow:0 4px 16px rgba(99,102,241,.25)}
 .header h1{font-size:19px;font-weight:800;letter-spacing:-.3px}
@@ -139,11 +140,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f0f3f8;color
 </head>
 <body>
 
-<div class="header">
-  <h1>🧭 邹慧明 · 三季度工作台</h1>
+<div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h1>🧭 邹慧明 · 三季度工作台</h1>
   <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
-  <div class="quote" id="dailyQuote"></div>
-</div>
+  <div class="quote" id="dailyQuote"></div></div><button id="dmBtn" onclick="var h=document.documentElement;var cur=h.getAttribute('data-theme')||'light';var nxt=cur==='dark'?'light':'dark';h.setAttribute('data-theme',nxt);this.textContent=nxt==='dark'?'☀️':'🌙';localStorage.setItem('zm_theme',nxt)" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;cursor:pointer;min-width:48px;min-height:48px;border-radius:50%;flex-shrink:0">🌙</button></div></div>
 
 
 <div class="stats" id="statsZone"></div>
@@ -364,7 +363,7 @@ function toggleTempTime(){
   row.style.display=row.style.display==='none'?'flex':'none';
 }
 function tTemp(id){const s=load();s.tm=s.tm||{};if(s.tm[id]){s.tm[id].done=!s.tm[id].done;save(s);renderAll()}}
-function delTemp(id){const s=load();s.tm=s.tm||{};delete s.tm[id];save(s);renderAll()}
+function delTemp(id){if(!confirm("确定删除？"))return;const s=load();s.tm=s.tm||{};delete s.tm[id];save(s);renderAll()}
 function editTemp(id){const s=load();const tsk=s.tm[id];if(!tsk)return;const nt=prompt('编辑：',tsk.text);if(nt!==null){tsk.text=nt.trim();save(s);renderAll();toast('✅ 已更新')}}
 
 // Store visit
@@ -460,20 +459,9 @@ function svSave(){
   }).join('\n')).join('\n> \n');
   const md={
     msgtype:'markdown',
-    markdown:{content:`## 📋 驻店记录 · ${record.store}\n> 日期：${record.date} ${record.time}\n> 合格项：${totalChecks} / ${totalItems}\n\n### 检查详情\n${bulletList}\n\n### 📝 与店长沟通要点
-
-### 📋 驻店整改记录
-> ${(record.notes||{}).zhenggai||'（未填写）'}
-
-### 🔍 问题点发现改善
-> ${(record.notes||{}).wenti||'（未填写）'}
-
-### 📝 店长带教案例
-> ${(record.notes||{}).daijiao||'（未填写）'}
-
-### 📝\n> ${record.resolved||'（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台`}
+    markdown:{content:`## 📋 驻店记录 · ${record.store}\n> 日期：${record.date} ${record.time}\n> 合格项：${totalChecks} / ${totalItems}\n\n### 检查详情\n${bulletList}\n\n### 📝 与店长沟通要点\n> ${record.resolved||'（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台`}
   };
-  fetch(WECOM_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
+  fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
     if(j.errcode===0)toast('✅ 已保存并发送至企业微信');
     else toast('✅ 已保存（企业微信发送失败:'+j.errmsg+'）');
   }).catch(e=>{toast('✅ 已保存')});
@@ -560,7 +548,7 @@ function renderAll(){
   let lz='';
   function rg(label,items){if(!items||!items.length)return'';let h=`<div style="padding:6px 14px 4px;font-size:11px;font-weight:700;color:#94a3b8">${label} <span style="background:#f1f5f9;padding:1px 6px;border-radius:10px;font-size:10px">${items.length}</span></div>`;
     items.forEach(d=>{const done=!!s.dl[d.id];const dl=daysLeft(d.due);const c=done?'done':(dl<0?'over':(dl<=3?'soon':''))+(d.type==='evt'?' evt':'');const num=done?'✓':(dl<0?'超':dl);const u=done?`<div class="u">${s.dl[d.id].slice(5)}</div>`:(dl<0?`<div class="u">${Math.abs(dl)}天</div>`:(dl===0?'<div class="u">今天</div>':'<div class="u">天后</div>'));
-      h+=`<div class="dl ${c}" onclick="tDl('${d.id}')"><div class="dl-n"><div class="num">${num}</div>${u}</div><div class="dl-i"><div class="dl-t">${s.cust2&&s.cust2[d.id]||d.title}<button class="edit-btn" onclick="event.stopPropagation();editDL('${d.id}')" title="编辑">✎</button><button class="edit-btn" onclick="event.stopPropagation();delAny('${d.id}')" title="删除">✕</button></div><div class="dl-m">${d.meta} · ${d.due.slice(5)}${d.tab?` · 📄${d.tab}`:''}</div></div><div class="dl-c">${done?'✓':''}</div></div>`;});
+      h+=`<div class="dl ${c}" onclick="tDl('${d.id}')"><div class="dl-n"><div class="num">${num}</div>${u}</div><div class="dl-i"><div class="dl-t">${s.cust2&&s.cust2[d.id]||d.title}<button class="edit-btn" onclick="event.stopPropagation();editDL('${d.id}')" title="编辑">✎</button><button class="edit-btn" onclick="event.stopPropagation();delAny('${d.id}')" title="删除">✕</button></div><div class="dl-m">${d.meta} · ${d.due.slice(5)}${d.tab?` · 📄${d.tab}`:''}</div></div><div class="ck">${done?'✓':''}</div></div>`;});
     return h;}
   lz+=rg('🔴 已超期/今天',groups.urgent);
   lz+=rg('🟡 7天内截止',groups.soon);
@@ -644,11 +632,7 @@ function renderSV(){
 
   // Communication and resolution
   h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
-  h+=`<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px"><div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">📋 驻店整改记录汇报</div><textarea placeholder="记录驻店整改内容..." onchange="svDraft.notes.zhenggai=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:#f8fafc;color:#1e293b;font-family:inherit;resize:vertical">${svDraft.notes.zhenggai||''}</textarea></div>
-<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">🔍 输出驻店问题点发现改善</div><textarea placeholder="发现的问题点及改善方案..." onchange="svDraft.notes.wenti=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:#f8fafc;color:#1e293b;font-family:inherit;resize:vertical">${svDraft.notes.wenti||''}</textarea></div>
-<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">📝 现场输出店长带教案例</div><textarea placeholder="带教案例..." onchange="svDraft.notes.daijiao=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:#f8fafc;color:#1e293b;font-family:inherit;resize:vertical">${svDraft.notes.daijiao||''}</textarea></div>
-
-<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">`;
+  h+=`<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px">📝 与店长沟通核心重点及行动</div>`;
   h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:#f8fafc;color:#1e293b;min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
   h+=`</div>`;
 
