@@ -1,0 +1,11 @@
+{
+  "name": "q3-workbench",
+  "version": "2.0.0",
+  "description": "邹慧明 · 三季度工作台服务端",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
