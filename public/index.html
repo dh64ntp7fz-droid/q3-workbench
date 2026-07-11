@@ -127,8 +127,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .toast-box .sub{font-size:14px;font-weight:400;opacity:.8;margin-top:12px;display:block}
 @keyframes popIn{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-.toast-close{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);color:#fff;padding:12px 36px;border-radius:30px;font-size:16px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:.2s}
-.toast-close:active{transform:translateX(-50%) scale(.95)}
+
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .card,.sv-card{animation:fadeIn .4s ease both}
@@ -230,9 +229,8 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
 <div class="foot">数据自动保存到服务器 &nbsp;|&nbsp; 配套Excel表在桌面「三季度工具表格」文件夹</div>
 <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"><div class="settings-panel" onclick="event.stopPropagation()"><h3 id="settingsTitle"></h3><div id="settingsItems"></div><button class="settings-close" onclick="closeSettings()">关闭</button></div></div>
-<div class="toast-wrap" id="toastWrap">
-  <div class="toast-box" id="toastBox">🎉</div>
-  <div class="toast-close" onclick="closeBigToast()">✕ 知道啦</div>
+<div class="toast-wrap" id="toastWrap" onclick="closeBigToast()">
+  <div class="toast-box" id="toastBox" onclick="event.stopPropagation()">🎉</div>
 </div>
 
 <script>
@@ -337,7 +335,7 @@ function toast(msg,isBig){
     box.style.fontSize=window.innerWidth<480?'22px':'28px';
     wrap.classList.add('show');
     clearTimeout(wrap._to);
-    wrap._to=setTimeout(()=>wrap.classList.remove('show'),5000);
+    wrap._to=setTimeout(()=>wrap.classList.remove('show'),6000);
   }else{
     const old=document.getElementById('toastOld');
     if(!old){
