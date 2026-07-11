@@ -484,10 +484,10 @@ function svSave(){
   const now=new Date().toLocaleString('zh-CN');
   let bulletList=SV_DIMENSIONS.map(dim=>dim.items.map(it=>{
     if(it.checks)return it.checks.map(ch=>`${ch.text.substring(0,20)}：`+(record.checks[ch.key]?'✓':'✗')).join('\n');
-    if(it.type==='number')return '> '+it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
-    if(it.type==='text')return '> '+it.label+'：'+((record.notes||{})[it.key]||'未填').substring(0,30);
+    if(it.type==='number')return it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
+    if(it.type==='text')return it.label+'：'+((record.notes||{})[it.key]||'未填').substring(0,30);
     return '';
-  }).join('\n')).join('\n> \n');
+  }).join('\n')).join('\n\n');
   fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     store:record.store,date:record.date,time:record.time,
     checkCount:totalChecks,totalItems:totalItems,
