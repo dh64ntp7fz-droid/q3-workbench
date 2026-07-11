@@ -176,7 +176,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .splash-dot:nth-child(2){animation-delay:.2s}
 .splash-dot:nth-child(3){animation-delay:.4s}
 
-@media(max-width:480px){.splash-emoji{font-size:56px}.splash-text h2{font-size:24px}.splash-text p{font-size:14px}}
+@media(max-width:480px){.splash-emoji{font-size:56px}.splash-text p{font-size:14px}}
 /* 点击logo彩蛋 */
 @keyframes easterEgg{0%{transform:rotate(0deg)}25%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}75%{transform:rotate(-5deg)}100%{transform:rotate(0deg)}}
 .egg-shake{animation:easterEgg .4s ease}
@@ -184,7 +184,27 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes popUpEmoji{0%{opacity:0;transform:translateY(40px) scale(0)}30%{opacity:1;transform:translateY(0) scale(1.1)}60%{transform:translateY(-10px) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(.5)}}
 .pop-emoji{position:fixed;font-size:36px;pointer-events:none;z-index:99998;animation:popUpEmoji .8s ease-out forwards}
 
+.splash-circle2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);bottom:-80px;left:-80px;animation:floatSlow 8s ease-in-out infinite reverse}
+
 }
+}
+.splash-text{color:#fff;text-align:center;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:0 20px}
+.splash-text .icon{font-size:40px;display:block;margin-bottom:8px;animation:iconFloat 2.5s ease-in-out infinite}
+@keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.splash-text h2{font-size:18px;font-weight:600;margin:0 auto 4px;letter-spacing:1px;color:rgba(255,255,255,.7);-webkit-text-fill-color:rgba(255,255,255,.7);text-align:center;width:100%;background:none;background-clip:unset}
+.splash-text .line{width:40px;height:1px;background:linear-gradient(90deg,transparent,#6366f1,transparent);margin:8px auto;animation:linePulse 2s ease-in-out infinite}
+@keyframes linePulse{0%,100%{width:60px;opacity:.6}50%{width:100px;opacity:1}}
+.splash-text p{font-size:20px;opacity:.9;margin:8px auto;font-weight:500;letter-spacing:1px;text-align:center;width:100%;color:#e2e8f0}
+.splash-text .sub{font-size:12px;opacity:.4;margin-top:20px;letter-spacing:1px;font-weight:300;text-align:center}
+
+.splash-bar-fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,#6366f1,#a5b4fc);animation:barLoad 2.2s ease-out forwards}
+}
+@media(max-width:480px){.splash-text .icon{font-size:32px}.splash-text h2{font-size:16px}.splash-text p{font-size:17px}}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.4);opacity:1}}
+
+/* ── 减压小游戏 ── */
+.game-wrap{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:12px;display:none}
+.game-wrap.show{display:block}
 .game-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:linear-gradient(135deg,#0b0f1a,#1e293b);color:#fff;cursor:pointer;user-select:none}
 .game-bar span{font-size:13px;font-weight:700}
 .game-bar button{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:11px;padding:4px 12px;border-radius:8px;cursor:pointer;font-weight:600}
@@ -193,18 +213,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 </style>
 </head>
 <body style="min-height:100vh">
-<div class="splash" id="splash">
-  <div class="splash-text">
-    <p id="splashDaily" style="font-size:20px;opacity:.9;margin-bottom:20px;font-weight:500;color:#fff">☀️ 早安，又是崭新的一天</p>
-    <span class="icon">☀️</span>
-    <h2 style="font-size:24px;font-weight:700;color:#fff;margin:10px 0 6px">邹慧明 · 三季度工作台</h2>
-    <div class="line"></div>
-    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
-  </div>/div>
-
-<div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h1>🧭 邹慧明 · 三季度工作台</h1>
-  <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
-  <div class="quote" id="dailyQuote"></div></div><button id="dmBtn" onclick="var h=document.documentElement;var cur=h.getAttribute('data-theme')||'light';var nxt=cur==='dark'?'light':'dark';h.setAttribute('data-theme',nxt);this.textContent=nxt==='dark'?'☀️':'🌙';localStorage.setItem('zm_theme',nxt)" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;cursor:pointer;min-width:48px;min-height:48px;border-radius:50%;flex-shrink:0">🌙</button></div></div>
+/div>
 <div class="game-wrap" id="gameWrap">
   <div class="game-bar" onclick="toggleGame()">
     <span>🎮 减压小游戏</span>
