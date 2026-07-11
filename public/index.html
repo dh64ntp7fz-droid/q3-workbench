@@ -851,6 +851,7 @@ function startGame(){
 }
 function gameLoop(){
   if(!gameRun)return;
+  drawGame();
   frame++;
   // gravity
   if(player.jumping){
