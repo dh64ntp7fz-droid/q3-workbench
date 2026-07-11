@@ -520,13 +520,13 @@ function svSave(){
   const now=new Date().toLocaleString('zh-CN');
   let bulletList=SV_DIMENSIONS.map(dim=>dim.items.map(it=>{
     if(it.checks)return it.checks.map(ch=>`${ch.text.substring(0,20)}：`+(record.checks[ch.key]?'✓':'✗')).join('\n');
-    if(it.type==='number')return '> '+it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
-    if(it.type==='text')return '> '+it.label+'：'+((record.notes||{})[it.key]||'未填').substring(0,30);
+    if(it.type==='number')return it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
+    if(it.type==='text')return it.label+'：'+((record.notes||{})[it.key]||'未填').substring(0,30);
     return '';
-  }).join('\n')).join('\n> \n');
+  }).join('\n')).join('\n\n');
   const md={
     msgtype:'text',
-    text:{content:`📋 驻店记录 · ${record.store}\n日期：${record.date} ${record.time}\n合格项：${totalChecks} / ${Object.keys(record.checks||{}).length}\n\n检查详情：\n${bulletList}\n\n与店长沟通：\n${record.resolved||'（未填写）'}\n\n驻店整改记录：\n${(record.notes||{}).zhenggai||'（未填写）'}\n\n问题点发现改善：\n${(record.notes||{}).wenti||'（未填写）'}\n\n店长带教案例：\n${(record.notes||{}).daijiao||'（未填写）'}\n\n📌 今日已完成：\n${getPushSummary()}\n\n👤 邹慧明 · 三季度工作台`}
+    text:{content:`📋 驻店记录 · ${record.store}\n日期：${record.date} ${record.time}\n合格项：${totalChecks} / ${Object.keys(record.checks||{}).length}\n\n检查详情：\n${bulletList}\n\n与店长沟通：\n${record.resolved||\x27（未填写）\x27}\n\n驻店整改记录：\n${(record.notes||{}).zhenggai||\x27（未填写）\x27}\n\n问题点发现改善：\n${(record.notes||{}).wenti||\x27（未填写）\x27}\n\n店长带教案例：\n${(record.notes||{}).daijiao||\x27（未填写）\x27}\n\n📌 今日已完成：\n${getPushSummary()}\n\n👤 邹慧明 · 三季度工作台`}
   };
   fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
     if(j.errcode===0)toast('✅ 已保存并发送至企业微信');
