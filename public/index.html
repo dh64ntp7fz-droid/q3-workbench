@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>邹慧明 · 三季度工作台</title>
 <style>
-:root{--bg:#f0f3f8;--card:#fff;--txt:#1e293b;--t2:#64748b;--t3:#94a3b8;--bd:#e2e8f0;--bd2:#f8fafc;--inp:#f8fafc;--chk:#cbd5e1;--dim:#f1f5f9}[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--txt:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--bd:#334155;--bd2:#1a2332;--inp:#1a2332;--chk:#475569;--dim:#1a2332}body{background:var(--bg);color:var(--txt);transition:background .3s,color .3s}
+:root{--bg:#f0f3f8;--card:#fff;--txt:#1e293b;--t2:#334155;--t3:#475569;--bd:#e2e8f0;--bd2:#f8fafc;--inp:#f8fafc;--chk:#cbd5e1;--dim:#f1f5f9}[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--txt:#e2e8f0;--t2:#475569;--t3:#475569;--bd:#334155;--bd2:#1a2332;--inp:#1a2332;--chk:#475569;--dim:#1a2332}body{background:var(--bg);color:var(--txt);transition:background .3s,color .3s}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:var(--txt);padding:12px 11px 48px;max-width:860px;margin:0 auto;-webkit-font-smoothing:antialiased}
 
@@ -183,7 +183,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 <div class="hint" id="h_cycle" style="cursor:pointer;user-select:none" onclick="toggleSection('cycle')"><span id="a_cycle">▼</span> 📤 周期交付 · 赵总/运营部检核</div>
 <div id="cycleZone"></div>
 
-<div class="hint" id="h_dl" style="cursor:pointer;user-select:none" onclick="toggleSection('dl')"><span id="a_dl">▼</span> ⏰ 截止 & 日程</div>
+<div class="hint" id="h_dl" style="cursor:pointer;user-select:none" onclick="toggleSection('dl')"><span id="a_dl">▼</span> ⏰ 截止 & 日程 <span class="gear-btn" onclick="event.stopPropagation();openSettings('dl')" style="color:var(--t2)!important;font-size:12px">⚙</span></div>
 <div class="card" id="dlZone"></div>
 
 <div class="hint" id="svToggle" style="cursor:pointer;user-select:none" onclick="toggleSV()">
@@ -284,8 +284,8 @@ function daysLeft(due){const d=new Date(due);d.setHours(0,0,0,0);return Math.rou
 function decadeStr(){return String(Math.floor((new Date()-new Date('2026-01-01'))/86400000/10))}
 
 
-const ALL_ITEMS = { must: MUST, daily: DAILY, wact: WACT };
-const CAT_NAMES = { must: '每日必交', daily: '每日动作', wact: '每周固定动作' };
+const ALL_ITEMS = { must: MUST, daily: DAILY, wact: WACT, cycle: CYCLES, dl: DEADLINES };
+const CAT_NAMES = { must: '每日必交', daily: '每日动作', wact: '每周固定动作', cycle: '周期交付', dl: '截止&日程' };
 function openSettings(cat){var items=ALL_ITEMS[cat]||[];var s=load();s.pushItems=s.pushItems||{};document.getElementById('settingsTitle').textContent='⚙ '+(CAT_NAMES[cat]||'')+' 设置';var html='';items.forEach(function(it){var id=it.id;var label=it.title||it.text||'';var isPush=s.pushItems[id];html+='<div class="settings-row"><span>'+label+'</span><button class="settings-toggle '+(isPush?'on':'off')+'" onclick="togglePush(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)"></button><button class="settings-del" onclick="deleteItem(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)">✕</button></div>';});document.getElementById('settingsItems').innerHTML=html||'<div style="padding:10px;color:#94a3b8;text-align:center">暂无项目</div>';document.getElementById('settingsOverlay').classList.add('show');}
 function closeSettings(){document.getElementById('settingsOverlay').classList.remove('show');}
 function togglePush(id,cat){var s=load();s.pushItems=s.pushItems||{};if(s.pushItems[id])delete s.pushItems[id];else s.pushItems[id]=true;save(s);openSettings(cat);}
@@ -597,19 +597,19 @@ function renderAll(){
   // Must
   let mz='';
   MUST.forEach(m=>{if(s.delIds.includes(m.id))return;const ttl=s.cust[m.id]||m.title;const done=s.mu[m.id]===t;
-    mz+=`<div class="row must-fine${done?' done':''}" onclick="tMust('${m.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${m.id}','must')" title="编辑">✎</button><button class="edit-btn" onclick="event.stopPropagation();delItem('${m.id}','must')" title="删除">✕</button></div><div class="r-d">${m.desc}</div><div class="r-tags">${m.fine?'<span class="tg fine">不发罚款</span>':''}${done?'<span class="tg stamp">已交</span>':''}</div></div></div>`;});
+    mz+=`<div class="row must-fine${done?' done':''}" onclick="tMust('${m.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${m.id}','must')" title="编辑">✎</button></div><div class="r-d">${m.desc}</div><div class="r-tags">${m.fine?'<span class="tg fine">不发罚款</span>':''}${done?'<span class="tg stamp">已交</span>':''}</div></div></div>`;});
   document.getElementById('mustZone').innerHTML=`<div class="grp-head"><span>🔴 每日必交 <span class="gear-btn" onclick="event.stopPropagation();openSettings('must')">⚙</span></span><span class="prog">${muDone}/${MUST.length}</span></div>`+mz;
 
   // Daily
   let dz='';
   DAILY.forEach(d=>{if(s.delIds.includes(d.id))return;const ttl=s.cust[d.id]||d.text;const done=s.dy[d.id]===t;
-    dz+=`<div class="row${done?' done':''}" onclick="tDaily('${d.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${d.id}','daily')" title="编辑">✎</button><button class="edit-btn" onclick="event.stopPropagation();delItem('${d.id}','daily')" title="删除">✕</button></div></div></div>`;});
+    dz+=`<div class="row${done?' done':''}" onclick="tDaily('${d.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${d.id}','daily')" title="编辑">✎</button></div></div></div>`;});
   document.getElementById('dailyZone').innerHTML=`<div class="grp-head"><span>🔧 每日动作 <span class="gear-btn" onclick="event.stopPropagation();openSettings('daily')">⚙</span></span><span class="prog">${dyDone}/${DAILY.length}</span></div>`+dz;
 
   // Weekly
   let wz='',wDone=0;
   WACT.forEach(w=>{if(s.delIds.includes(w.id))return;const ttl=s.cust[w.id]||w.text;const done=s.wk[w.id]===wcur;if(done)wDone++;
-    wz+=`<div class="row${done?' done':''}" onclick="tWact('${w.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${w.id}','wact')" title="编辑">✎</button><button class="edit-btn" onclick="event.stopPropagation();delItem('${w.id}','wact')" title="删除">✕</button></div>${w.sub?`<div class="r-d">${w.sub}</div>`:''}</div></div>`;});
+    wz+=`<div class="row${done?' done':''}" onclick="tWact('${w.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${w.id}','wact')" title="编辑">✎</button></div>${w.sub?`<div class="r-d">${w.sub}</div>`:''}</div></div>`;});
   document.getElementById('wactZone').innerHTML=`<div class="grp-head"><span>📅 每周固定动作 <span class="gear-btn" onclick="event.stopPropagation();openSettings('wact')">⚙</span></span><span class="prog">${wDone}/${WACT.length}</span></div>`+wz;
 
   // Cycles
@@ -617,9 +617,9 @@ function renderAll(){
   CYCLES.forEach(c=>{
     let cur=c.key==='monthly'?monthStr():(c.key==='decade'?decadeStr():weekStr());let sd=0;
     c.tasks.forEach(tk=>{if(s.cy[tk.id]&&s.cy[tk.id].p===cur)sd++;});
-    cz+=`<div class="card grp-${c.key}" style="margin-bottom:10px"><div class="grp-head"><span>${c.label} <span class="cyc">· ${c.cyc}</span></span><span class="prog">${sd}/${c.tasks.length}</span></div>`;
+    cz+=`<div class="card grp-${c.key}" style="margin-bottom:10px"><div class="grp-head"><span>${c.label} <span class="cyc">· ${c.cyc}</span></span><span><span class="gear-btn" onclick="event.stopPropagation();openSettings('cycle')">⚙</span> <span class="prog">${sd}/${c.tasks.length}</span></span></div>`;
     c.tasks.forEach(tk=>{if(s.delIds.includes(tk.id))return;const ttl2=s.cust[tk.id]||tk.title;const rec=s.cy[tk.id];const done=rec&&rec.p===cur;
-      cz+=`<div class="row${done?' done':''}" onclick="tCycle('${tk.id}','${c.key}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl2}<button class="edit-btn" onclick="event.stopPropagation();editText('${tk.id}','cycle')">✎</button><button class="edit-btn" onclick="event.stopPropagation();delAny('${tk.id}')">✕</button></div><div class="r-d">${tk.desc}</div><div class="r-tags"><span class="tg who">交：${tk.who}</span>${tk.tab!=='—'?`<span class="tg tab">📄${tk.tab}</span>`:''}${done?`<span class="tg stamp">✓${rec.d.slice(5)}交</span>`:''}</div></div></div>`;});
+      cz+=`<div class="row${done?' done':''}" onclick="tCycle('${tk.id}','${c.key}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl2}<button class="edit-btn" onclick="event.stopPropagation();editText('${tk.id}','cycle')">✎</button></div><div class="r-d">${tk.desc}</div><div class="r-tags"><span class="tg who">交：${tk.who}</span>${tk.tab!=='—'?`<span class="tg tab">📄${tk.tab}</span>`:''}${done?`<span class="tg stamp">✓${rec.d.slice(5)}交</span>`:''}</div></div></div>`;});
     cz+=`</div>`;});
   document.getElementById('cycleZone').innerHTML=cz;
 
@@ -630,7 +630,7 @@ function renderAll(){
   let lz='';
   function rg(label,items){if(!items||!items.length)return'';let h=`<div style="padding:6px 14px 4px;font-size:11px;font-weight:700;color:#94a3b8">${label} <span style="background:var(--dim);padding:1px 6px;border-radius:10px;font-size:10px">${items.length}</span></div>`;
     items.forEach(d=>{const done=!!s.dl[d.id];const dl=daysLeft(d.due);const c=done?'done':(dl<0?'over':(dl<=3?'soon':''))+(d.type==='evt'?' evt':'');
-      h+=`<div class="dl ${c}" onclick="tDl('${d.id}')"><div class="ck">${done?'✓':''}</div><div class="dl-i" style="flex:1;min-width:0"><div class="dl-t">${s.cust2&&s.cust2[d.id]||d.title}<button class="edit-btn" onclick="event.stopPropagation();editDL('${d.id}')" title="编辑">✎</button><button class="edit-btn" onclick="event.stopPropagation();delAny('${d.id}')" title="删除">✕</button></div><div class="dl-m">${d.meta} · ${d.due.slice(5)}${d.tab?` · 📄${d.tab}`:''}</div></div><div class="dl-n" style="text-align:right;min-width:40px"><div class="num" style="font-size:${done?'15':'22'}px;font-weight:800;line-height:1;color:${done?'#10b981':(dl<0?'#ef4444':'#f59e0b')}">${done?'✓':(dl<0?'超':dl)}</div><div class="u" style="font-size:9px;color:#94a3b8">${done?s.dl[d.id].slice(5):(dl<0?Math.abs(dl)+'天':(dl===0?'今天':'天后'))}</div></div></div>`;});
+      h+=`<div class="dl ${c}" onclick="tDl('${d.id}')"><div class="ck">${done?'✓':''}</div><div class="dl-i" style="flex:1;min-width:0"><div class="dl-t">${s.cust2&&s.cust2[d.id]||d.title}<button class="edit-btn" onclick="event.stopPropagation();editDL('${d.id}')" title="编辑">✎</button></div><div class="dl-m">${d.meta} · ${d.due.slice(5)}${d.tab?` · 📄${d.tab}`:''}</div></div><div class="dl-n" style="text-align:right;min-width:40px"><div class="num" style="font-size:${done?'15':'22'}px;font-weight:800;line-height:1;color:${done?'#10b981':(dl<0?'#ef4444':'#f59e0b')}">${done?'✓':(dl<0?'超':dl)}</div><div class="u" style="font-size:9px;color:#94a3b8">${done?s.dl[d.id].slice(5):(dl<0?Math.abs(dl)+'天':(dl===0?'今天':'天后'))}</div></div></div>`;});
     return h;}
   lz+=rg('🔴 已超期/今天',groups.urgent);
   lz+=rg('🟡 7天内截止',groups.soon);
@@ -648,7 +648,7 @@ function renderAll(){
   let tz=`<div class="temp-form"><input id="tempInput" placeholder="✍️ 添加临时事项..." onkeydown="if(event.key==='Enter')addTempTask()" style="flex:2"/><input id="tempTime" placeholder="⏰ 时间（选填）" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px 8px;font-size:12px;outline:none;display:none" id="tempTimeRow"/><button onclick="toggleTempTime()" style="width:32px;min-width:32px;border:none;border-radius:10px;background:#e2e8f0;color:var(--t2);font-weight:700;font-size:14px;cursor:pointer" title="添加时间">⏰</button><button onclick="addTempTask()">+</button></div>`;
   const tm=s.tm||{};
   Object.keys(tm).sort().reverse().forEach(id=>{const tsk=tm[id];if(!tsk)return;if(tsk.done&&tsk.added!==t)return;
-    tz+=`<div class="temp-item${tsk.done?' done':''}"><div class="ti-ck" onclick="tTemp('${id}')">${tsk.done?'✓':''}</div><span style="flex:1;cursor:pointer" onclick="tTemp('${id}')">${tsk.text}</span><span style="font-size:10px;color:var(--t3);margin:0 4px">${tsk.added.slice(5)}</span><button class="edit-btn" onclick="editTemp('${id}')" title="编辑">✎</button><button class="edit-btn" onclick="delTemp('${id}')" title="删除">✕</button></div>`;});
+    tz+=`<div class="temp-item${tsk.done?' done':''}"><div class="ti-ck" onclick="tTemp('${id}')">${tsk.done?'✓':''}</div><span style="flex:1;cursor:pointer" onclick="tTemp('${id}')">${tsk.text}</span><span style="font-size:10px;color:var(--t3);margin:0 4px">${tsk.added.slice(5)}</span><button class="edit-btn" onclick="editTemp('${id}')" title="编辑">✎</button></div>`;});
   if(!Object.keys(tm).some(id=>{const tsk=tm[id];return tsk&&!(tsk.done&&tsk.added!==t);})){tz+=`<div style="padding:18px;text-align:center;font-size:12px;color:#cbd5e1">暂无事项 ✨</div>`;}
   document.getElementById('tempZone').innerHTML=tz;
 
