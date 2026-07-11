@@ -849,13 +849,18 @@ function initSplash(){
     s.style.animationDelay=Math.random()*3+'s';s.style.fontSize=(24+Math.random()*30)+'px';
     bg.appendChild(s);
   }
-  // Auto dismiss
+  // Auto dismiss after 2.5s
   setTimeout(()=>{
     const el=document.getElementById('splash');
-    if(el){el.classList.add('hide');setTimeout(()=>el.style.display='none',600);}
-    // Pop a few emojis after splash
+    if(el){
+      el.classList.add('hide');
+      setTimeout(()=>{
+        el.style.display='none';
+        el.style.pointerEvents='none';
+      },600);
+    }
     setTimeout(()=>{for(let i=0;i<4;i++)setTimeout(()=>popEmoji(),i*150);},400);
-  },3000);
+  },2500);
 }
 function popEmoji(){
   const el=document.createElement('div');el.className='pop-emoji';
@@ -897,9 +902,9 @@ setInterval(()=>{
   }
 },600000);
 function boot(){
-  initSplash();
   renderAll();
   initSections();
+  initSplash();
   fetch('/api/workflow').then(r=>r.json()).then(j=>{
     if(j.data&&Object.keys(j.data).length>0){
       try{
