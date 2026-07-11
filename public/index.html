@@ -174,9 +174,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .row.done .ck{transform:scale(1.15)}
 
 /* ── 进场情绪 ── */
-.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#4338ca,#6366f1,#8b5cf6);overflow:hidden;animation:splashOut .6s ease 2.8s forwards}
+.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#4338ca,#6366f1,#8b5cf6);overflow:hidden;animation:splashOut .6s ease 2.5s forwards}
 .splash.hide{display:none}
-@keyframes splashOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}}
+@keyframes splashOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1);visibility:hidden}}
 .splash-bg{position:absolute;inset:0;opacity:.1}
 .splash-bg span{position:absolute;font-size:40px;animation:floatBg 6s ease-in-out infinite}
 @keyframes floatBg{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-30px) rotate(5deg)}75%{transform:translateY(20px) rotate(-5deg)}}
@@ -849,15 +849,13 @@ function initSplash(){
     s.style.animationDelay=Math.random()*3+'s';s.style.fontSize=(24+Math.random()*30)+'px';
     bg.appendChild(s);
   }
-  // Auto dismiss after 2.5s
+  // Auto dismiss after 2.5s — fully remove splash so it never blocks clicks
   setTimeout(()=>{
     const el=document.getElementById('splash');
     if(el){
-      el.classList.add('hide');
-      setTimeout(()=>{
-        el.style.display='none';
-        el.style.pointerEvents='none';
-      },600);
+      el.style.opacity='0';
+      el.style.pointerEvents='none';
+      setTimeout(()=>{el.style.display='none';},500);
     }
     setTimeout(()=>{for(let i=0;i<4;i++)setTimeout(()=>popEmoji(),i*150);},400);
   },2500);
