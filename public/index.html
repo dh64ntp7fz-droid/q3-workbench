@@ -161,9 +161,60 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .settings-close{width:100%;padding:10px;border:none;border-radius:10px;background:#f1f5f9;font-weight:700;margin-top:12px;cursor:pointer;font-size:14px}
 .gear-btn{background:none;border:none;font-size:14px;cursor:pointer;padding:2px 6px;opacity:.6;transition:.2s;color:#fff;min-width:32px;min-height:32px}
 
+
+/* ── 情绪价值 ── */
+@keyframes floatUp{0%{transform:translateY(0) scale(0);opacity:0}20%{transform:translateY(-10px) scale(1);opacity:1}100%{transform:translateY(-160px) scale(.3);opacity:0}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes streakGlow{0%,100%{box-shadow:0 0 8px rgba(251,191,36,.3)}50%{box-shadow:0 0 20px rgba(251,191,36,.6)}}
+.header{animation:shimmer 8s ease infinite;background-size:200% 200%!important}
+.streak-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(251,191,36,.25);color:#fbbf24;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;animation:streakGlow 2s ease infinite;cursor:pointer;transition:.2s}
+.streak-badge:active{transform:scale(.9)}
+.cheer-btn{background:none;border:none;font-size:24px;cursor:pointer;transition:.2s;color:rgba(255,255,255,.7);min-width:44px;min-height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.cheer-btn:active{transform:scale(1.3);background:rgba(255,255,255,.15)}
+.float-emoji{position:fixed;pointer-events:none;z-index:9998;animation:floatUp 1.8s ease-out forwards}
+.row .ck{transition:transform .15s cubic-bezier(.34,1.56,.64,1),background .2s,border-color .2s}
+.row.done .ck{transform:scale(1.15)}
+
+/* ── 进场情绪 ── */
+.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#4338ca,#6366f1,#8b5cf6);overflow:hidden;animation:splashOut .6s ease 2.8s forwards}
+.splash.hide{display:none}
+@keyframes splashOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}}
+.splash-bg{position:absolute;inset:0;opacity:.1}
+.splash-bg span{position:absolute;font-size:40px;animation:floatBg 6s ease-in-out infinite}
+@keyframes floatBg{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-30px) rotate(5deg)}75%{transform:translateY(20px) rotate(-5deg)}}
+.splash-emoji{font-size:80px;animation:bounceIn .8s cubic-bezier(.34,1.56,.64,1) both;position:relative}
+@keyframes bounceIn{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+.splash-text{color:#fff;text-align:center;position:relative;z-index:1}
+.splash-text h2{font-size:32px;font-weight:800;margin:16px 0 6px;animation:fadeUp .8s ease .3s both;letter-spacing:-.5px}
+.splash-text p{font-size:16px;opacity:.85;margin:0;animation:fadeUp .8s ease .6s both;font-weight:400}
+.splash-sub{font-size:13px;opacity:.6;margin-top:20px;animation:fadeUp .8s ease .9s both}
+@keyframes fadeUp{0%{transform:translateY(20px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.splash-dots{display:flex;gap:6px;margin-top:24px;animation:fadeUp .8s ease 1.1s both}
+.splash-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);animation:dotPulse 1.2s ease-in-out infinite}
+.splash-dot:nth-child(2){animation-delay:.2s}
+.splash-dot:nth-child(3){animation-delay:.4s}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.4);opacity:1}}
+@media(max-width:480px){.splash-emoji{font-size:56px}.splash-text h2{font-size:24px}.splash-text p{font-size:14px}}
+/* 点击logo彩蛋 */
+@keyframes easterEgg{0%{transform:rotate(0deg)}25%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}75%{transform:rotate(-5deg)}100%{transform:rotate(0deg)}}
+.egg-shake{animation:easterEgg .4s ease}
+/* 随机彩蛋飘浮 */
+@keyframes popUpEmoji{0%{opacity:0;transform:translateY(40px) scale(0)}30%{opacity:1;transform:translateY(0) scale(1.1)}60%{transform:translateY(-10px) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(.5)}}
+.pop-emoji{position:fixed;font-size:36px;pointer-events:none;z-index:99998;animation:popUpEmoji .8s ease-out forwards}
 </style>
 </head>
 <body>
+<div class="splash" id="splash">
+  <div class="splash-bg" id="splashBg"></div>
+  <div class="splash-emoji" id="splashEmoji">🚀</div>
+  <div class="splash-text">
+    <h2 id="splashTitle">今天也要认真搞钱</h2>
+    <p id="splashSub">邹慧明 · 三季度工作台已就绪</p>
+    <div class="splash-sub" id="splashDaily">☀️ 又是元气满满的一天</div>
+    <div class="splash-dots"><div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div></div>
+  </div>
+</div>
 
 <div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h1>🧭 邹慧明 · 三季度工作台</h1>
   <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
@@ -215,7 +266,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 <script>
 const KEY='zm_hub_v5';
 const QUOTES=[
-  '🔥 邹慧明，今天也是认真搞钱的一天',
+  '🔥 慧明，今天也是认真搞钱的一天',
   '💪 小区经理的日常：巡店、带人、交表',
   '🌟 你的执行力就是最好的名片',
   '🏆 每一个准时交的表，都在为Q3加分',
@@ -223,6 +274,10 @@ const QUOTES=[
   '🐟 分鱼头话术练起来，业绩涨起来',
   '✨ 花园店带教出成果了吗？去现场看看',
   '🦾 Q3冲刺，一件一件清',
+  '🌈 你比你想象的更强大',
+  '⚡ 今天也是闪闪发光的一天',
+  '🎯 专注当下，未来已在路上',
+  '🌸 再难的事情，拆开做就简单了',
 ];
 
 const MUST=[
@@ -778,7 +833,93 @@ function renderSV(){
   document.getElementById('svZone').innerHTML=h;
 }
 // Init
+
+// ── 情绪价值交互 ──
+const SPLASH_MSGS=[
+  {emoji:'🚀',title:'今天也要认真搞钱',sub:'邹慧明，开工！'},
+  {emoji:'⚡',title:'能量满格的一天',sub:'每一张表都在为Q3加分'},
+  {emoji:'🌟',title:'你就是最稳的小区经理',sub:'赵总看着呢——今天用心了吗'},
+  {emoji:'🔥',title:'冲冲冲！三季度冲刺',sub:'巡店、带人、交表，一个不能少'},
+  {emoji:'💪',title:'比别人多做一点',sub:'执行力是最好的名片'},
+  {emoji:'🎯',title:'专注当下，件件落实',sub:'再大的目标，拆开做就简单了'},
+  {emoji:'🌈',title:'每一个准时交的表',sub:'都在为Q3加分—加油！'},
+];
+const GREETINGS={
+  morning:['☀️ 又是元气满满的一天','🌅 早安！今天又是搞钱的一天','☕ 喝杯水，开始今天的战斗'],
+  noon:['🌤️ 上午辛苦啦，保持节奏','☀️ 中午了，别忘了巡店','🌞 能量还在线吗？冲！'],
+  afternoon:['🌆 下午继续加油','⛅ 快下班了，收好尾','🌇 今天的事情今天清'],
+  night:['🌙 辛苦了，早点休息','✨ 今天也很棒，明天继续','🌟 慧明今天辛苦了，好梦'],
+};
+function initSplash(){
+  const h=new Date().getHours();
+  let period='morning';const msg=SPLASH_MSGS[Math.floor(Math.random()*SPLASH_MSGS.length)];
+  if(h>=6&&h<12)period='morning';else if(h>=12&&h<14)period='noon';else if(h>=14&&h<18)period='afternoon';else period='night';
+  const greet=GREETINGS[period][Math.floor(Math.random()*GREETINGS[period].length)];
+  // Update splash
+  document.getElementById('splashEmoji').textContent=msg.emoji;
+  document.getElementById('splashTitle').textContent=msg.title;
+  document.getElementById('splashDaily').textContent=greet;
+  // Fill floating bg emojis
+  const bg=document.getElementById('splashBg');
+  const emojis=['🔥','💪','🎯','🌟','✅','📊','🏆','💎','⚡','✨'];
+  for(let i=0;i<8;i++){
+    const s=document.createElement('span');
+    s.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    s.style.left=Math.random()*90+'%';s.style.top=Math.random()*90+'%';
+    s.style.animationDelay=Math.random()*3+'s';s.style.fontSize=(24+Math.random()*30)+'px';
+    bg.appendChild(s);
+  }
+  // Auto dismiss
+  setTimeout(()=>{
+    const el=document.getElementById('splash');
+    if(el){el.classList.add('hide');setTimeout(()=>el.style.display='none',600);}
+    // Pop a few emojis after splash
+    setTimeout(()=>{for(let i=0;i<4;i++)setTimeout(()=>popEmoji(),i*150);},400);
+  },3000);
+}
+function popEmoji(){
+  const el=document.createElement('div');el.className='pop-emoji';
+  el.textContent=['🎉','🎊','✨','💫','🔥','⭐','💪'][Math.floor(Math.random()*7)];
+  el.style.left=(10+Math.random()*80)+'vw';el.style.top=(20+Math.random()*50)+'vh';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1000);
+}
+function cheerMe(){
+  popEmoji();
+  const msgs=SPLASH_MSGS.concat(SPLASH_MSGS).concat(SPLASH_MSGS);
+  const m=msgs[Math.floor(Math.random()*msgs.length)];
+  const s=load(),t=todayStr();let done=0;
+  MUST.forEach(x=>{if(s.mu[x.id]===t)done++});
+  const extra=done===MUST.length?'🎉 今日必交已全部完成！':'已交 '+done+'/'+MUST.length;
+  toast(m.emoji+' '+m.title+'<br>'+extra,true);
+}
+// Click title for cheer
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('splashTitle').onclick=initSplash;
+  document.getElementById('mainTitle').onclick=function(){cheerMe()};
+  // Manual streak
+  function calcStreak(){
+    const s=load();const t=todayStr();let streak=0;
+    for(let d=new Date(t);;d.setDate(d.getDate()-1)){
+      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      let found=0;MUST.forEach(m=>{if(s.mu[m.id]===ds)found++});
+      if(found>0)streak++;else if(streak===0)continue;else break;
+    }
+    const el=document.getElementById('streakCount');
+    if(el){el.textContent=streak;el.style.display='inline';}
+  }
+  calcStreak();
+  setInterval(calcStreak,30000);
+  setInterval(()=>{
+    const g=document.getElementById('greetingMsg');
+    if(g){
+      const h=new Date().getHours();let p,n;
+      if(h<6||h>=22)n='night';else if(h<12)n='morning';else if(h<14)n='noon';else if(h<18)n='afternoon';
+      g.textContent=GREETINGS[n][Math.floor(Math.random()*GREETINGS[n].length)];
+    }
+  },600000);
+});
 function boot(){
+  initSplash();
   renderAll();
   initSections();
   // 从服务器加载数据时，合并而非覆盖本地数据（服务器可能缺少字段）
