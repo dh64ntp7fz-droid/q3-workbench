@@ -202,14 +202,12 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 </style>
 </head>
 <body style="min-height:100vh">
-<div class="splash" id="splash">
-  <div class="splash-bg" id="splashBg"></div>
+<div class="splash" id="splash" style="display:none">
   <div class="splash-emoji" id="splashEmoji">🚀</div>
   <div class="splash-text">
     <h2 id="splashTitle">精神饱满的一天</h2>
     <p id="splashSub">邹慧明 · 三季度工作台已就绪</p>
     <div class="splash-sub" id="splashDaily">☀️ 崭新的一天开始了</div>
-    <div class="splash-dots"><div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div></div>
   </div>
 </div>
 
@@ -832,12 +830,16 @@ const GREETINGS={
   night:['🌙 辛苦了，早点休息','✨ 今天也很棒，明天继续','🌟 慧明今天辛苦了，好梦'],
 };
 function initSplash(){
-  // Minimal: just set text and hide after 2.5s
-  var h=(new Date()).getHours();
-  var p='morning';if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else if(h>=22||h<6)p='night';
-  try{document.getElementById('splashEmoji').textContent=['🚀','🌟','🔥','💪','🎯'][Math.floor(Math.random()*5)];}catch(e){}
-  try{document.getElementById('splashDaily').textContent=GREETINGS[p][Math.floor(Math.random()*GREETINGS[p].length)];}catch(e){}
-  // Always dismiss splash after 2.5s - MUST NEVER FAIL
+  // Show splash, wait, then hide
+  try{
+    var el=document.getElementById('splash');
+    if(el){el.style.display='flex';el.style.opacity='1';}
+    var h=(new Date()).getHours();
+    var p='morning';if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else if(h>=22||h<6)p='night';
+    try{document.getElementById('splashEmoji').textContent=['🚀','🌟','🔥','💪','🎯'][Math.floor(Math.random()*5)];}catch(e){}
+    try{document.getElementById('splashDaily').textContent=GREETINGS[p][Math.floor(Math.random()*GREETINGS[p].length)];}catch(e){}
+  }catch(e){}
+  // Always dismiss splash after 2.5s
   setTimeout(function(){
     var el=document.getElementById('splash');
     if(el)el.style.display='none';
