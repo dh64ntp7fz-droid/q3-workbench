@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:var(--txt);padding:12px 11px 48px;max-width:860px;margin:0 auto;-webkit-font-smoothing:antialiased}
 
-.header{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px;padding:18px 16px 14px;margin-bottom:14px;box-shadow:0 4px 16px rgba(99,102,241,.25);animation:shimmer 8s ease infinite;background-size:200% 200%!important}
+.header{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px;padding:18px 16px 14px;margin-bottom:14px;box-shadow:0 4px 16px rgba(99,102,241,.25)}
 .header h1{font-size:19px;font-weight:800;letter-spacing:-.3px}
 .header .sub{font-size:11px;opacity:.8;margin-top:4px}
 .header .quote{font-size:10px;opacity:.6;margin-top:8px;font-style:italic}
@@ -128,6 +128,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes popIn{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
+
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .card,.sv-card{animation:fadeIn .4s ease both}
 .card:nth-child(2){animation-delay:.04s}
@@ -162,6 +163,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 @keyframes shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes streakGlow{0%,100%{box-shadow:0 0 8px rgba(251,191,36,.3)}50%{box-shadow:0 0 20px rgba(251,191,36,.6)}}
+.header{animation:shimmer 8s ease infinite;background-size:200% 200%!important}
 .streak-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(251,191,36,.25);color:#fbbf24;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;animation:streakGlow 2s ease infinite;cursor:pointer;transition:.2s}
 .streak-badge:active{transform:scale(.9)}
 .cheer-btn{background:none;border:none;font-size:24px;cursor:pointer;transition:.2s;color:rgba(255,255,255,.7);min-width:44px;min-height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center}
@@ -175,7 +177,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .splash-dot:nth-child(2){animation-delay:.2s}
 .splash-dot:nth-child(3){animation-delay:.4s}
 
-@media(max-width:480px){.splash-emoji{font-size:56px}.splash-text p{font-size:14px}}
+@media(max-width:480px){.splash-emoji{font-size:56px}.splash-text h2{font-size:24px}.splash-text p{font-size:14px}}
 /* 点击logo彩蛋 */
 @keyframes easterEgg{0%{transform:rotate(0deg)}25%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}75%{transform:rotate(-5deg)}100%{transform:rotate(0deg)}}
 .egg-shake{animation:easterEgg .4s ease}
@@ -183,37 +185,61 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes popUpEmoji{0%{opacity:0;transform:translateY(40px) scale(0)}30%{opacity:1;transform:translateY(0) scale(1.1)}60%{transform:translateY(-10px) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(.5)}}
 .pop-emoji{position:fixed;font-size:36px;pointer-events:none;z-index:99998;animation:popUpEmoji .8s ease-out forwards}
 
-.splash-circle2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);bottom:-80px;left:-80px;animation:floatSlow 8s ease-in-out infinite reverse}
-
-}
-}
-
-.splash-text .icon{font-size:40px;display:block;margin-bottom:8px;animation:iconFloat 2.5s ease-in-out infinite}
+.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0f1a;overflow:hidden;pointer-events:none}
+.splash-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(99,102,241,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.06) 1px,transparent 1px);background-size:40px 40px;animation:gridMove 3s linear infinite}
+@keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+.splash-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.15),transparent 70%);animation:glowPulse 3s ease-in-out infinite;top:50%;left:50%;margin:-300px 0 0 -300px}
+@keyframes glowPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.3);opacity:1}}
+.splash-corner{position:absolute;width:40px;height:40px;border-color:rgba(99,102,241,.4);border-style:solid}
+.splash-corner.tl{top:30px;left:30px;border-width:2px 0 0 2px}
+.splash-corner.tr{top:30px;right:30px;border-width:2px 2px 0 0}
+.splash-corner.bl{bottom:30px;left:30px;border-width:0 0 2px 2px}
+.splash-corner.br{bottom:30px;right:30px;border-width:0 2px 2px 0}
+.splash-text{color:#fff;text-align:center;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:0 20px}
+.splash-text .icon{font-size:56px;display:block;margin-bottom:12px;animation:iconFloat 2.5s ease-in-out infinite}
 @keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.splash-text h2{font-size:18px;font-weight:600;margin:0 auto 4px;letter-spacing:1px;color:rgba(255,255,255,.7);-webkit-text-fill-color:rgba(255,255,255,.7);text-align:center;width:100%;background:none;background-clip:unset}
-.splash-text .line{width:40px;height:1px;background:linear-gradient(90deg,transparent,#6366f1,transparent);margin:8px auto;animation:linePulse 2s ease-in-out infinite}
+.splash-text h2{font-size:30px;font-weight:800;margin:0 auto 8px;letter-spacing:2px;background:linear-gradient(135deg,#e2e8f0,#a5b4fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;width:100%}
+.splash-text .line{width:60px;height:2px;background:linear-gradient(90deg,transparent,#6366f1,transparent);margin:12px auto;animation:linePulse 2s ease-in-out infinite}
 @keyframes linePulse{0%,100%{width:60px;opacity:.6}50%{width:100px;opacity:1}}
-.splash-text p{font-size:20px;opacity:.9;margin:8px auto;font-weight:500;letter-spacing:1px;text-align:center;width:100%;color:#e2e8f0}
-
+.splash-text p{font-size:14px;opacity:.6;margin:0 auto;font-weight:300;letter-spacing:3px;text-align:center;width:100%}
+.splash-text .sub{font-size:12px;opacity:.4;margin-top:20px;letter-spacing:1px;font-weight:300;text-align:center}
+.splash-bar{position:relative;width:160px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;margin:24px auto 0;overflow:hidden}
 .splash-bar-fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,#6366f1,#a5b4fc);animation:barLoad 2.2s ease-out forwards}
-}
-@media(max-width:480px){.splash-text .icon{font-size:32px}.splash-text h2{font-size:16px}.splash-text p{font-size:17px}}
+@keyframes barLoad{0%{width:0}100%{width:100%}}
+@media(max-width:480px){.splash-text .icon{font-size:40px}.splash-text h2{font-size:22px}.splash-text p{font-size:12px}}
 @keyframes dotPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.4);opacity:1}}
 
 /* ── 减压小游戏 ── */
+.game-wrap{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:12px;display:none}
 
-.splash-text{text-align:center;color:#fff;z-index:1;padding:0 20px}
+.game-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:linear-gradient(135deg,#0b0f1a,#1e293b);color:#fff;cursor:pointer;user-select:none}
 
-.splash-text .sub{font-size:14px;opacity:.5;margin-top:4px;animation:splashFade .6s ease .6s both}
-}
-}
-@media(max-width:480px){.splash-text .big{font-size:48px}.splash-text .msg{font-size:17px}}
+
+.game-canvas-wrap{background:#0b0f1a;padding:10px;text-align:center}
+.game-canvas-wrap canvas{background:#1a1a2e;border-radius:8px;display:block;margin:0 auto;image-rendering:pixelated;max-width:100%}
 </style>
 </head>
 <body style="min-height:100vh">
+<div class="splash" id="splash">
+  <div class="splash-grid"></div>
+  <div class="splash-glow"></div>
+  <div class="splash-corner tl"></div>
+  <div class="splash-corner tr"></div>
+  <div class="splash-corner bl"></div>
+  <div class="splash-corner br"></div>
+  <div class="splash-text">
+    <span class="icon">🚀</span>
+    <h2>邹慧明 · 三季度工作台</h2>
+    <div class="line"></div>
+    <p id="splashDaily">☀️ 早安，又是崭新的一天</p>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+  </div>
+</div>
+
 <div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h1>🧭 邹慧明 · 三季度工作台</h1>
   <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
-  <div class="quote" id="dailyQuote"></div></div><button id="dmBtn" onclick="var h=document.documentElement;var cur=h.getAttribute('data-theme')||'light';var nxt=cur==='dark'?'light':'dark';h.setAttribute('data-theme',nxt);this.textContent=nxt==='dark'?'☀️':'🌙';localStorage.setItem('zm_theme',nxt)" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;cursor:pointer;min-width:48px;min-height:48px;border-radius:50%;flex-shrink:0">🌙</button></div></div></div>
+  <div class="quote" id="dailyQuote"></div></div><button id="dmBtn" onclick="var h=document.documentElement;var cur=h.getAttribute('data-theme')||'light';var nxt=cur==='dark'?'light':'dark';h.setAttribute('data-theme',nxt);this.textContent=nxt==='dark'?'☀️':'🌙';localStorage.setItem('zm_theme',nxt)" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;cursor:pointer;min-width:48px;min-height:48px;border-radius:50%;flex-shrink:0">🌙</button></div></div>
+
 <div class="stats" id="statsZone"></div>
 
 <div class="hint" id="h_must" style="cursor:pointer;user-select:none" onclick="toggleSection('must')"><span id="a_must">▼</span> 🔴 每日必交 · 不交有后果</div>
@@ -258,19 +284,19 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 <script>
 const KEY='zm_hub_v5';
 const QUOTES=[
-  '📖 卓有成效的管理者，善于管理自己的时间',
-  '💪 小区经理的日常：巡店、带人、交表',
-  '📖 管理好时间，才能管理好一切',
-  '🌟 你的执行力就是最好的名片',
-  '📖 做正确的事，比正确地做事更重要',
   '🔥 慧明，今天也是保持专注的一天',
-  '📖 管理者要问："我能贡献什么？"',
+  '💪 小区经理的日常：巡店、带人、交表',
+  '🌟 你的执行力就是最好的名片',
   '🏆 每一个准时交的表，都在为Q3加分',
-  '📖 把重要的事放在前面，一次只做一件',
-  '🚀 这执行力，谁不服',
-  '📖 时间是管理者最稀缺的资源',
+  '📈 赵总看着呢——今天用不用心，全在工作台上',
+  '🐟 分鱼头话术练起来，业绩涨起来',
+  '✨ 花园店带教出成果了吗？去现场看看',
+  '🦾 Q3冲刺，一件一件清',
+  '🌈 你比你想象的更强大',
+  '⚡ 今天也是闪闪发光的一天',
   '🎯 专注当下，未来已在路上',
-];;
+  '🌸 再难的事情，拆开做就简单了',
+];
 
 const MUST=[
   {id:'x1',title:'📝 每日日报提交',desc:'当天工作+明日计划',fine:false},
@@ -278,6 +304,7 @@ const MUST=[
   {id:'x3',title:'📚 黄埔锻造班打卡+作业',desc:'每日打卡+交作业',fine:false},
   {id:'x4',title:'🐟 分鱼头话术执行',desc:'区域门店分鱼头80%执行，输出话术',fine:false},
 ];
+
 const DAILY=[
   {id:'d1',text:'📊 菜品推荐完成率≥80%'},
   {id:'d2',text:'🌅 早例会复盘（驻店时）'},
@@ -338,7 +365,7 @@ function decadeStr(){return String(Math.floor((new Date()-new Date('2026-01-01')
 
 const ALL_ITEMS = { must: MUST, daily: DAILY, wact: WACT, cycle: CYCLES, dl: DEADLINES };
 const CAT_NAMES = { must: '每日必交', daily: '每日动作', wact: '每周固定动作', cycle: '周期交付', dl: '截止&日程' };
-function openSettings(cat){var items=ALL_ITEMS[cat]||[];var s=load();s.pushItems=s.pushItems||{};document.getElementById('settingsTitle').textContent='⚙ '+(CAT_NAMES[cat]||'')+' 设置';var html='';var flatItems=[];if(cat==='cycle'){ALL_ITEMS[cat].forEach(function(g){g.tasks&&g.tasks.forEach(function(t){flatItems.push(t);});});}else if(cat==='dl'){flatItems=DEADLINES;}else{flatItems=items;}flatItems.forEach(function(it){var id=it.id;var label=it.title||it.text||'';var isPush=s.pushItems[id];html+='<div class="settings-row"><span>'+label+'</span><button class="settings-toggle '+(isPush?'on':'off')+'" onclick="togglePush(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)"></button><button class="settings-del" onclick="deleteItem(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)">✕</button></div>';});document.getElementById('settingsItems').innerHTML=html||'<div style="padding:10px;color:#94a3b8;text-align:center">暂无项目</div>';document.getElementById('settingsOverlay').classList.add('show');}
+function openSettings(cat){var items=ALL_ITEMS[cat]||[];var s=load();s.pushItems=s.pushItems||{};document.getElementById('settingsTitle').textContent='⚙ '+(CAT_NAMES[cat]||'')+' 设置';var html='';items.forEach(function(it){var id=it.id;var label=it.title||it.text||'';var isPush=s.pushItems[id];html+='<div class="settings-row"><span>'+label+'</span><button class="settings-toggle '+(isPush?'on':'off')+'" onclick="togglePush(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)"></button><button class="settings-del" onclick="deleteItem(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)">✕</button></div>';});document.getElementById('settingsItems').innerHTML=html||'<div style="padding:10px;color:#94a3b8;text-align:center">暂无项目</div>';document.getElementById('settingsOverlay').classList.add('show');}
 function closeSettings(){document.getElementById('settingsOverlay').classList.remove('show');}
 function togglePush(id,cat){var s=load();s.pushItems=s.pushItems||{};if(s.pushItems[id])delete s.pushItems[id];else s.pushItems[id]=true;save(s);openSettings(cat);}
 function deleteItem(id,cat){if(!confirm('确定删除？'))return;var s=load();s.delIds=s.delIds||[];s.delIds.push(id);save(s);renderAll();closeSettings();}
@@ -821,7 +848,43 @@ setInterval(()=>{
     g.textContent=GREETINGS[n][Math.floor(Math.random()*GREETINGS[n].length)];
   }
 },600000);
-function initSplash(){}
+function initSplash(){
+  try{
+    var h=(new Date()).getHours();var p='morning';
+    if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else if(h>=22||h<6)p='night';
+    var d={morning:['☀️ 早安，又是崭新的一天','🌅 调整好状态，出发巡店','☕ 喝杯水，开始今天的战斗'],noon:['🌤️ 上午辛苦啦，保持节奏','☀️ 中午了，别忘了巡店','🌞 能量在线，继续冲'],afternoon:['🌆 下午继续加油','⛅ 快下班了，收好尾','🌇 今天的事情今天清'],night:['🌙 辛苦了，早点休息','✨ 今天也很棒，明天继续','🌟 慧明今天辛苦了，好梦']};
+    document.getElementById('splashDaily').textContent=d[p][Math.floor(Math.random()*3)];
+  }catch(e){}
+  setTimeout(function(){
+    var el=document.getElementById('splash');
+    if(el)el.style.display='none';
+  },2800);
+}
+
+function boot(){
+  renderAll();
+  initSplash();
+  initSections();
+  
+  fetch('/api/workflow').then(r=>r.json()).then(j=>{
+    if(j.data&&Object.keys(j.data).length>0){
+      try{
+        const existing=JSON.parse(localStorage.getItem(KEY))||{};
+        const merged={...j.data};
+        Object.keys(merged).forEach(k=>{
+          if(existing[k]!==undefined)delete merged[k];
+        });
+        if(Object.keys(merged).length>0){
+          localStorage.setItem(KEY,JSON.stringify({...existing,...merged}));
+          renderAll();
+        }
+      }catch(e){/*ignore*/}
+    }
+  }).catch(()=>{});
+  setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
+  setInterval(renderAll,60000);
+}
+boot();
 </script>
 </body>
 </html>
