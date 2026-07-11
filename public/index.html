@@ -174,10 +174,8 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 /* ── 进场情绪 ── */
 
-.splash-dot:nth-child(2){animation-delay:.2s}
-.splash-dot:nth-child(3){animation-delay:.4s}
 
-@media(max-width:480px){.splash-emoji{font-size:56px}.splash-text h2{font-size:24px}.splash-text p{font-size:14px}}
+@media(max-width:480px){}
 /* 点击logo彩蛋 */
 @keyframes easterEgg{0%{transform:rotate(0deg)}25%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}75%{transform:rotate(-5deg)}100%{transform:rotate(0deg)}}
 .egg-shake{animation:easterEgg .4s ease}
@@ -185,28 +183,20 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes popUpEmoji{0%{opacity:0;transform:translateY(40px) scale(0)}30%{opacity:1;transform:translateY(0) scale(1.1)}60%{transform:translateY(-10px) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(.5)}}
 .pop-emoji{position:fixed;font-size:36px;pointer-events:none;z-index:99998;animation:popUpEmoji .8s ease-out forwards}
 
-.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0f1a;overflow:hidden;pointer-events:none}
-.splash-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(99,102,241,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.06) 1px,transparent 1px);background-size:40px 40px;animation:gridMove 3s linear infinite}
-@keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
-.splash-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.15),transparent 70%);animation:glowPulse 3s ease-in-out infinite;top:50%;left:50%;margin:-300px 0 0 -300px}
-@keyframes glowPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.3);opacity:1}}
-.splash-corner{position:absolute;width:40px;height:40px;border-color:rgba(99,102,241,.4);border-style:solid}
-.splash-corner.tl{top:30px;left:30px;border-width:2px 0 0 2px}
-.splash-corner.tr{top:30px;right:30px;border-width:2px 2px 0 0}
-.splash-corner.bl{bottom:30px;left:30px;border-width:0 0 2px 2px}
-.splash-corner.br{bottom:30px;right:30px;border-width:0 2px 2px 0}
-.splash-text{color:#fff;text-align:center;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:0 20px}
-.splash-text .icon{font-size:56px;display:block;margin-bottom:12px;animation:iconFloat 2.5s ease-in-out infinite}
-@keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.splash-text h2{font-size:30px;font-weight:800;margin:0 auto 8px;letter-spacing:2px;background:linear-gradient(135deg,#e2e8f0,#a5b4fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;width:100%}
-.splash-text .line{width:60px;height:2px;background:linear-gradient(90deg,transparent,#6366f1,transparent);margin:12px auto;animation:linePulse 2s ease-in-out infinite}
-@keyframes linePulse{0%,100%{width:60px;opacity:.6}50%{width:100px;opacity:1}}
-.splash-text p{font-size:14px;opacity:.6;margin:0 auto;font-weight:300;letter-spacing:3px;text-align:center;width:100%}
-.splash-text .sub{font-size:12px;opacity:.4;margin-top:20px;letter-spacing:1px;font-weight:300;text-align:center}
-.splash-bar{position:relative;width:160px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;margin:24px auto 0;overflow:hidden}
-.splash-bar-fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,#6366f1,#a5b4fc);animation:barLoad 2.2s ease-out forwards}
-@keyframes barLoad{0%{width:0}100%{width:100%}}
-@media(max-width:480px){.splash-text .icon{font-size:40px}.splash-text h2{font-size:22px}.splash-text p{font-size:12px}}
+
+}
+
+}
+
+
+}
+
+
+}
+
+
+}
+@media(max-width:480px){}
 @keyframes dotPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.4);opacity:1}}
 
 /* ── 减压小游戏 ── */
@@ -220,25 +210,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 </style>
 </head>
 <body style="min-height:100vh">
-<div class="splash" id="splash">
-  <div class="splash-grid"></div>
-  <div class="splash-glow"></div>
-  <div class="splash-corner tl"></div>
-  <div class="splash-corner tr"></div>
-  <div class="splash-corner bl"></div>
-  <div class="splash-corner br"></div>
-  <div class="splash-text">
-    <span class="icon">🚀</span>
-    <h2>邹慧明 · 三季度工作台</h2>
-    <div class="line"></div>
-    <p id="splashDaily">☀️ 早安，又是崭新的一天</p>
-    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
-  </div>
-</div>
-
-<div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h1>🧭 邹慧明 · 三季度工作台</h1>
-  <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
-  <div class="quote" id="dailyQuote"></div></div><button id="dmBtn" onclick="var h=document.documentElement;var cur=h.getAttribute('data-theme')||'light';var nxt=cur==='dark'?'light':'dark';h.setAttribute('data-theme',nxt);this.textContent=nxt==='dark'?'☀️':'🌙';localStorage.setItem('zm_theme',nxt)" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;cursor:pointer;min-width:48px;min-height:48px;border-radius:50%;flex-shrink:0">🌙</button></div></div>
+/div>
 
 <div class="stats" id="statsZone"></div>
 
@@ -851,22 +823,9 @@ setInterval(()=>{
     g.textContent=GREETINGS[n][Math.floor(Math.random()*GREETINGS[n].length)];
   }
 },600000);
-function initSplash(){
-  try{
-    var h=(new Date()).getHours();var p='morning';
-    if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else if(h>=22||h<6)p='night';
-    var d={morning:['☀️ 早安，又是崭新的一天','🌅 调整好状态，出发巡店','☕ 喝杯水，开始今天的战斗'],noon:['🌤️ 上午辛苦啦，保持节奏','☀️ 中午了，别忘了巡店','🌞 能量在线，继续冲'],afternoon:['🌆 下午继续加油','⛅ 快下班了，收好尾','🌇 今天的事情今天清'],night:['🌙 辛苦了，早点休息','✨ 今天也很棒，明天继续','🌟 慧明今天辛苦了，好梦']};
-    document.getElementById('splashDaily').textContent=d[p][Math.floor(Math.random()*3)];
-  }catch(e){}
-  setTimeout(function(){
-    var el=document.getElementById('splash');
-    if(el)el.style.display='none';
-  },2800);
-}
-
 function boot(){
   renderAll();
-  initSplash();
+  
   initSections();
   
   fetch('/api/workflow').then(r=>r.json()).then(j=>{
