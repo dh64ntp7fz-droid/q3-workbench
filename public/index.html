@@ -845,8 +845,7 @@ function toggleGame(){
 }
 function startGame(){
   if(gameRun)return;
-  gameRun=true;gameOver=false;gameScore=0;player.y=80;player.vy=0;player.jumping=false;obstacles=[];
-  drawGame();
+  gameRun=true;gameOver=false;gameScore=0;player.y=80;player.vy=0;player.jumping=false;obstacles=[];frame=0;
   gameLoop();
 }
 function gameLoop(){
@@ -859,7 +858,7 @@ function gameLoop(){
     if(player.y>=80){player.y=80;player.jumping=false;player.vy=0;}
   }
   // obstacles
-  if(frame%50===0){
+  if(gameRun&&frame%50===0){
     obstacles.push({x:320,y:88,w:8,h:10});
   }
   for(var i=obstacles.length-1;i>=0;i--){
@@ -907,15 +906,19 @@ function drawGame(){
 }
 // keyboard
 document.addEventListener('keydown',function(e){
-  if(e.code==='Space'){
-    if(gameOver){startGame();return;}
-    if(gameRun&&!player.jumping){player.vy=-5;player.jumping=true;}
+  if(e.code==='Space'||e.code==='ArrowUp'){
+    e.preventDefault();
+    if(gameOver||!gameRun){if(!gameRun)startGame();return;}
+    if(!player.jumping){player.vy=-5;player.jumping=true;}
   }
 });
 // touch
 document.addEventListener('click',function(e){
   var c=document.getElementById('gameCanvas');
-  if(c&&c.contains(e.target)&&gameRun&&!player.jumping&&!gameOver){player.vy=-5;player.jumping=true;}
+  if(c&&c.contains(e.target)){
+    if(!gameRun){startGame();return;}
+    if(!player.jumping&&!gameOver){player.vy=-5;player.jumping=true;}
+  }
 });
 // initial draw
 setTimeout(function(){drawGame();},500);
