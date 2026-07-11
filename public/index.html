@@ -185,29 +185,16 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes popUpEmoji{0%{opacity:0;transform:translateY(40px) scale(0)}30%{opacity:1;transform:translateY(0) scale(1.1)}60%{transform:translateY(-10px) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(.5)}}
 .pop-emoji{position:fixed;font-size:36px;pointer-events:none;z-index:99998;animation:popUpEmoji .8s ease-out forwards}
 
-.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#f97316,#f59e0b,#eab308);overflow:hidden;pointer-events:none}
-.splash-circle1{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%);top:-100px;right:-100px;animation:floatSlow 6s ease-in-out infinite}
-.splash-circle2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);bottom:-80px;left:-80px;animation:floatSlow 8s ease-in-out infinite reverse}
-.splash-sparkle{position:absolute;color:rgba(255,255,255,.3);font-size:20px;animation:twinkle 3s ease-in-out infinite}
-@keyframes floatSlow{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
-@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:.8;transform:scale(1.2)}}
-.splash-text{color:#fff;text-align:center;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:0 20px}
-.splash-text .icon{font-size:40px;display:block;margin-bottom:8px;animation:iconFloat 2.5s ease-in-out infinite}
-@keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.splash-text h2{font-size:18px;font-weight:600;margin:0 auto 4px;letter-spacing:1px;color:rgba(255,255,255,.7);-webkit-text-fill-color:rgba(255,255,255,.7);text-align:center;width:100%;background:none;background-clip:unset}
-.splash-text .line{width:40px;height:1px;background:linear-gradient(90deg,transparent,#6366f1,transparent);margin:8px auto;animation:linePulse 2s ease-in-out infinite}
-@keyframes linePulse{0%,100%{width:60px;opacity:.6}50%{width:100px;opacity:1}}
-.splash-text p{font-size:20px;opacity:.9;margin:8px auto;font-weight:500;letter-spacing:1px;text-align:center;width:100%;color:#e2e8f0}
-.splash-text .sub{font-size:12px;opacity:.4;margin-top:20px;letter-spacing:1px;font-weight:300;text-align:center}
-.splash-bar{position:relative;width:160px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;margin:24px auto 0;overflow:hidden}
-.splash-bar-fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,#6366f1,#a5b4fc);animation:barLoad 2.2s ease-out forwards}
+.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a2e;overflow:hidden;pointer-events:none}
+.splash-canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.splash-overlay{position:relative;z-index:2;text-align:center;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:0 20px;pointer-events:none}
+.splash-overlay .daily{font-size:22px;font-weight:500;margin-bottom:16px;text-shadow:0 2px 20px rgba(0,0,0,.8);opacity:.95}
+.splash-overlay .icon{font-size:36px;margin-bottom:4px;display:block}
+.splash-overlay .title{font-size:20px;font-weight:700;margin:2px 0 10px;text-shadow:0 2px 20px rgba(0,0,0,.8)}
+.splash-overlay .line{width:50px;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);margin:6px auto}
+.splash-overlay .bar{position:relative;width:140px;height:2px;background:rgba(255,255,255,.15);border-radius:2px;margin:14px auto 0;overflow:hidden}
+.splash-overlay .bar-fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,#6366f1,#a5b4fc);animation:barLoad 2.2s ease-out forwards}
 @keyframes barLoad{0%{width:0}100%{width:100%}}
-@media(max-width:480px){.splash-text .icon{font-size:32px}.splash-text h2{font-size:16px}.splash-text p{font-size:17px}}
-@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.4);opacity:1}}
-
-/* ── 减压小游戏 ── */
-.game-wrap{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:12px;display:none}
-.game-wrap.show{display:block}
 .game-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:linear-gradient(135deg,#0b0f1a,#1e293b);color:#fff;cursor:pointer;user-select:none}
 .game-bar span{font-size:13px;font-weight:700}
 .game-bar button{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:11px;padding:4px 12px;border-radius:8px;cursor:pointer;font-weight:600}
@@ -843,17 +830,1194 @@ function initSplash(){
   try{
     var h=(new Date()).getHours();var p='morning';
     if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else if(h>=22||h<6)p='night';
-    var d={morning:'☀️ 早安，又是崭新的一天',noon:'🌤️ 上午辛苦啦，保持节奏',afternoon:'🌆 下午继续加油，收好尾',night:'🌙 辛苦了，今天也很棒'};
+    var d={morning:['☀️ 早安，又是崭新的一天'],noon:['🌤️ 上午辛苦啦，保持节奏'],afternoon:['🌆 下午继续加油，收好尾'],night:['🌙 辛苦了，今天也很棒']};
     var em={morning:'☀️',noon:'🌞',afternoon:'🌅',night:'🌙'};
-    var el=document.getElementById('splashDaily');
-    if(el)el.textContent=d[p];
-    var ei=document.querySelector('.splash-text .icon');
-    if(ei)ei.textContent=em[p];
+    var el=document.getElementById('splashDaily');if(el)el.textContent=d[p][0];
+    var ei=document.getElementById('splashIcon');if(ei)ei.textContent=em[p];
   }catch(e){}
+  try{startTrayAnimation();}catch(e){}
   setTimeout(function(){
     var el=document.getElementById('splash');
     if(el)el.style.display='none';
-  },2800);
+  },7500);
+}
+var trayAnimId=null;
+function startTrayAnimation(){
+  var canvas=document.getElementById('splashCanvas');if(!canvas)return;
+
+
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const replayBtn = document.getElementById('replay');
+
+  // --- Canvas sizing ---
+  const W = 960, H = 540;
+  const scale = Math.min(canvas.parentElement.clientWidth / W, canvas.parentElement.clientHeight / H, 1.3);
+  canvas.width = W;
+  canvas.height = H;
+  canvas.style.width = (W * scale) + 'px';
+  canvas.style.height = (H * scale) + 'px';
+
+  // --- Easing ---
+  const ease = {
+    out: t => 1 - Math.pow(1 - t, 3),
+    in: t => t * t * t,
+    inOut: t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+    elasticOut: t => {
+      const c4 = (2 * Math.PI) / 3;
+      return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+    },
+    bounceOut: t => {
+      const n1 = 7.5625, d1 = 2.75;
+      if (t < 1 / d1) return n1 * t * t;
+      if (t < 2 / d1) return n1 * (t -= 1.5 / d1) * t + 0.75;
+      if (t < 2.5 / d1) return n1 * (t -= 2.25 / d1) * t + 0.9375;
+      return n1 * (t -= 2.625 / d1) * t + 0.984375;
+    }
+  };
+
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  // --- Colors ---
+  const C = {
+    wall: '#f5efe6',
+    wallShadow: '#e8dfd3',
+    floor1: '#d4a574',
+    floor2: '#c49564',
+    floorLine: '#b8845a',
+    table: '#8B5E3C',
+    tableTop: '#A0704D',
+    window: '#87CEEB',
+    windowFrame: '#5C4033',
+  };
+
+  // ============================================================
+  //  DRAWING FUNCTIONS
+  // ============================================================
+
+  function drawBackground(ctx) {
+    // Wall
+    const wallGrad = ctx.createLinearGradient(0, 0, 0, H * 0.6);
+    wallGrad.addColorStop(0, '#f5efe6');
+    wallGrad.addColorStop(1, '#ece3d5');
+    ctx.fillStyle = wallGrad;
+    ctx.fillRect(0, 0, W, H * 0.62);
+
+    // Wainscoting
+    ctx.fillStyle = '#e0d4c0';
+    ctx.fillRect(0, H * 0.55, W, H * 0.08);
+    ctx.fillStyle = '#d4c8b0';
+    ctx.fillRect(0, H * 0.55, W, 3);
+    ctx.fillStyle = '#c8bca0';
+    ctx.fillRect(0, H * 0.62, W, 4);
+
+    // Floor
+    for (let row = 0; row < 12; row++) {
+      for (let col = 0; col < 16; col++) {
+        const x = col * 60 + (row % 2) * 30;
+        const y = H * 0.62 + row * 18;
+        ctx.fillStyle = (col + row) % 2 === 0 ? C.floor1 : C.floor2;
+        ctx.fillRect(x, y, 62, 19);
+      }
+    }
+
+    // Floor line
+    ctx.fillStyle = '#b8845a';
+    ctx.fillRect(0, H * 0.62, W, 2);
+
+    // Window
+    const wx = 720, wy = 40, ww = 180, wh = 240;
+    ctx.fillStyle = '#b0d8f0';
+    ctx.fillRect(wx, wy, ww, wh);
+    // Curtains
+    ctx.fillStyle = '#c0392b';
+    ctx.beginPath();
+    ctx.moveTo(wx - 20, wy);
+    ctx.quadraticCurveTo(wx + 10, wy + wh * 0.3, wx - 8, wy + wh);
+    ctx.lineTo(wx - 20, wy + wh);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(wx + ww + 20, wy);
+    ctx.quadraticCurveTo(wx + ww - 10, wy + wh * 0.3, wx + ww + 8, wy + wh);
+    ctx.lineTo(wx + ww + 20, wy + wh);
+    ctx.closePath();
+    ctx.fill();
+    // Window frame
+    ctx.strokeStyle = C.windowFrame;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(wx, wy, ww, wh);
+    ctx.beginPath();
+    ctx.moveTo(wx + ww / 2, wy);
+    ctx.lineTo(wx + ww / 2, wy + wh);
+    ctx.moveTo(wx, wy + wh / 2);
+    ctx.lineTo(wx + ww, wy + wh / 2);
+    ctx.stroke();
+    // Moon & stars
+    ctx.fillStyle = '#ffeaa7';
+    ctx.beginPath();
+    ctx.arc(wx + 50, wy + 50, 18, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff9';
+    for (const [sx, sy] of [[wx + 100, 70], [wx + 140, 100], [wx + 80, 130], [wx + 160, 60], [wx + 50, 110]]) {
+      ctx.beginPath();
+      ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Picture on wall
+    const px = 100, py = 55, pw = 100, ph = 70;
+    ctx.fillStyle = '#8B5E3C';
+    ctx.fillRect(px - 3, py - 3, pw + 6, ph + 6);
+    ctx.fillStyle = '#a8d8a8';
+    ctx.fillRect(px, py, pw, ph);
+    ctx.fillStyle = '#6a9e6a';
+    ctx.beginPath();
+    ctx.arc(px + 30, py + 35, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#4a7e5a';
+    ctx.beginPath();
+    ctx.arc(px + 55, py + 42, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(px + 10, py + 80);
+    ctx.quadraticCurveTo(px + 30, py + 30, px + 60, py + 20);
+    ctx.quadraticCurveTo(px + 80, py + 30, px + 95, py + 80);
+    ctx.fillStyle = '#5a8e5a';
+    ctx.fill();
+
+    // Lamp
+    ctx.fillStyle = '#555';
+    ctx.fillRect(340, 5, 4, 40);
+    ctx.fillStyle = '#f39c1290';
+    ctx.beginPath();
+    ctx.moveTo(310, 50);
+    ctx.quadraticCurveTo(342, 75, 374, 50);
+    ctx.quadraticCurveTo(342, 60, 310, 50);
+    ctx.fill();
+    ctx.fillStyle = '#f1c40f40';
+    ctx.beginPath();
+    ctx.arc(342, 55, 35, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // --- Table ---
+  function drawTable(ctx, x, y, w, h) {
+    // Table top (oval)
+    ctx.fillStyle = C.tableTop;
+    ctx.beginPath();
+    ctx.ellipse(x + w / 2, y + 5, w / 2, h / 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#7a4e2e';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    // Table leg
+    ctx.fillStyle = C.table;
+    ctx.fillRect(x + w / 2 - 5, y + 10, 10, 50);
+    // Base
+    ctx.fillStyle = C.table;
+    ctx.beginPath();
+    ctx.ellipse(x + w / 2, y + 58, 20, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // --- Draw a person (generic base) ---
+  // type: 'waiter', 'diner1', 'diner2', 'diner3', 'diner4'
+  function drawPerson(ctx, x, y, s, props) {
+    // props: { bodyColor, hairColor, expression, armPose, legPose, bounce, headAngle, laughAmount, lookX }
+    const { bodyColor = '#fff', hairColor = '#2d3436', expression = 'neutral',
+            armPose = 'down', legPose = 'stand', bounce = 0,
+            headAngle = 0, laughAmount = 0, lookX = 0, lookY = 0 } = props;
+
+    const by = y + bounce;
+    ctx.save();
+    ctx.translate(x, by);
+    ctx.scale(s, s);
+
+    // Legs
+    const legSpread = legPose === 'walk' ? 6 : 4;
+    ctx.strokeStyle = '#2d3436';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-6, 30);
+    ctx.lineTo(-6 - legSpread * 0.5, 55);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(6, 30);
+    ctx.lineTo(6 + legSpread * 0.5, 55);
+    ctx.stroke();
+    // Shoes
+    ctx.fillStyle = '#2d3436';
+    ctx.beginPath();
+    ctx.ellipse(-6 - legSpread * 0.5, 56, 7, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(6 + legSpread * 0.5, 56, 7, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Body
+    ctx.fillStyle = bodyColor;
+    const bw = 24, bh = 34;
+    const br = 6;
+    ctx.beginPath();
+    ctx.moveTo(-bw / 2 + br, 0);
+    ctx.lineTo(bw / 2 - br, 0);
+    ctx.quadraticCurveTo(bw / 2, 0, bw / 2, br);
+    ctx.lineTo(bw / 2, bh - br);
+    ctx.quadraticCurveTo(bw / 2, bh, bw / 2 - br, bh);
+    ctx.lineTo(-bw / 2 + br, bh);
+    ctx.quadraticCurveTo(-bw / 2, bh, -bw / 2, bh - br);
+    ctx.lineTo(-bw / 2, br);
+    ctx.quadraticCurveTo(-bw / 2, 0, -bw / 2 + br, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#2d3436';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Arms
+    ctx.strokeStyle = '#d4a574';
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    const laughShake = laughAmount * 3;
+    if (armPose === 'up') {
+      ctx.beginPath();
+      ctx.moveTo(-14, 8);
+      ctx.quadraticCurveTo(-25, -8 + laughShake * 2, -22, -18 + laughShake);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(14, 8);
+      ctx.quadraticCurveTo(25, -8 + laughShake, 28, -20 + laughShake);
+      ctx.stroke();
+    } else if (armPose === 'point') {
+      ctx.beginPath();
+      ctx.moveTo(-14, 8);
+      ctx.quadraticCurveTo(-22, -4, -20, -10);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(14, 8);
+      ctx.lineTo(35, -5 - laughShake);
+      ctx.stroke();
+      // Pointing hand
+      ctx.fillStyle = '#d4a574';
+      ctx.beginPath();
+      ctx.arc(37, -5 - laughShake, 4, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (armPose === 'holdTray') {
+      // Left arm
+      ctx.beginPath();
+      ctx.moveTo(-14, 8);
+      ctx.quadraticCurveTo(-24, -5, -18, -16);
+      ctx.stroke();
+      // Right arm
+      ctx.beginPath();
+      ctx.moveTo(14, 8);
+      ctx.quadraticCurveTo(24, -5, 18, -16);
+      ctx.stroke();
+    } else if (armPose === 'down' || armPose === 'drop') {
+      const drop = armPose === 'drop' ? 8 : 0;
+      ctx.beginPath();
+      ctx.moveTo(-14, 8);
+      ctx.quadraticCurveTo(-20, 18 + drop, -18, 28 + drop);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(14, 8);
+      ctx.quadraticCurveTo(20, 18 + drop, 18, 28 + drop);
+      ctx.stroke();
+    } else if (armPose === 'belly') {
+      ctx.beginPath();
+      ctx.moveTo(-14, 8);
+      ctx.quadraticCurveTo(-18, 22 + laughShake, -12, 30 + laughShake);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(14, 8);
+      ctx.quadraticCurveTo(18, 22 + laughShake, 12, 30 + laughShake);
+      ctx.stroke();
+    } else if (armPose === 'slap') {
+      // Slapping table
+      const slapY = 20 + laughShake;
+      ctx.beginPath();
+      ctx.moveTo(-14, 8);
+      ctx.quadraticCurveTo(-24, slapY - 5, -22, slapY);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(14, 8);
+      ctx.quadraticCurveTo(24, slapY - 5, 22, slapY);
+      ctx.stroke();
+    } else if (armPose === 'phone') {
+      ctx.beginPath();
+      ctx.moveTo(-14, 8);
+      ctx.lineTo(-20, 16);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(14, 8);
+      ctx.quadraticCurveTo(20, 2, 22, -4);
+      ctx.stroke();
+    }
+
+    // Neck
+    ctx.fillStyle = '#d4a574';
+    ctx.fillRect(-5, -2, 10, 6);
+
+    // Head
+    const hx = lookX * 2, hy = lookY * 2 - 2 + laughAmount * 0.5;
+    ctx.save();
+    ctx.translate(0, -18);
+    ctx.rotate(headAngle * Math.PI / 180);
+    // Head shape
+    ctx.fillStyle = '#d4a574';
+    ctx.beginPath();
+    ctx.ellipse(hx, hy, 15, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#2d3436';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Hair
+    ctx.fillStyle = hairColor;
+    if (hairColor === '#2d3436') {
+      // Short hair
+      ctx.beginPath();
+      ctx.ellipse(hx, hy - 13, 16, 10, 0, Math.PI, Math.PI * 2);
+      ctx.fill();
+      // Some hair strands
+      ctx.beginPath();
+      ctx.moveTo(hx - 10, hy - 10);
+      ctx.quadraticCurveTo(hx - 8, hy - 18, hx - 3, hy - 12);
+      ctx.strokeStyle = hairColor;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    } else {
+      // Longer hair (for women / different characters)
+      ctx.beginPath();
+      ctx.ellipse(hx, hy - 14, 17, 12, 0, Math.PI, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(hx - 16, hy - 5);
+      ctx.quadraticCurveTo(hx - 18, hy + 5, hx - 14, hy + 12);
+      ctx.strokeStyle = hairColor;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(hx + 16, hy - 5);
+      ctx.quadraticCurveTo(hx + 18, hy + 5, hx + 14, hy + 12);
+      ctx.stroke();
+    }
+
+    // Expression
+    drawExpression(ctx, hx, hy, expression, laughAmount);
+
+    ctx.restore();
+    ctx.restore();
+  }
+
+  function drawExpression(ctx, hx, hy, expr, laugh) {
+    const la = clamp(laugh, 0, 1);
+    const ey = hy - 2;
+    const ex = hx;
+
+    if (expr === 'laugh' || (expr === 'neutral' && la > 0.5)) {
+      // Laughing eyes (closed crescents)
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      // Left eye
+      ctx.beginPath();
+      ctx.arc(ex - 5, ey - 1, 2.5 + la, 0, Math.PI);
+      ctx.stroke();
+      // Right eye
+      ctx.beginPath();
+      ctx.arc(ex + 5, ey - 1, 2.5 + la, 0, Math.PI);
+      ctx.stroke();
+      // Laughing mouth - wide open
+      const mouthOpen = 4 + la * 6;
+      ctx.fillStyle = '#c0392b';
+      ctx.beginPath();
+      ctx.ellipse(ex, ey + 5 + la * 2, 5 + la * 3, mouthOpen * 0.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      // Tongue
+      ctx.fillStyle = '#e74c3c';
+      ctx.beginPath();
+      ctx.ellipse(ex, ey + 7 + la * 3, 3 + la * 1.5, 2 + la, 0, 0, Math.PI);
+      ctx.fill();
+      // Teeth
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(ex - 4 - la * 1.5, ey + 3 + la * 0.5, 8 + la * 3, 3 + la);
+      ctx.strokeStyle = '#bbb';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(ex - 4 - la * 1.5, ey + 3 + la * 0.5, 8 + la * 3, 3 + la);
+      // Tear of laughter
+      if (la > 0.3) {
+        ctx.fillStyle = '#74b9ff';
+        ctx.beginPath();
+        ctx.ellipse(ex - 8, ey + 3 + la * 8, 1.5, 2 + la * 3, -0.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(ex + 9, ey + 5 + la * 7, 1.2, 1.8 + la * 2.5, 0.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else if (expr === 'surprised') {
+      // Wide eyes
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(ex - 5, ey - 1, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(ex + 5, ey - 1, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // Pupils (small)
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath();
+      ctx.arc(ex - 4.5, ey, 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(ex + 5.5, ey, 2, 0, Math.PI * 2);
+      ctx.fill();
+      // Mouth (circle of surprise)
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath();
+      ctx.ellipse(ex, ey + 6, 4, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#c0392b';
+      ctx.beginPath();
+      ctx.ellipse(ex, ey + 5, 3, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Eyebrows raised
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(ex - 9, ey - 7);
+      ctx.lineTo(ex - 2, ey - 9);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(ex + 9, ey - 7);
+      ctx.lineTo(ex + 2, ey - 9);
+      ctx.stroke();
+    } else if (expr === 'embarrassed') {
+      // Wavy squint eyes
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(ex - 5, ey - 1, 2.5, 0.2, Math.PI - 0.2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(ex + 5, ey - 1, 2.5, 0.2, Math.PI - 0.2);
+      ctx.stroke();
+      // Wavy mouth
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(ex - 5, ey + 6 + la);
+      ctx.quadraticCurveTo(ex - 2, ey + 3 + la, ex, ey + 6 + la);
+      ctx.quadraticCurveTo(ex + 2, ey + 9 + la, ex + 5, ey + 6 + la);
+      ctx.stroke();
+      // Blush
+      ctx.fillStyle = '#ff6b6b40';
+      ctx.beginPath();
+      ctx.ellipse(ex - 8, ey + 4, 4, 2.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(ex + 8, ey + 4, 4, 2.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Sweat drop
+      ctx.fillStyle = '#74b9ff';
+      ctx.beginPath();
+      ctx.moveTo(ex + 12, ey - 8);
+      ctx.quadraticCurveTo(ex + 15, ey - 4, ex + 12, ey - 2);
+      ctx.quadraticCurveTo(ex + 9, ey - 4, ex + 12, ey - 8);
+      ctx.fill();
+    } else {
+      // Neutral - normal eyes
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(ex - 5, ey - 1, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(ex + 5, ey - 1, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath();
+      ctx.arc(ex - 4.5, ey, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(ex + 5.5, ey, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+      // Small smile
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(ex, ey + 3, 4, 0.2, Math.PI - 0.2);
+      ctx.stroke();
+    }
+  }
+
+  // --- Draw waiter (has bow tie, apron, tray) ---
+  function drawWaiter(ctx, x, y, s, state, time) {
+    const { walkPhase, trayAngle, trayDropY, expression, armPose, bounce, wobble } = state;
+
+    ctx.save();
+    ctx.translate(x, y + bounce);
+    ctx.scale(s, s);
+
+    // Legs with walk animation
+    const legSwing = walkPhase !== undefined ? Math.sin(walkPhase) * 5 : 0;
+    ctx.strokeStyle = '#2d3436';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    // Left leg
+    ctx.beginPath();
+    ctx.moveTo(-6, 30);
+    ctx.lineTo(-6 + legSwing, 55);
+    ctx.stroke();
+    // Right leg
+    ctx.beginPath();
+    ctx.moveTo(6, 30);
+    ctx.lineTo(6 - legSwing, 55);
+    ctx.stroke();
+    // Shoes
+    ctx.fillStyle = '#2d3436';
+    ctx.beginPath();
+    ctx.ellipse(-6 + legSwing, 56, 7, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(6 - legSwing, 56, 7, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Body (white shirt)
+    ctx.fillStyle = '#f8f8f8';
+    ctx.beginPath();
+    ctx.roundRect(-12, 0, 24, 34, 5);
+    ctx.fill();
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Apron
+    ctx.fillStyle = '#2d3436';
+    ctx.beginPath();
+    ctx.moveTo(-10, 10);
+    ctx.lineTo(-11, 34);
+    ctx.quadraticCurveTo(-11, 37, -8, 37);
+    ctx.lineTo(8, 37);
+    ctx.quadraticCurveTo(11, 37, 11, 34);
+    ctx.lineTo(10, 10);
+    ctx.closePath();
+    ctx.fill();
+    // Apron strap
+    ctx.strokeStyle = '#2d3436';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-10, 10);
+    ctx.quadraticCurveTo(-8, 6, -5, 5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(10, 10);
+    ctx.quadraticCurveTo(8, 6, 5, 5);
+    ctx.stroke();
+
+    // Bow tie
+    ctx.fillStyle = '#c0392b';
+    ctx.beginPath();
+    ctx.moveTo(-7, 4);
+    ctx.lineTo(-2, 7);
+    ctx.lineTo(-7, 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(7, 4);
+    ctx.lineTo(2, 7);
+    ctx.lineTo(7, 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#a93226';
+    ctx.beginPath();
+    ctx.arc(0, 7, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Arms
+    ctx.strokeStyle = '#d4a574';
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    const armSwing = walkPhase !== undefined ? Math.cos(walkPhase) * 3 : 0;
+
+    if (armPose === 'holdTray' || armPose === 'wobble') {
+      const w = wobble || 0;
+      // Left arm holding tray
+      ctx.beginPath();
+      ctx.moveTo(-12, 8);
+      ctx.quadraticCurveTo(-22 - armSwing, -2 + w * 3, -16 + w, -16);
+      ctx.stroke();
+      // Right arm holding tray
+      ctx.beginPath();
+      ctx.moveTo(12, 8);
+      ctx.quadraticCurveTo(22 + armSwing, -2 - w * 3, 16 - w, -16);
+      ctx.stroke();
+    } else if (armPose === 'drop') {
+      // Arms dropped in shock
+      ctx.beginPath();
+      ctx.moveTo(-12, 8);
+      ctx.lineTo(-20, 22);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(12, 8);
+      ctx.lineTo(20, 22);
+      ctx.stroke();
+    } else if (armPose === 'facepalm') {
+      ctx.beginPath();
+      ctx.moveTo(-12, 8);
+      ctx.quadraticCurveTo(-20, 2, -8, -6);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(12, 8);
+      ctx.quadraticCurveTo(20, 2, 8, -6);
+      ctx.stroke();
+    }
+
+    // Neck
+    ctx.fillStyle = '#d4a574';
+    ctx.fillRect(-5, -2, 10, 6);
+
+    // Head
+    ctx.save();
+    ctx.translate(0, -18);
+
+    // Head shape
+    ctx.fillStyle = '#d4a574';
+    ctx.beginPath();
+    ctx.ellipse(0, -2, 15, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#2d3436';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Hair (slicked back style)
+    ctx.fillStyle = '#2d3436';
+    ctx.beginPath();
+    ctx.ellipse(0, -15, 16, 10, 0, Math.PI, Math.PI * 2);
+    ctx.fill();
+    // Hair swoop
+    ctx.beginPath();
+    ctx.moveTo(-12, -12);
+    ctx.quadraticCurveTo(-5, -22, 8, -14);
+    ctx.quadraticCurveTo(12, -12, 14, -10);
+    ctx.strokeStyle = '#2d3436';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Expression
+    drawExpression(ctx, 0, -2, expression, 0);
+
+    ctx.restore();
+
+    // Tray (drawn above arms)
+    if (armPose === 'holdTray' || armPose === 'wobble') {
+      ctx.save();
+      const ty = -34 + (trayDropY || 0);
+      ctx.translate(0, ty);
+      ctx.rotate(trayAngle || 0);
+
+      // Tray
+      ctx.fillStyle = '#bdc3c7';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 32, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#95a5a6';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // Tray rim
+      ctx.strokeStyle = '#7f8c8d';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 30, 5, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Tray items
+      // Wine bottle
+      ctx.fillStyle = '#27ae60';
+      ctx.fillRect(-10, -22, 6, 20);
+      ctx.fillStyle = '#1e8449';
+      ctx.fillRect(-9, -22, 4, 2);
+      ctx.fillRect(-9, -14, 4, 2);
+      ctx.fillRect(-9, -8, 4, 2);
+      // Bottleneck
+      ctx.fillStyle = '#27ae60';
+      ctx.fillRect(-9, -30, 4, 8);
+      ctx.fillStyle = '#8B4513';
+      ctx.fillRect(-10, -32, 6, 4);
+      // Label
+      ctx.fillStyle = '#f1c40f';
+      ctx.fillRect(-9, -20, 4, 4);
+      ctx.globalAlpha = 0.5;
+      ctx.restore();
+      ctx.globalAlpha = 1;
+
+      // Wine glass
+      ctx.save();
+      ctx.translate(15, -34 + (trayDropY || 0));
+      ctx.rotate((trayAngle || 0) * 0.8);
+      ctx.fillStyle = '#ecf0f180';
+      ctx.strokeStyle = '#bdc3c7';
+      ctx.lineWidth = 1.5;
+      // Bowl
+      ctx.beginPath();
+      ctx.ellipse(0, 4, 8, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Stem
+      ctx.beginPath();
+      ctx.moveTo(0, 14);
+      ctx.lineTo(0, 22);
+      ctx.stroke();
+      // Base
+      ctx.beginPath();
+      ctx.ellipse(0, 22, 7, 2.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Wine inside
+      ctx.fillStyle = '#e74c3c60';
+      ctx.beginPath();
+      ctx.ellipse(0, 5, 6.5, 5, 0, Math.PI, 0);
+      ctx.fill();
+      ctx.restore();
+
+      // Glass 2 (on other side)
+      ctx.save();
+      ctx.translate(-16, -34 + (trayDropY || 0));
+      ctx.rotate((trayAngle || 0) * 0.7);
+      ctx.fillStyle = '#ecf0f180';
+      ctx.strokeStyle = '#bdc3c7';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(0, 4, 7, 9, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, 13);
+      ctx.lineTo(0, 20);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(0, 20, 6, 2.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#f1c40f60';
+      ctx.beginPath();
+      ctx.ellipse(0, 5, 5.5, 4.5, 0, Math.PI, 0);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Flying items after drop
+    if (armPose === 'drop' || armPose === 'facepalm') {
+      // Draw tray on the ground
+      ctx.save();
+      ctx.translate(5, 10 + (trayDropY || 0));
+      ctx.rotate(0.4);
+      ctx.fillStyle = '#bdc3c7';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 30, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#95a5a6';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    ctx.restore();
+  }
+
+  // --- Flying objects ---
+  function drawFlyingObjects(ctx, items) {
+    for (const item of items) {
+      ctx.save();
+      ctx.translate(item.x, item.y);
+      ctx.rotate(item.rot);
+
+      if (item.type === 'bottle') {
+        ctx.fillStyle = '#27ae60';
+        ctx.fillRect(-5, -12, 10, 18);
+        ctx.fillStyle = '#1e8449';
+        ctx.fillRect(-5, -12, 10, 3);
+        ctx.fillRect(-5, 0, 10, 3);
+        ctx.fillStyle = '#27ae60';
+        ctx.fillRect(-4, -16, 8, 5);
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(-5, -18, 10, 3);
+        // Liquid spill
+        ctx.fillStyle = '#e74c3c80';
+        ctx.beginPath();
+        ctx.ellipse(8, 4, 8, 5, 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (item.type === 'glass') {
+        ctx.fillStyle = '#ecf0f160';
+        ctx.strokeStyle = '#bdc3c7';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.ellipse(0, 3, 6, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, 11);
+        ctx.lineTo(0, 17);
+        ctx.stroke();
+        ctx.fillStyle = '#e74c3c50';
+        ctx.beginPath();
+        ctx.ellipse(0, 4, 4.5, 4, 0, Math.PI, 0);
+        ctx.fill();
+        // Splash
+        ctx.fillStyle = '#e74c3c70';
+        ctx.beginPath();
+        ctx.arc(10, 0, 6, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (item.type === 'splash') {
+        ctx.fillStyle = `rgba(231, 76, 60, ${item.alpha || 0.6})`;
+        for (const [dx, dy, r] of item.drops || [[0, 0, 5]]) {
+          ctx.beginPath();
+          ctx.arc(dx, dy, r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // Star splats
+        ctx.fillStyle = '#e74c3c40';
+        for (let i = 0; i < 4; i++) {
+          const a = i * Math.PI / 2 + item.rot;
+          ctx.beginPath();
+          ctx.arc(Math.cos(a) * 8, Math.sin(a) * 8, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      ctx.restore();
+    }
+  }
+
+  // --- Laughing effects (stars, "HA" text) ---
+  function drawLaughEffects(ctx, effects) {
+    for (const e of effects) {
+      ctx.save();
+      ctx.translate(e.x, e.y);
+      ctx.globalAlpha = e.alpha || 0.8;
+
+      // Laugh stars
+      const starSize = e.size || 4;
+      ctx.fillStyle = '#f1c40f';
+      ctx.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const a = (i * 4 * Math.PI / 5) + e.rot;
+        const r = i === 0 ? starSize : starSize;
+        if (i === 0) ctx.moveTo(Math.cos(a) * starSize, Math.sin(a) * starSize);
+        else ctx.lineTo(Math.cos(a) * starSize, Math.sin(a) * starSize);
+      }
+      ctx.closePath();
+      ctx.fill();
+
+      // "HA" text
+      if (e.showHa) {
+        ctx.fillStyle = '#e74c3c';
+        ctx.font = `bold ${e.haSize || 18}px Arial, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('HA', 0, 0);
+      }
+
+      ctx.restore();
+    }
+  }
+
+  // ============================================================
+  //  ANIMATION STATE
+  // ============================================================
+
+  let startTime = 0;
+  let animId = null;
+  let done = false;
+
+  const ANIM_DURATION = 7; // seconds
+
+  // Flying items & effects
+  let flyingItems = [];
+  let laughEffects = [];
+
+  function resetAnimation() {
+    startTime = performance.now();
+    done = false;
+    flyingItems = [];
+    laughEffects = [];
+    replayBtn.style.display = 'none';
+    if (animId) cancelAnimationFrame(animId);
+    animId = requestAnimationFrame(animate);
+  }
+
+  function animate(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const t = (timestamp - startTime) / 1000;
+    const p = clamp(t / ANIM_DURATION, 0, 1); // 0-1 progress
+
+    ctx.clearRect(0, 0, W, H);
+
+    // ---- Draw background ----
+    drawBackground(ctx);
+
+    // Tables
+    drawTable(ctx, 80, 360, 100, 60);  // left table
+    drawTable(ctx, 460, 370, 110, 60); // right table
+    drawTable(ctx, 740, 355, 100, 58); // far right table
+
+    // ---- Animation phases ----
+    // Phase 1 (0-1.5s): Waiter walks in
+    // Phase 2 (1.5-2.5s): Waiter stops, tray wobbles
+    // Phase 3 (2.5-3.0s): Tray drops
+    // Phase 4 (3.0-4.5s): Everyone reacts
+    // Phase 5 (4.5-6.5s): Full laughter
+    // Phase 6 (6.5-7.0s): Hold
+
+    const phase1End = 1.5;
+    const phase2End = 2.6;
+    const phase3End = 3.0;
+    const phase4End = 4.5;
+    const phase5End = 6.8;
+
+    // ---- Waiter ----
+    let waiterX, waiterY = 280, waiterS = 1.1;
+    let waiterState = {};
+
+    if (t < phase1End) {
+      // Walking in
+      const p1 = t / phase1End;
+      const ep = ease.out(p1);
+      waiterX = lerp(-150, 240, ep);
+      const bounceWalk = Math.sin(t * 12) * 2.5 * (1 - p1 * 0.5);
+      waiterState = {
+        walkPhase: t * 8,
+        trayAngle: Math.sin(t * 2) * 0.01,
+        trayDropY: 0,
+        expression: 'neutral',
+        armPose: 'holdTray',
+        bounce: bounceWalk,
+        wobble: 0
+      };
+    } else if (t < phase2End) {
+      // Wobbling
+      const p2 = (t - phase1End) / (phase2End - phase1End);
+      waiterX = 240;
+      const wobbleIntensity = ease.in(p2) * 0.15;
+      waiterState = {
+        walkPhase: 0,
+        trayAngle: Math.sin(t * 14) * wobbleIntensity,
+        trayDropY: Math.sin(t * 10) * 1,
+        expression: 'surprised',
+        armPose: 'wobble',
+        bounce: Math.sin(t * 16) * 1.5 * wobbleIntensity * 4,
+        wobble: Math.sin(t * 14) * wobbleIntensity * 10
+      };
+    } else if (t < phase3End) {
+      // Drop!
+      const p3 = (t - phase2End) / (phase3End - phase2End);
+      waiterX = 240;
+      const dropRot = -0.2 - ease.in(p3) * 1.0;
+      const dropY = ease.in(p3) * 18;
+
+      waiterState = {
+        walkPhase: 0,
+        trayAngle: dropRot,
+        trayDropY: dropY,
+        expression: 'surprised',
+        armPose: 'drop',
+        bounce: 0,
+        wobble: 0
+      };
+
+      // Generate flying items at moment of drop
+      if (p3 > 0.1 && p3 < 0.15 && flyingItems.length === 0) {
+        flyingItems = [
+          { type: 'bottle', x: 210, y: 225, rot: 0.3, vy: -6, vx: -3, vr: 0.15 },
+          { type: 'glass', x: 260, y: 230, rot: -0.2, vy: -7, vx: 4, vr: -0.2 },
+          { type: 'glass', x: 235, y: 235, rot: 0.5, vy: -5, vx: -2, vr: 0.25 },
+          { type: 'splash', x: 240, y: 260, rot: 0, alpha: 0.8,
+            drops: [[0,0,8],[6,-3,4],[-5,-4,5],[3,5,3],[-3,4,4]] },
+        ];
+      }
+
+      // Animate flying items
+      if (flyingItems.length > 0) {
+        const dt = 0.016;
+        for (const item of flyingItems) {
+          if (item.vy !== undefined) {
+            item.x += (item.vx || 0) * dt * 60;
+            item.y += (item.vy || 0) * dt * 60;
+            item.vy += 0.15 * dt * 60; // gravity
+            item.rot += (item.vr || 0) * dt * 60;
+          }
+          if (item.type === 'splash') {
+            item.alpha = Math.max(0, item.alpha - 0.003 * dt * 60);
+          }
+        }
+        // Remove items that go off screen
+        flyingItems = flyingItems.filter(item =>
+          item.y < 500 && item.x > -50 && item.x < 1000
+        );
+      }
+    } else {
+      // After drop - embarrassed
+      waiterX = 240;
+      const pAfter = (t - phase3End);
+      let expr, armPose;
+      if (pAfter < 0.8) {
+        expr = 'surprised';
+        armPose = 'drop';
+      } else {
+        expr = 'embarrassed';
+        armPose = 'facepalm';
+      }
+      waiterState = {
+        walkPhase: 0,
+        trayAngle: -0.3,
+        trayDropY: 18,
+        expression: expr,
+        armPose: armPose,
+        bounce: 0,
+        wobble: 0
+      };
+    }
+
+    drawWaiter(ctx, waiterX, waiterY, waiterS, waiterState, t);
+
+    // Draw flying objects
+    drawFlyingObjects(ctx, flyingItems);
+
+    // ---- Diners ----
+    // Diner 1: Left table, pointing and laughing
+    const d1Laugh = clamp((t - 2.8) * 1.2, 0, 1);
+    drawPerson(ctx, 120, 355, 1.0, {
+      bodyColor: '#3498db', hairColor: '#2d3436',
+      expression: 'laugh', armPose: 'point', legPose: 'sit',
+      bounce: d1Laugh * Math.sin(t * 8) * 4,
+      laughAmount: d1Laugh,
+      lookX: 0.3, lookY: 0
+    });
+
+    // Diner 2: Right table, slapping table laughing
+    const d2Laugh = clamp((t - 2.9) * 1.3, 0, 1);
+    drawPerson(ctx, 500, 365, 1.05, {
+      bodyColor: '#e74c3c', hairColor: '#8B4513',
+      expression: 'laugh', armPose: 'slap', legPose: 'sit',
+      bounce: d2Laugh * Math.sin(t * 9 + 1) * 5,
+      laughAmount: d2Laugh,
+      lookX: -0.4, lookY: 0
+    });
+
+    // Diner 3: Standing back center, holding belly
+    const d3Laugh = clamp((t - 3.0) * 1.4, 0, 1);
+    drawPerson(ctx, 370, 298, 1.0, {
+      bodyColor: '#f39c12', hairColor: '#2d3436',
+      expression: 'laugh', armPose: 'belly', legPose: 'stand',
+      bounce: d3Laugh * Math.sin(t * 7 + 2) * 6,
+      laughAmount: d3Laugh,
+      lookX: -0.2, lookY: 0.1
+    });
+
+    // Diner 4: Far right, on phone, looks up and laughs
+    const d4Laugh = clamp((t - 3.2) * 1.1, 0, 1);
+    const d4Expr = t < 3.0 ? 'neutral' : 'laugh';
+    drawPerson(ctx, 775, 350, 0.95, {
+      bodyColor: '#9b59b6', hairColor: '#8B4513',
+      expression: d4Expr, armPose: d4Laugh > 0.5 ? 'up' : 'phone',
+      legPose: 'sit', bounce: d4Laugh > 0.3 ? d4Laugh * Math.sin(t * 8 + 3) * 3 : 0,
+      laughAmount: d4Laugh,
+      lookX: -0.3, lookY: 0
+    });
+
+    // ---- Laugh effects (stars, "HA" text) ----
+    // Generate laugh effects during reaction phases
+    const laughP = clamp((t - 3.0) / 2.5, 0, 1);
+
+    // Generate "HA" texts periodically during laughter
+    if (t > 3.0 && t < 6.0 && Math.random() < 0.02 * laughP) {
+      const sources = [
+        { x: 140, y: 310 },  // diner 1
+        { x: 520, y: 320 },  // diner 2
+        { x: 380, y: 260 },  // diner 3
+        { x: 790, y: 310 },  // diner 4
+      ];
+      const src = sources[Math.floor(Math.random() * sources.length)];
+      laughEffects.push({
+        x: src.x + (Math.random() - 0.5) * 40,
+        y: src.y - 20 + Math.random() * 30,
+        rot: Math.random() * 0.5,
+        alpha: 0.8 + Math.random() * 0.2,
+        size: 3 + Math.random() * 4,
+        showHa: Math.random() > 0.5,
+        haSize: 14 + Math.random() * 8,
+        life: 1.0
+      });
+    }
+
+    // Fade effects
+    laughEffects = laughEffects.filter(e => {
+      e.life -= 0.008;
+      e.alpha = e.life * 0.8;
+      e.y -= 0.3;
+      return e.life > 0;
+    });
+    // Limit
+    if (laughEffects.length > 30) laughEffects = laughEffects.slice(-30);
+
+    drawLaughEffects(ctx, laughEffects);
+
+    // ---- Overlay title ----
+    if (t > 5.5) {
+      const alpha = clamp((t - 5.5) / 0.8, 0, 1);
+      ctx.save();
+      ctx.globalAlpha = ease.out(alpha);
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.beginPath();
+      ctx.roundRect(W / 2 - 110, 20, 220, 40, 20);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 22px "Arial", "Microsoft YaHei", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('😅 哎呀，没端住！', W / 2, 40);
+      ctx.restore();
+    }
+
+    // ---- Check if done ----
+    if (t >= ANIM_DURATION) {
+      done = true;
+      replayBtn.style.display = 'block';
+      return; // stop animation
+    }
+
+    animId = requestAnimationFrame(animate);
+  }
+
+  // ---- Start ----
+  resetAnimation();
+
+  // ---- Replay ----
+  replayBtn.addEventListener('click', resetAnimation);
+  canvas.addEventListener('click', () => {
+    if (done) resetAnimation();
+  });
+
+
+
+  var oldReset=resetAnimation;
+  resetAnimation=function(){
+    startTime=performance.now();done=false;flyingItems=[];laughEffects=[];
+    if(trayAnimId)cancelAnimationFrame(trayAnimId);
+    trayAnimId=requestAnimationFrame(animate);
+  };
+  resetAnimation();
 }function toggleGame(){
   var w=document.getElementById('gameWrap');
   if(w)w.classList.toggle('show');
