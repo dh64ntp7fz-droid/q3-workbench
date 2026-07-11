@@ -639,7 +639,11 @@ function renderSV(){
 
   // Communication and resolution
   h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
-  h+=`<div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:8px">📝 与店长沟通核心重点及行动</div>`;
+  h+=`<div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:8px"><div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">📋 驻店整改记录汇报</div><textarea placeholder="记录驻店整改内容..." onchange="svDraft.notes.zhenggai=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.zhenggai||''}</textarea></div>
+<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">🔍 输出驻店问题点发现改善</div><textarea placeholder="发现的问题点及改善方案..." onchange="svDraft.notes.wenti=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.wenti||''}</textarea></div>
+<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">📝 现场输出店长带教案例</div><textarea placeholder="带教案例..." onchange="svDraft.notes.daijiao=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.daijiao||''}</textarea></div>
+
+<div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">`;
   h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:var(--inp);color:var(--txt);min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
   h+=`</div>`;
 
