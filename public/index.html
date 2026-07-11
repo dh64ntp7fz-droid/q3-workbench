@@ -893,31 +893,31 @@ function cheerMe(){
   toast(m.emoji+' '+m.title+'<br>'+extra,true);
 }
 // Click title for cheer
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('splashTitle').onclick=initSplash;
-  document.getElementById('mainTitle').onclick=function(){cheerMe()};
-  // Manual streak
-  function calcStreak(){
-    const s=load();const t=todayStr();let streak=0;
-    for(let d=new Date(t);;d.setDate(d.getDate()-1)){
-      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-      let found=0;MUST.forEach(m=>{if(s.mu[m.id]===ds)found++});
-      if(found>0)streak++;else if(streak===0)continue;else break;
-    }
-    const el=document.getElementById('streakCount');
-    if(el){el.textContent=streak;el.style.display='inline';}
+// 点击splash标题可重播
+document.getElementById('splashTitle').onclick=initSplash;
+document.getElementById('mainTitle').onclick=function(){cheerMe()};
+// 连续天数统计
+function calcStreak(){
+  const s=load();const t=todayStr();let streak=0,firstMiss=false;
+  for(let d=new Date(t);;d.setDate(d.getDate()-1)){
+    const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    let found=0;MUST.forEach(m=>{if(s.mu[m.id]===ds)found++});
+    if(found>0){if(!firstMiss)streak++;}
+    else{if(!firstMiss){firstMiss=true;continue;}else break;}
   }
-  calcStreak();
-  setInterval(calcStreak,30000);
-  setInterval(()=>{
-    const g=document.getElementById('greetingMsg');
-    if(g){
-      const h=new Date().getHours();let p,n;
-      if(h<6||h>=22)n='night';else if(h<12)n='morning';else if(h<14)n='noon';else if(h<18)n='afternoon';
-      g.textContent=GREETINGS[n][Math.floor(Math.random()*GREETINGS[n].length)];
-    }
-  },600000);
-});
+  const el=document.getElementById('streakCount');
+  if(el)el.textContent=streak;
+}
+calcStreak();
+setInterval(calcStreak,30000);
+setInterval(()=>{
+  const g=document.getElementById('greetingMsg');
+  if(g){
+    const h=new Date().getHours();let n;
+    if(h<6||h>=22)n='night';else if(h<12)n='morning';else if(h<14)n='noon';else if(h<18)n='afternoon';
+    g.textContent=GREETINGS[n][Math.floor(Math.random()*GREETINGS[n].length)];
+  }
+},600000);
 function boot(){
   initSplash();
   renderAll();
