@@ -146,15 +146,15 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 .settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center}
 .settings-overlay.show{display:flex}
-.settings-panel{background:var(--card,#fff);border-radius:16px;padding:20px;width:90%;max-width:420px;max-height:80vh;overflow-y:auto}
+.settings-panel{background:#fff;border-radius:16px;padding:20px;width:90%;max-width:420px;max-height:80vh;overflow-y:auto}
 .settings-panel h3{font-size:16px;margin-bottom:16px}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd,#e2e8f0);font-size:13px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e2e8f0;font-size:13px}
 .settings-toggle{width:48px;height:26px;border-radius:13px;cursor:pointer;position:relative;transition:.2s;border:none;flex-shrink:0;margin-left:8px}
 .settings-toggle.on{background:#10b981}.settings-toggle.off{background:#cbd5e1}
 .settings-toggle::after{content:'';position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
 .settings-toggle.on::after{left:25px}.settings-toggle.off::after{left:3px}
 .settings-del{background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;padding:4px 8px}
-.settings-close{width:100%;padding:10px;border:none;border-radius:10px;background:#f1f5f9;color:#1e293b;font-weight:700;margin-top:12px;cursor:pointer;font-size:14px}
+.settings-close{width:100%;padding:10px;border:none;border-radius:10px;background:#f1f5f9;font-weight:700;margin-top:12px;cursor:pointer;font-size:14px}
 .gear-btn{background:none;border:none;font-size:14px;cursor:pointer;padding:2px 6px;opacity:.6;transition:.2s;color:#fff;min-width:32px;min-height:32px}
 
 </style>
@@ -200,15 +200,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 </div>
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
 <div class="foot">数据自动保存到服务器 &nbsp;|&nbsp; 配套Excel表在桌面「三季度工具表格」文件夹</div>
-
-<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()">
-<div class="settings-panel" onclick="event.stopPropagation()">
-<h3 id="settingsTitle"></h3>
-<div id="settingsItems"></div>
-<button class="settings-close" onclick="closeSettings()">关闭</button>
-</div>
-</div>
-
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"><div class="settings-panel" onclick="event.stopPropagation()"><h3 id="settingsTitle"></h3><div id="settingsItems"></div><button class="settings-close" onclick="closeSettings()">关闭</button></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -292,39 +284,11 @@ function decadeStr(){return String(Math.floor((new Date()-new Date('2026-01-01')
 
 const ALL_ITEMS = { must: MUST, daily: DAILY, wact: WACT };
 const CAT_NAMES = { must: '每日必交', daily: '每日动作', wact: '每周固定动作' };
-
-function openSettings(cat) {
-  const items = ALL_ITEMS[cat] || [];
-  const s = load(); s.pushItems = s.pushItems || {};
-  document.getElementById('settingsTitle').textContent = '⚙ ' + (CAT_NAMES[cat] || '') + ' 设置';
-  let html = '';
-  items.forEach(it => {
-    const id = it.id; const label = it.title || it.text || '';
-    const isPush = s.pushItems[id];
-    html += '<div class="settings-row"><span class="item-name">' + label + '</span><button class="settings-toggle ' + (isPush ? 'on' : 'off') + '" onclick="event.stopPropagation();togglePush(&apos;' + id + '&apos;,&apos;' + cat + '&apos;)"></button><button class="settings-del" onclick="event.stopPropagation();deleteItem(&apos;' + id + '&apos;,&apos;' + cat + '&apos;)">✕</button></div>';
-  });
-  document.getElementById('settingsItems').innerHTML = html || '<div style="padding:10px;color:#94a3b8;text-align:center">暂无项目</div>';
-  document.getElementById('settingsOverlay').classList.add('show');
-}
-function closeSettings() { document.getElementById('settingsOverlay').classList.remove('show'); }
-function togglePush(id, cat) {
-  const s = load(); s.pushItems = s.pushItems || {};
-  if (s.pushItems[id]) delete s.pushItems[id]; else s.pushItems[id] = true;
-  save(s); openSettings(cat);
-}
-function deleteItem(id, cat) {
-  if (!confirm('确定删除？')) return;
-  const s = load(); s.delIds = s.delIds || []; s.delIds.push(id);
-  save(s); renderAll(); closeSettings();
-}
-function getPushSummary() {
-  const s = load(); s.pushItems = s.pushItems || {}; const t = todayStr();
-  let items = [];
-  MUST.forEach(m => { if (s.pushItems[m.id] && s.mu && s.mu[m.id] === t) items.push((s.cust && s.cust[m.id]) || m.title); });
-  DAILY.forEach(d => { if (s.pushItems[d.id] && s.dy && s.dy[d.id] === t) items.push((s.cust && s.cust[d.id]) || d.text); });
-  WACT.forEach(w => { if (s.pushItems[w.id] && s.wk && s.wk[w.id] === weekStr()) items.push((s.cust && s.cust[w.id]) || w.text); });
-  return items.length ? '✅ ' + items.join('\n✅ ') : '暂无';
-}
+function openSettings(cat){var items=ALL_ITEMS[cat]||[];var s=load();s.pushItems=s.pushItems||{};document.getElementById('settingsTitle').textContent='⚙ '+(CAT_NAMES[cat]||'')+' 设置';var html='';items.forEach(function(it){var id=it.id;var label=it.title||it.text||'';var isPush=s.pushItems[id];html+='<div class="settings-row"><span>'+label+'</span><button class="settings-toggle '+(isPush?'on':'off')+'" onclick="togglePush(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)"></button><button class="settings-del" onclick="deleteItem(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)">✕</button></div>';});document.getElementById('settingsItems').innerHTML=html||'<div style="padding:10px;color:#94a3b8;text-align:center">暂无项目</div>';document.getElementById('settingsOverlay').classList.add('show');}
+function closeSettings(){document.getElementById('settingsOverlay').classList.remove('show');}
+function togglePush(id,cat){var s=load();s.pushItems=s.pushItems||{};if(s.pushItems[id])delete s.pushItems[id];else s.pushItems[id]=true;save(s);openSettings(cat);}
+function deleteItem(id,cat){if(!confirm('确定删除？'))return;var s=load();s.delIds=s.delIds||[];s.delIds.push(id);save(s);renderAll();closeSettings();}
+function getPushSummary(){var s=load();s.pushItems=s.pushItems||{};var t=todayStr();var items=[];MUST.forEach(function(m){if(s.pushItems[m.id]&&s.mu&&s.mu[m.id]===t)items.push((s.cust&&s.cust[m.id])||m.title);});DAILY.forEach(function(d){if(s.pushItems[d.id]&&s.dy&&s.dy[d.id]===t)items.push((s.cust&&s.cust[d.id])||d.text);});WACT.forEach(function(w){if(s.pushItems[w.id]&&s.wk&&s.wk[w.id]===weekStr())items.push((s.cust&&s.cust[w.id])||w.text);});return items.length?'✅ '+items.join('\n✅ '):'暂无';}
 
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})}
@@ -520,15 +484,16 @@ function svSave(){
   const now=new Date().toLocaleString('zh-CN');
   let bulletList=SV_DIMENSIONS.map(dim=>dim.items.map(it=>{
     if(it.checks)return it.checks.map(ch=>`${ch.text.substring(0,20)}：`+(record.checks[ch.key]?'✓':'✗')).join('\n');
-    if(it.type==='number')return it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
-    if(it.type==='text')return it.label+'：'+((record.notes||{})[it.key]||'未填').substring(0,30);
+    if(it.type==='number')return '> '+it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
+    if(it.type==='text')return '> '+it.label+'：'+((record.notes||{})[it.key]||'未填').substring(0,30);
     return '';
-  }).join('\n')).join('\n\n');
-  const md={
-    msgtype:'text',
-    text:{content:`📋 驻店记录 · ${record.store}\n日期：${record.date} ${record.time}\n合格项：${totalChecks} / ${Object.keys(record.checks||{}).length}\n\n检查详情：\n${bulletList}\n\n与店长沟通：\n${record.resolved||\x27（未填写）\x27}\n\n驻店整改记录：\n${(record.notes||{}).zhenggai||\x27（未填写）\x27}\n\n问题点发现改善：\n${(record.notes||{}).wenti||\x27（未填写）\x27}\n\n店长带教案例：\n${(record.notes||{}).daijiao||\x27（未填写）\x27}\n\n📌 今日已完成：\n${getPushSummary()}\n\n👤 邹慧明 · 三季度工作台`}
-  };
-  fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
+  }).join('\n')).join('\n> \n');
+  fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    store:record.store,date:record.date,time:record.time,
+    checkCount:totalChecks,totalItems:totalItems,
+    resolved:svDraft.resolved,notes:svDraft.notes,
+    bulletList:bulletList,pushSummary:getPushSummary()
+  })}).then(r=>r.json()).then(j=>{
     if(j.errcode===0)toast('✅ 已保存并发送至企业微信');
     else toast('✅ 已保存（企业微信发送失败:'+j.errmsg+'）');
   }).catch(e=>{toast('✅ 已保存')});

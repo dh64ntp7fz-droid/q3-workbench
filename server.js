@@ -86,6 +86,41 @@ app.post('/api/restore', (req, res) => {
 
 // 企业微信 webhook 转发（避免CORS）
 app.post('/api/send-wecom', async (req, res) => {
+  const d = req.body;
+  let msg;
+  if (d.msgtype) {
+    msg = d;
+  } else {
+    const bl = d.bulletList || '';
+    const zg = (d.notes && d.notes.zhenggai) || '（未填写）';
+    const wt = (d.notes && d.notes.wenti) || '（未填写）';
+    const dj = (d.notes && d.notes.daijiao) || '（未填写）';
+    const ps = d.pushSummary || '暂无';
+    const content = `📋 驻店记录 · ${d.store||'未知'}
+日期：${d.date||''} ${d.time||''}
+合格项：${d.checkCount||0} / ${d.totalItems||0}
+
+检查详情：
+${bl}
+
+与店长沟通：
+${d.resolved||'（未填写）'}
+
+驻店整改记录：
+${zg}
+
+问题点发现改善：
+${wt}
+
+店长带教案例：
+${dj}
+
+📌 今日已完成：
+${ps}
+
+👤 邹慧明 · 三季度工作台`;
+    msg = { msgtype: 'text', text: { content } };
+  }
   try {
     const response = await fetch('https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d35ec9fd-b3e2-4132-848c-0fbc7ab38107', {
       method: 'POST',
