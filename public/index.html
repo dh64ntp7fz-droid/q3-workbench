@@ -82,7 +82,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 .dl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--bd,#f8fafc);cursor:pointer;transition:background .15s;min-height:48px}
 .dl:last-child{border-bottom:none}
-.dl.done{background:#f0fdf4}
+.dl.done{background:#f0fdf4}.dl.done .dl-t{text-decoration:line-through;color:#94a3b8}.dl.done .dl-m{color:#94a3b8}
 .dl:active{background:#f8fafc}
 .dl-n{text-align:center;min-width:46px;flex-shrink:0}
 .dl-n .num{font-size:22px;font-weight:800;line-height:1;color:#f59e0b}
@@ -554,8 +554,8 @@ function renderAll(){
 
   // Deadlines
   const sorted=[...DEADLINES].sort((a,b)=>daysLeft(a.due)-daysLeft(b.due));
-  const groups={urgent:[],soon:[],later:[],done:[]};
-  sorted.forEach(d=>{if(s.dl[d.id]){groups.done.push(d);return}const dl=daysLeft(d.due);if(dl<=0)groups.urgent.push(d);else if(dl<=7)groups.soon.push(d);else groups.later.push(d);});
+  const groups={urgent:[],soon:[],later:[]};
+  sorted.forEach(d=>{if(s.dl[d.id])return;const dl=daysLeft(d.due);if(dl<=0)groups.urgent.push(d);else if(dl<=7)groups.soon.push(d);else groups.later.push(d);});
   let lz='';
   function rg(label,items){if(!items||!items.length)return'';let h=`<div style="padding:6px 14px 4px;font-size:11px;font-weight:700;color:#94a3b8">${label} <span style="background:#f1f5f9;padding:1px 6px;border-radius:10px;font-size:10px">${items.length}</span></div>`;
     items.forEach(d=>{const done=!!s.dl[d.id];const dl=daysLeft(d.due);const c=done?'done':(dl<0?'over':(dl<=3?'soon':''))+(d.type==='evt'?' evt':'');const num=done?'✓':(dl<0?'超':dl);const u=done?`<div class="u">${s.dl[d.id].slice(5)}</div>`:(dl<0?`<div class="u">${Math.abs(dl)}天</div>`:(dl===0?'<div class="u">今天</div>':'<div class="u">天后</div>'));
@@ -564,7 +564,7 @@ function renderAll(){
   lz+=rg('🔴 已超期/今天',groups.urgent);
   lz+=rg('🟡 7天内截止',groups.soon);
   lz+=rg('⏺ 更晚截止',groups.later);
-  lz+=rg('✅ 已完成',groups.done);
+  
   document.getElementById('dlZone').innerHTML=lz;
 
   // Ledger
