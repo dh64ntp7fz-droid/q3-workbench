@@ -466,7 +466,7 @@ function svSave(){
   }).join('\n')).join('\n> \n');
   const md={
     msgtype:'text',
-    text:{content:`## 📋 驻店记录 · ${record.store}\n日期：${record.date} ${record.time}\n合格项：${totalChecks} / ${totalItems}\n\n#检查详情\n${bulletList}\n\n#📝 与店长沟通要点\n${record.resolved||'（未填写）'}\n\n---\n👤 邹慧明 · 三季度工作台`}
+    text:{content:`## 📋 驻店记录 · ${record.store}\n> 日期：${record.date} ${record.time}\n> 合格项：${totalChecks} / ${totalItems}\n\n### 检查详情\n${bulletList}\n\n### 📝 与店长沟通要点\n> ${record.resolved||'（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台`}
   };
   fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
     if(j.errcode===0)toast('✅ 已保存并发送至企业微信');
