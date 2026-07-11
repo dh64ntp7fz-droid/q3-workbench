@@ -218,7 +218,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 </style>
 </head>
 <body style="min-height:100vh">
-/div></div>
+<div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h1>🧭 邹慧明 · 三季度工作台</h1>
+  <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
+  <div class="quote" id="dailyQuote"></div></div><button id="dmBtn" onclick="var h=document.documentElement;var cur=h.getAttribute('data-theme')||'light';var nxt=cur==='dark'?'light':'dark';h.setAttribute('data-theme',nxt);this.textContent=nxt==='dark'?'☀️':'🌙';localStorage.setItem('zm_theme',nxt)" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;cursor:pointer;min-width:48px;min-height:48px;border-radius:50%;flex-shrink:0">🌙</button></div>
 <div class="game-wrap" id="gameWrap">
   <div class="game-bar" onclick="toggleGame()">
     <span>🎮 减压小游戏</span>
