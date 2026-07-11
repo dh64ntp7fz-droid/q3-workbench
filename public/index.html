@@ -460,7 +460,18 @@ function svSave(){
   }).join('\n')).join('\n> \n');
   const md={
     msgtype:'markdown',
-    markdown:{content:`## 📋 驻店记录 · ${record.store}\n> 日期：${record.date} ${record.time}\n> 合格项：${totalChecks} / ${totalItems}\n\n### 检查详情\n${bulletList}\n\n### 📝 与店长沟通要点\n> ${record.resolved||'（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台`}
+    markdown:{content:`## 📋 驻店记录 · ${record.store}\n> 日期：${record.date} ${record.time}\n> 合格项：${totalChecks} / ${totalItems}\n\n### 检查详情\n${bulletList}\n\n### 📝 与店长沟通要点
+
+### 📋 驻店整改记录
+> ${(record.notes||{}).zhenggai||'（未填写）'}
+
+### 🔍 问题点发现改善
+> ${(record.notes||{}).wenti||'（未填写）'}
+
+### 📝 店长带教案例
+> ${(record.notes||{}).daijiao||'（未填写）'}
+
+### 📝\n> ${record.resolved||'（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台`}
   };
   fetch(WECOM_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
     if(j.errcode===0)toast('✅ 已保存并发送至企业微信');
@@ -633,7 +644,11 @@ function renderSV(){
 
   // Communication and resolution
   h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
-  h+=`<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px">📝 与店长沟通核心重点及行动</div>`;
+  h+=`<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px"><div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">📋 驻店整改记录汇报</div><textarea placeholder="记录驻店整改内容..." onchange="svDraft.notes.zhenggai=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:#f8fafc;color:#1e293b;font-family:inherit;resize:vertical">${svDraft.notes.zhenggai||''}</textarea></div>
+<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">🔍 输出驻店问题点发现改善</div><textarea placeholder="发现的问题点及改善方案..." onchange="svDraft.notes.wenti=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:#f8fafc;color:#1e293b;font-family:inherit;resize:vertical">${svDraft.notes.wenti||''}</textarea></div>
+<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">📝 现场输出店长带教案例</div><textarea placeholder="带教案例..." onchange="svDraft.notes.daijiao=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:#f8fafc;color:#1e293b;font-family:inherit;resize:vertical">${svDraft.notes.daijiao||''}</textarea></div>
+
+<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">`;
   h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:#f8fafc;color:#1e293b;min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
   h+=`</div>`;
 
