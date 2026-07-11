@@ -174,9 +174,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .row.done .ck{transform:scale(1.15)}
 
 /* ── 进场情绪 ── */
-.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#4338ca,#6366f1,#8b5cf6);overflow:hidden;animation:splashOut .6s ease 2.5s forwards}
+.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#4338ca,#6366f1,#8b5cf6);overflow:hidden}
 .splash.hide{display:none}
-@keyframes splashOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1);visibility:hidden}}
+
 .splash-bg{position:absolute;inset:0;opacity:.1}
 .splash-bg span{position:absolute;font-size:40px;animation:floatBg 6s ease-in-out infinite}
 @keyframes floatBg{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-30px) rotate(5deg)}75%{transform:translateY(20px) rotate(-5deg)}}
@@ -201,7 +201,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .pop-emoji{position:fixed;font-size:36px;pointer-events:none;z-index:99998;animation:popUpEmoji .8s ease-out forwards}
 </style>
 </head>
-<body>
+<body style="min-height:100vh">
 <div class="splash" id="splash">
   <div class="splash-bg" id="splashBg"></div>
   <div class="splash-emoji" id="splashEmoji">🚀</div>
@@ -832,15 +832,14 @@ const GREETINGS={
   night:['🌙 辛苦了，早点休息','✨ 今天也很棒，明天继续','🌟 慧明今天辛苦了，好梦'],
 };
 function initSplash(){
-  const h=new Date().getHours();
-  let period='morning';const msg=SPLASH_MSGS[Math.floor(Math.random()*SPLASH_MSGS.length)];
+  const h=new Date().getHours();let period='morning';
   if(h>=6&&h<12)period='morning';else if(h>=12&&h<14)period='noon';else if(h>=14&&h<18)period='afternoon';else period='night';
   const greet=GREETINGS[period][Math.floor(Math.random()*GREETINGS[period].length)];
-  // Update splash
+  const msg=SPLASH_MSGS[Math.floor(Math.random()*SPLASH_MSGS.length)];
   document.getElementById('splashEmoji').textContent=msg.emoji;
   document.getElementById('splashTitle').textContent=msg.title;
   document.getElementById('splashDaily').textContent=greet;
-  // Fill floating bg emojis
+  // Background floating emojis
   const bg=document.getElementById('splashBg');
   const emojis=['🔥','💪','🎯','🌟','✅','📊','🏆','💎','⚡','✨'];
   for(let i=0;i<8;i++){
@@ -850,18 +849,20 @@ function initSplash(){
     s.style.animationDelay=Math.random()*3+'s';s.style.fontSize=(24+Math.random()*30)+'px';
     bg.appendChild(s);
   }
-  // Auto dismiss after 2.5s — fully remove splash so it never blocks clicks
+  // After 2.8s: fade out splash, then remove from DOM completely
   setTimeout(()=>{
     const el=document.getElementById('splash');
     if(el){
-      el.style.opacity='0';
-      el.style.pointerEvents='none';
-      setTimeout(()=>{el.style.display='none';},500);
+      el.style.transition='opacity .5s ease,transform .5s ease';
+      el.style.opacity='0';el.style.transform='scale(1.05)';
+      setTimeout(()=>{
+        el.style.display='none';
+        // Pop emojis after splash gone
+        for(let i=0;i<4;i++)setTimeout(()=>popEmoji(),i*150);
+      },500);
     }
-    setTimeout(()=>{for(let i=0;i<4;i++)setTimeout(()=>popEmoji(),i*150);},400);
-  },2500);
-}
-function popEmoji(){
+  },2800);
+}function popEmoji(){
   const el=document.createElement('div');el.className='pop-emoji';
   el.textContent=['🎉','🎊','✨','💫','🔥','⭐','💪'][Math.floor(Math.random()*7)];
   el.style.left=(10+Math.random()*80)+'vw';el.style.top=(20+Math.random()*50)+'vh';
