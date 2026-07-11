@@ -564,7 +564,7 @@ const SV_DIMENSIONS=[
   ]},
 ];
 
-let localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
+localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
 try{var _d=JSON.parse(localStorage.getItem('zm_sv_draft'));if(_d)svDraft=_d;}catch(e){}
 function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));renderSV()}
 
