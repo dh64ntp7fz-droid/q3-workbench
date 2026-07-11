@@ -86,6 +86,10 @@ app.post('/api/restore', (req, res) => {
 
 // 企业微信 webhook 转发（避免CORS）
 app.post('/api/send-wecom', async (req, res) => {
+  const payload = req.body.msgtype ? req.body : {
+    msgtype: 'markdown',
+    markdown: { content: `## 📋 驻店记录 · ${req.body.store||'未知'}\n> 日期：${req.body.date||''} ${req.body.time||''}\n> 合格项：${req.body.checkCount||0} / ${req.body.totalItems||0}\n\n### 📝 与店长沟通要点\n> ${req.body.resolved||'（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台` }
+  };
   try {
     const data = req.body;
     const WECOM_URL = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d35ec9fd-b3e2-4132-848c-0fbc7ab38107';
