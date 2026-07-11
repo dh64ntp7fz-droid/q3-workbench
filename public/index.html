@@ -208,6 +208,15 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes barLoad{0%{width:0}100%{width:100%}}
 @media(max-width:480px){.splash-text .icon{font-size:40px}.splash-text h2{font-size:22px}.splash-text p{font-size:12px}}
 @keyframes dotPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.4);opacity:1}}
+
+/* ── 减压小游戏 ── */
+.game-wrap{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:12px;display:none}
+.game-wrap.show{display:block}
+.game-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:linear-gradient(135deg,#0b0f1a,#1e293b);color:#fff;cursor:pointer;user-select:none}
+.game-bar span{font-size:13px;font-weight:700}
+.game-bar button{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:11px;padding:4px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+.game-canvas-wrap{background:#0b0f1a;padding:10px;text-align:center}
+.game-canvas-wrap canvas{background:#1a1a2e;border-radius:8px;display:block;margin:0 auto;image-rendering:pixelated;max-width:100%}
 </style>
 </head>
 <body style="min-height:100vh">
@@ -220,10 +229,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
   <div class="splash-corner br"></div>
   <div class="splash-text">
     <span class="icon">🚀</span>
-    <h2 id="splashTitle">SYSTEM INITIALIZING</h2>
+    <h2>邹慧明 · 三季度工作台</h2>
     <div class="line"></div>
-    <p id="splashSub">邹慧明 · 三季度工作台</p>
-    <div class="sub" id="splashDaily">CONNECTING...</div>
+    <p id="splashDaily">☀️ 早安，又是崭新的一天</p>
     <div class="splash-bar"><div class="splash-bar-fill"></div></div>
   </div>
 </div>
@@ -841,13 +849,10 @@ setInterval(()=>{
   }
 },600000);
 function initSplash(){
-  var words=[['SYSTEM INITIALIZING','Q3 WORKBENCH LOADING','POWERING UP','READY FOR ACTION'],['邹慧明 · 三季度工作台','小区经理控制台','ZHM TERMINAL ONLINE']];
-  try{document.getElementById('splashTitle').textContent=words[0][Math.floor(Math.random()*words[0].length)];}catch(e){}
-  try{document.getElementById('splashSub').textContent=words[1][Math.floor(Math.random()*words[1].length)];}catch(e){}
   try{
     var h=(new Date()).getHours();var p='morning';
     if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else if(h>=22||h<6)p='night';
-    var d={morning:['晨间协议握手成功','AM 信号稳定·准备就绪','早安·系统自检通过'],noon:['午间·保持运行节奏','信号正常·持续作业','CPU 温度正常'],afternoon:['PM 阶段·收尾进行中','今日任务进度良好','黄昏协议启动'],night:['夜间模式·辛苦了','今日日志已归档','SYSTEM SLEEP 安全']};
+    var d={morning:['☀️ 早安，又是崭新的一天','🌅 调整好状态，出发巡店','☕ 喝杯水，开始今天的战斗'],noon:['🌤️ 上午辛苦啦，保持节奏','☀️ 中午了，别忘了巡店','🌞 能量在线，继续冲'],afternoon:['🌆 下午继续加油','⛅ 快下班了，收好尾','🌇 今天的事情今天清'],night:['🌙 辛苦了，早点休息','✨ 今天也很棒，明天继续','🌟 慧明今天辛苦了，好梦']};
     document.getElementById('splashDaily').textContent=d[p][Math.floor(Math.random()*3)];
   }catch(e){}
   setTimeout(function(){
@@ -855,6 +860,92 @@ function initSplash(){
     if(el)el.style.display='none';
   },2800);
 }
+
+// ── 减压小游戏 ──
+var gameRun=false,gameScore=0,gameOver=false;
+var player={x:30,y:80,w:10,h:12,vy:0,jumping:false};
+var obstacles=[],frame=0,gameSpeed=3;
+function toggleGame(){
+  var w=document.getElementById('gameWrap');
+  if(w)w.classList.toggle('show');
+}
+function startGame(){
+  if(gameRun)return;
+  gameRun=true;gameOver=false;gameScore=0;player.y=80;player.vy=0;player.jumping=false;obstacles=[];
+  drawGame();
+  gameLoop();
+}
+function gameLoop(){
+  if(!gameRun)return;
+  frame++;
+  // gravity
+  if(player.jumping){
+    player.vy+=0.4;
+    player.y+=player.vy;
+    if(player.y>=80){player.y=80;player.jumping=false;player.vy=0;}
+  }
+  // obstacles
+  if(frame%50===0){
+    obstacles.push({x:320,y:88,w:8,h:10});
+  }
+  for(var i=obstacles.length-1;i>=0;i--){
+    obstacles[i].x-=gameSpeed;
+    if(obstacles[i].x+obstacles[i].w<0)obstacles.splice(i,1);
+  }
+  // collision
+  if(!gameOver){
+    for(var i=0;i<obstacles.length;i++){
+      var o=obstacles[i];
+      if(player.x+player.w>o.x&&player.x<o.x+o.w&&player.y+player.h>o.y){
+        gameOver=true;gameRun=false;
+        setTimeout(function(){gameRun=false;drawGame();},100);
+        break;
+      }
+    }
+    if(!gameOver)gameScore+=1;
+  }
+  drawGame();
+  if(gameRun)requestAnimationFrame(gameLoop);
+}
+function drawGame(){
+  var c=document.getElementById('gameCanvas');
+  if(!c)return;var ctx=c.getContext('2d');
+  // clear
+  ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,320,120);
+  // ground
+  ctx.fillStyle='#16213e';ctx.fillRect(0,100,320,20);
+  ctx.fillStyle='#0f3460';for(var i=0;i<320;i+=16){ctx.fillRect(i,100,8,3);}
+  // player (pixel dude)
+  ctx.fillStyle='#e94560';
+  ctx.fillRect(player.x,player.y,player.w,player.h);
+  ctx.fillStyle='#fff';ctx.fillRect(player.x+2,player.y+2,3,3);ctx.fillRect(player.x+7,player.y+2,3,3);
+  // obstacles (pixel blocks)
+  ctx.fillStyle='#c7c7c7';
+  for(var i=0;i<obstacles.length;i++){
+    var o=obstacles[i];
+    ctx.fillRect(o.x,o.y,o.w,o.h);
+    ctx.fillStyle='#888';ctx.fillRect(o.x+2,o.y+2,2,2);ctx.fillStyle='#c7c7c7';
+  }
+  // score
+  if(!gameOver&&gameRun){ctx.fillStyle='#e2e8f0';ctx.font='8px monospace';ctx.fillText('分数:'+Math.floor(gameScore/5),260,20);}
+  if(gameOver){ctx.fillStyle='#ef4444';ctx.font='10px monospace';ctx.fillText('游戏结束',130,55);ctx.fillStyle='#94a3b8';ctx.font='7px monospace';ctx.fillText('点击"开始"重玩',120,80);}
+  if(gameOver&&!gameRun){ctx.fillStyle='#e94560';ctx.font='8px monospace';ctx.fillText('得分:'+Math.floor(gameScore/5),140,40);}
+}
+// keyboard
+document.addEventListener('keydown',function(e){
+  if(e.code==='Space'){
+    if(gameOver){startGame();return;}
+    if(gameRun&&!player.jumping){player.vy=-5;player.jumping=true;}
+  }
+});
+// touch
+document.addEventListener('click',function(e){
+  var c=document.getElementById('gameCanvas');
+  if(c&&c.contains(e.target)&&gameRun&&!player.jumping&&!gameOver){player.vy=-5;player.jumping=true;}
+});
+// initial draw
+setTimeout(function(){drawGame();},500);
+
 function boot(){
   renderAll();
   initSplash();
