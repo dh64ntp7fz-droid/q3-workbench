@@ -471,13 +471,13 @@ function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];renderSV()}
 
 let sections={};
 function initSections(){
-  // 默认全部折叠
+  // 其他分类默认展开（除非用户手动折叠过）
   ['must','daily','wact','temp','cycle','dl','ledger'].forEach(k=>{
-    sections[k]=localStorage.getItem('sec_'+k)!=='0'?false:true; // 默认false=折叠
+    sections[k]=localStorage.getItem('sec_'+k)==='0'?false:true;
     applySec(k);
   });
-  // 驻店记录特殊处理：默认折叠
-  svCollapsed=localStorage.getItem('zm_sv_collapsed')!=='0'; // 默认true=折叠
+  // 驻店记录：默认折叠
+  svCollapsed=localStorage.getItem('zm_sv_collapsed')!=='0';
   if(document.getElementById('svArrow'))document.getElementById('svArrow').textContent=svCollapsed?'▶':'▼';
   if(document.getElementById('svZone'))document.getElementById('svZone').style.display=svCollapsed?'none':'block';
 }
