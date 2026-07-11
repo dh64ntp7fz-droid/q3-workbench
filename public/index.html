@@ -521,18 +521,25 @@ function svSave(){
     const dimLabel=dim.label.replace(/[🌀🍽️🧹【】]/g,'').trim();
     let section=dimLabel+'\n';
     section+=dim.items.map(it=>{
+      let lines='';
       if(it.checks){
-        return it.checks.map(ch=>{
+        lines=it.checks.map(ch=>{
           const prefix=(ch.text==='达标'||ch.text==='达标？') ? it.label+'→' : '';
           return prefix+ch.text.substring(0,22)+'：'+(record.checks[ch.key]?'✓':'✗');
         }).join('\n');
       }
-      if(it.type==='number')return it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
+      if(it.type==='number'){
+        lines=it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
+      }
       if(it.type==='text'){
         const txt=(record.notes||{})[it.key];
-        return it.label+'：'+(txt?txt.substring(0,40):'未填');
+        lines=it.label+'：'+(txt?txt.substring(0,40):'未填');
       }
-      return '';
+      // 如果该检查项有补充备注，追加到后面
+      const noteKey='note_'+it.id;
+      const noteVal=(record.notes||{})[noteKey];
+      if(noteVal)lines+='  ⚡备注：'+noteVal.substring(0,40);
+      return lines;
     }).filter(Boolean).join('\n');
     return section;
   }).join('\n\n');
