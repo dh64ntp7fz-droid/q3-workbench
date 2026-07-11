@@ -864,7 +864,7 @@ function drawGame(){
   var c=document.getElementById('gameCanvas');if(!c||!c.getContext)return;
   var ctx=c.getContext('2d');
   ctx.clearRect(0,0,320,120);
-  ctx.fillStyle='var(--bg)';ctx.fillRect(0,0,320,120);
+  ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,320,120);
   ctx.fillStyle='#cbd5e1';ctx.fillRect(0,100,320,2);
   ctx.fillStyle='#475569';ctx.font='11px monospace';
   ctx.fillText('🏆 '+(_gRun?Math.floor(_gScore/5):_gOver?'game over':'0'),260,15);
