@@ -123,13 +123,18 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f0f3f8;color
 
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.15)}
 .toast.show{opacity:1}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.toast.show{font-size:15px;padding:14px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 32px rgba(99,102,241,.4)}
+
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .card,.sv-card{animation:fadeIn .4s ease both}
 .card:nth-child(2){animation-delay:.04s}
 
 @media(min-width:600px){.stats{grid-template-columns:repeat(4,1fr)}body{padding:16px 16px 48px}}
-@media print{body{background:#fff;padding:0;color:#000}.header,.hint,.btns,.stats,.cheer,.temp-form,.sv-card,.toast{display:none!important}.card{box-shadow:none;border:1px solid #ddd}}
+@media print{body{background:#fff;padding:0;color:#000}.header,.hint,.btns,.stats,.temp-form,.sv-card,.toast{display:none!important}.card{box-shadow:none;border:1px solid #ddd}}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.toast.show{font-size:15px;padding:14px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 32px rgba(99,102,241,.4)}
 </style>
 </head>
 <body>
@@ -257,15 +262,29 @@ function decadeStr(){return String(Math.floor((new Date()-new Date('2026-01-01')
 
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2000)}
-const C_MSGS=['👏 又搞定一个！','✨ 太棒了！','🎯 稳准狠！','🔥 势不可挡！','💎 干得漂亮！','🚀 执行力拉满！','🏆 Q3冲刺！','🌟 邹慧明牛！'];
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2500)}
+const C_MSGS=['👏 漂亮！又搞定一个','✨ 邹慧明今天手感真好','🎯 准！赵总看到得加分','🔥 势不可挡，继续冲','💎 小事做到位，大事自然成','🚀 这执行力，谁不服','🏆 你就是Q3最稳的小区经理','🌟 每一步都在为团队加分'];
+const BIG_MSGS=['🏆🏆🏆 今日必交全部完成！邹慧明你太离谱了，赵总不给你加分说不过去 🏆🏆🏆','🔥🔥 全部清空！今天你就是最靠谱的小区经理 🔥🔥','💪💪 全清了！晚上可以安心睡觉了 💪💪','🎉🎉 完美收工！你就是团队的定海神针 🎉🎉'];
 function emoToast(){
   const s=load();const t=todayStr();const muDone=MUST.filter(m=>s.mu[m.id]===t).length;
   let msg;
-  if(muDone===MUST.length)msg='🏆 今日必交全部完成！你太靠谱了！';
-  else if(muDone>=MUST.length-1)msg='🔥 还差1个就全清了！';
+  if(muDone===MUST.length){
+    msg=BIG_MSGS[Math.floor(Math.random()*BIG_MSGS.length)];
+    confetti();
+    setTimeout(()=>toast(msg),200);
+    return;
+  }else if(muDone>=MUST.length-1)msg='🔥 还差一个就全清了，邹慧明冲！';
   else msg=C_MSGS[Math.floor(Math.random()*C_MSGS.length)];
   toast(msg);
+}
+function confetti(){
+  for(let i=0;i<20;i++){
+    const e=document.createElement('div');
+    e.textContent=['🎉','🎊','✨','💫','🌟','⭐','🔥','💪'][Math.floor(Math.random()*8)];
+    e.style.cssText='position:fixed;z-index:9999;font-size:'+(16+Math.random()*24)+'px;pointer-events:none;left:'+(Math.random()*90+5)+'vw;top:-20px;animation:confettiFall '+(1.5+Math.random()*2)+'s ease-out forwards;animation-delay:'+(Math.random()*0.8)+'s';
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),3000);
+  }
 }
 
 // Emotional cheer messages
