@@ -177,9 +177,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#4338ca,#6366f1,#8b5cf6);overflow:hidden}
 .splash.hide{display:none}
 
-.splash-bg{position:absolute;inset:0;opacity:.1}
-.splash-bg span{position:absolute;font-size:40px;animation:floatBg 6s ease-in-out infinite}
-@keyframes floatBg{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-30px) rotate(5deg)}75%{transform:translateY(20px) rotate(-5deg)}}
+
+
+
 .splash-emoji{font-size:80px;animation:bounceIn .8s cubic-bezier(.34,1.56,.64,1) both;position:relative}
 @keyframes bounceIn{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
 .splash-text{color:#fff;text-align:center;position:relative;z-index:1}
@@ -832,34 +832,16 @@ const GREETINGS={
   night:['🌙 辛苦了，早点休息','✨ 今天也很棒，明天继续','🌟 慧明今天辛苦了，好梦'],
 };
 function initSplash(){
-  try{
-    const h=new Date().getHours();let p='morning';
-    if(h>=6&&h<12)p='morning';else if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else p='night';
-    const g=GREETINGS[p][Math.floor(Math.random()*GREETINGS[p].length)];
-    const m=SPLASH_MSGS[Math.floor(Math.random()*SPLASH_MSGS.length)];
-    const se=document.getElementById('splashEmoji');if(se)se.textContent=m.emoji;
-    const st=document.getElementById('splashTitle');if(st)st.textContent=m.title;
-    const sd=document.getElementById('splashDaily');if(sd)sd.textContent=g;
-    const bg=document.getElementById('splashBg');
-    if(bg)for(let i=0;i<6;i++){
-      const s=document.createElement('span');
-      s.textContent=['🔥','💪','🎯','🌟','✅','📊','🏆','💎','⚡','✨'][Math.floor(Math.random()*10)];
-      s.style.cssText='position:absolute;left:'+(Math.random()*90)+'%;top:'+(Math.random()*90)+'%;font-size:'+(24+Math.random()*30)+'px;opacity:.15;animation:floatBg '+(4+Math.random()*4)+'s ease-in-out infinite;animation-delay:'+(Math.random()*3)+'s';
-      bg.appendChild(s);
-    }
-  }catch(e){/* ignore splash errors */}
-  // MUST dismiss after 3s no matter what
+  // Minimal: just set text and hide after 2.5s
+  var h=(new Date()).getHours();
+  var p='morning';if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else if(h>=22||h<6)p='night';
+  try{document.getElementById('splashEmoji').textContent=['🚀','🌟','🔥','💪','🎯'][Math.floor(Math.random()*5)];}catch(e){}
+  try{document.getElementById('splashDaily').textContent=GREETINGS[p][Math.floor(Math.random()*GREETINGS[p].length)];}catch(e){}
+  // Always dismiss splash after 2.5s - MUST NEVER FAIL
   setTimeout(function(){
     var el=document.getElementById('splash');
-    if(el){
-      el.style.transition='opacity .5s';
-      el.style.opacity='0';
-      setTimeout(function(){
-        if(el)el.style.display='none';
-        try{for(var i=0;i<3;i++)setTimeout(function(){popEmoji();},i*200);}catch(e){}
-      },500);
-    }
-  },3000);
+    if(el)el.style.display='none';
+  },2500);
 }function popEmoji(){
   const el=document.createElement('div');el.className='pop-emoji';
   el.textContent=['🎉','🎊','✨','💫','🔥','⭐','💪'][Math.floor(Math.random()*7)];
