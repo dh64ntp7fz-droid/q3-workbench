@@ -109,7 +109,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f0f3f8;color
 .sv-ck.checked{border-color:#10b981;background:#10b981;color:#fff}
 .sv-submit{width:100%;padding:11px;border:none;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:700;font-size:14px;cursor:pointer;margin-top:6px;transition:.2s;box-shadow:0 4px 12px rgba(99,102,241,.25)}
 .sv-submit:active{transform:scale(.97)}
-.sv-hist-item{font-size:12px;padding:7px 10px;border-bottom:1px solid #f8fafc;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.sv-hist-item{font-size:12px;padding:7px 10px;border-bottom:1px solid #f8fafc;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap}
 
 .ledger-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #f8fafc;font-size:13px}
 .ledger-item:last-child{border-bottom:none}
@@ -577,7 +577,7 @@ function renderAll(){
 // Render Store Visit (separate to avoid ES escaping issues with svToggle)
 function renderSV(){
   const s=load();s.sv=s.sv||[];
-  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-size:14px;background:#f8fafc;color:#1e293b">`;
+  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:2;min-width:120px;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-size:14px;background:#f8fafc;color:#1e293b">`;
   ['长安花园','长安锦厦','环球','黄河','天安'].forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
   h+=`</select><span style="font-size:12px;color:#64748b;white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
 
@@ -642,7 +642,7 @@ function renderSV(){
   // History
   if(s.sv.length>0){
     h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b">📜 最近记录</div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
-    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:#94a3b8;margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
+    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b style="white-space:nowrap;min-width:70px">${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:#94a3b8;margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
   }
   document.getElementById('svZone').innerHTML=h;
 }
