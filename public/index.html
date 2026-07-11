@@ -564,7 +564,7 @@ const SV_DIMENSIONS=[
   ]},
 ];
 
-let svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};localStorage.setItem('zm_sv_draft','');
+let localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
 try{var _d=JSON.parse(localStorage.getItem('zm_sv_draft'));if(_d)svDraft=_d;}catch(e){}
 function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));renderSV()}
 
@@ -650,7 +650,7 @@ function svSave(){
     else toast('✅ 已保存（企业微信发送失败:'+j.errmsg+'）');
   }).catch(e=>{toast('✅ 已保存')});
 
-  svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};localStorage.setItem('zm_sv_draft','');
+  localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
   if(svCollapsed){svCollapsed=false;localStorage.setItem('zm_sv_collapsed','0');document.getElementById('svArrow').textContent='▼';document.getElementById('svZone').style.display='block';}
   renderSV();
 }
@@ -676,7 +676,7 @@ function resetAll(){localStorage.removeItem(KEY);renderAll();toast('已清空')}
 
 function renderAll(){
   var _s=load();_s._date=_s._date||'';var _t=todayStr();
-  if(_s._date!==_t){var _c=_s._date?'clear':'';if(_c){_s.mu={};_s.dy={};_s.wk={};_s.sv=[];localStorage.removeItem('zm_sv_draft');svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};}if(!_s._date)_s._date=_t;else _s._date=_t;save(_s);}
+  if(_s._date!==_t){var _c=_s._date?'clear':'';if(_c){_s.mu={};_s.dy={};_s.wk={};localStorage.removeItem('zm_sv_draft');svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};}if(!_s._date)_s._date=_t;else _s._date=_t;save(_s);}
   const s=load();s.mu=s.mu||{};s.dy=s.dy||{};s.wk=s.wk||{};s.cy=s.cy||{};s.dl=s.dl||{};s.lg=s.lg||{};s.cust=s.cust||{};s.cust2=s.cust2||{};s.tm=s.tm||{};s.sv=s.sv||[];s.delIds=s.delIds||[];
   const t=todayStr();const wcur=weekStr();
   document.getElementById('today').textContent=(new Date().getMonth()+1)+'月'+new Date().getDate()+'日 周'+['日','一','二','三','四','五','六'][new Date().getDay()];
@@ -886,7 +886,7 @@ function boot(){
   }).catch(()=>{});
   setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
   // daily reset check (not full render to avoid clearing inputs)
-  setInterval(function(){var s=load();s._date=s._date||'';var t=todayStr();if(s._date&&s._date!==t){s.mu={};s.dy={};s.wk={};s.sv=[];localStorage.removeItem('zm_sv_draft');svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};s._date=t;save(s);renderAll();}},60000);
+  setInterval(function(){var s=load();s._date=s._date||'';var t=todayStr();if(s._date&&s._date!==t){s.mu={};s.dy={};s.wk={};localStorage.removeItem('zm_sv_draft');svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};s._date=t;save(s);renderAll();}},60000);
 }
 boot();
 </script>
