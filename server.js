@@ -83,6 +83,34 @@ app.post('/api/restore', (req, res) => {
   res.json({ ok: true, restoredAt: Date.now() });
 });
 
+
+// 企业微信 webhook 转发（避免CORS）
+app.post('/api/send-wecom', async (req, res) => {
+  try {
+    const data = req.body;
+    const WECOM_URL = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d35ec9fd-b3e2-4132-848c-0fbc7ab38107';
+
+    // Build markdown message
+    const { store, date, time, checkCount, totalItems, resolved } = data;
+    const md = {
+      msgtype: 'markdown',
+      markdown: {
+        content: `## 📋 驻店记录 · ${store}\n> 日期：${date} ${time || ''}\n> 合格项：${checkCount} / ${totalItems}\n\n### 📝 与店长沟通要点\n> ${resolved || '（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台`
+      }
+    };
+
+    const response = await fetch(WECOM_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(md)
+    });
+    const result = await response.json();
+    res.json({ ok: result.errcode === 0, errmsg: result.errmsg });
+  } catch (e) {
+    res.json({ ok: false, errmsg: e.message });
+  }
+});
+
 // 健康检查
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() });
