@@ -372,7 +372,7 @@ function editText(id,type){
   const nt=prompt('修改名称：',cur);if(nt===null)return;
   s.cust=s.cust||{};s.cust[id]=nt.trim();save(s);renderAll();toast('✅ 已更新');
 }
-function delAny(id){const s=load();s.delIds=s.delIds||[];s.delIds.push(id);save(s);renderAll();toast('已删除');}
+function delAny(id){if(!confirm('确定删除？'))return;const s=load();s.delIds=s.delIds||[];s.delIds.push(id);save(s);renderAll();toast('已删除');}
 function delItem(id,type){
   const s=load();
   const label=s.cust&&s.cust[id]||id;
@@ -560,7 +560,7 @@ function svExportCSV(){
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='驻店记录_'+todayStr()+'.csv';a.click();toast('✅ CSV导出完成');
 }
-function svDelete(i){const s=load();s.sv=s.sv||[];s.sv.splice(i,1);save(s);renderSV()}
+function svDelete(i){if(!confirm('确定删除此条驻店记录？'))return;const s=load();s.sv=s.sv||[];s.sv.splice(i,1);save(s);renderSV()}
 
 // Export/Import
 function exportData(){
