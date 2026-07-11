@@ -184,9 +184,29 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 /* 随机彩蛋飘浮 */
 @keyframes popUpEmoji{0%{opacity:0;transform:translateY(40px) scale(0)}30%{opacity:1;transform:translateY(0) scale(1.1)}60%{transform:translateY(-10px) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(.5)}}
 .pop-emoji{position:fixed;font-size:36px;pointer-events:none;z-index:99998;animation:popUpEmoji .8s ease-out forwards}
+
+.splash{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#4338ca,#6366f1,#8b5cf6);overflow:hidden;pointer-events:none}
+.splash-text{color:#fff;text-align:center;position:relative;z-index:1}
+.splash-text h2{font-size:32px;font-weight:800;margin:16px 0 6px;letter-spacing:-.5px}
+.splash-text p{font-size:16px;opacity:.85;margin:0;font-weight:400}
+.splash-sub{font-size:13px;opacity:.6;margin-top:20px}
+@media(max-width:480px){.splash-text h2{font-size:24px}.splash-text p{font-size:14px}}
+.splash-dots{display:flex;gap:6px;margin-top:24px}
+.splash-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);animation:dotPulse 1.2s ease-in-out infinite}
+.splash-dot:nth-child(2){animation-delay:.2s}
+.splash-dot:nth-child(3){animation-delay:.4s}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.4);opacity:1}}
 </style>
 </head>
 <body style="min-height:100vh">
+<div class="splash" id="splash">
+  <div class="splash-text">
+    <h2 id="splashTitle">精神饱满的一天</h2>
+    <p id="splashSub">邹慧明 · 三季度工作台</p>
+    <div class="splash-sub" id="splashDaily">☀️ 崭新的一天开始了</div>
+    <div class="splash-dots"><div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div></div>
+  </div>
+</div>
 
 <div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><h1>🧭 邹慧明 · 三季度工作台</h1>
   <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
@@ -800,8 +820,21 @@ setInterval(()=>{
     g.textContent=GREETINGS[n][Math.floor(Math.random()*GREETINGS[n].length)];
   }
 },600000);
+function initSplash(){
+  try{
+    var h=(new Date()).getHours();var p='morning';
+    if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else if(h>=22||h<6)p='night';
+    try{document.getElementById('splashTitle').textContent=['精神饱满的一天','能量满格的一天','今天状态不错','冲冲冲三季度'][Math.floor(Math.random()*4)];}catch(e){}
+    try{document.getElementById('splashDaily').textContent={morning:['☀️ 崭新的一天开始了','🌅 早安','☕ 喝杯水出发'],noon:['🌤️ 上午辛苦啦','☀️ 中午了','🌞 保持节奏'],afternoon:['🌆 下午继续加油','⛅ 快下班了收好尾'],night:['🌙 辛苦了早点休息','✨ 今天也很棒','🌟 好梦']}[p][Math.floor(Math.random()*3)];}catch(e){}
+  }catch(e){}
+  setTimeout(function(){
+    var el=document.getElementById('splash');
+    if(el)el.style.display='none';
+  },2500);
+}
 function boot(){
   renderAll();
+  initSplash();
   initSections();
   
   fetch('/api/workflow').then(r=>r.json()).then(j=>{
