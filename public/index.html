@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>邹慧明 · 三季度工作台</title>
 <style>
-:root{--bg:#f0f3f8;--card:#fff;--txt:#1e293b;--t2:#64748b;--t3:#94a3b8;--bd:#e2e8f0}[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--txt:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--bd:#334155}body{background:var(--bg);color:var(--txt);transition:background .3s,color .3s}
+:root{--bg:#f0f3f8;--card:#fff;--txt:#1e293b;--t2:#64748b;--t3:#94a3b8;--bd:#e2e8f0;--bd2:#f8fafc;--inp:#f8fafc;--chk:#cbd5e1;--dim:#f1f5f9}[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--txt:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--bd:#334155;--bd2:#1a2332;--inp:#1a2332;--chk:#475569;--dim:#1a2332}body{background:var(--bg);color:var(--txt);transition:background .3s,color .3s}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:var(--txt);padding:12px 11px 48px;max-width:860px;margin:0 auto;-webkit-font-smoothing:antialiased}
 
@@ -17,19 +17,19 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .stat-card{background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.stat-card .l{font-size:10px;color:#94a3b8;font-weight:600}
+.stat-card .l{font-size:10px;color:var(--t3);font-weight:600}
 .stat-card .v{font-size:22px;font-weight:800;margin-top:1px;line-height:1.2}
 .stat-card.red .v{color:#ef4444}
 .stat-card.green .v{color:#10b981}
 .stat-card.blue .v{color:#6366f1}
 .stat-card.purple .v{color:#8b5cf6}
 .stat-card .v .sub{font-size:11px;font-weight:400;color:#94a3b8}
-.stat-bar{height:3px;background:#f1f5f9;border-radius:4px;margin-top:5px;overflow:hidden}
+.stat-bar{height:3px;background:var(--dim);border-radius:4px;margin-top:5px;overflow:hidden}
 .stat-bar .fill{height:100%;border-radius:4px;transition:width .6s ease}
 
-.hint{font-size:11px;font-weight:700;color:#64748b;margin:16px 0 4px;letter-spacing:.3px}
+.hint{font-size:11px;font-weight:700;color:var(--t2);margin:16px 0 4px;letter-spacing:.3px}
 
-.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);transition:transform .15s}
+.card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);transition:transform .15s}
 .card:active{transform:scale(.995)}
 .grp-head{font-size:13px;font-weight:700;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;color:#fff}
 .grp-head .prog{font-size:11px;opacity:.85}
@@ -42,25 +42,25 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .grp-monthly .grp-head{background:linear-gradient(135deg,#6366f1,#818cf8)}
 .grp-decade .grp-head{background:linear-gradient(135deg,#14b8a6,#2dd4bf)}
 
-.row{display:flex;align-items:flex-start;padding:11px 14px;border-bottom:1px solid #f8fafc;min-height:48px;cursor:pointer;user-select:none;transition:background .15s,transform .1s}
+.row{display:flex;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--bd2);min-height:48px;cursor:pointer;user-select:none;transition:background .15s,transform .1s}
 .row:last-child{border-bottom:none}
 .row:active{background:#f8fafc}
 .row.done{background:#f0fdf4}
 .row.done .r-t{text-decoration:line-through;color:#94a3b8}
 .row.done .r-d{color:#cbd5e1}
 
-.ck{width:24px;height:24px;min-width:24px;border:2px solid #cbd5e1;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:2px 12px 0 0;font-size:13px;color:#fff;background:#fff;transition:.25s cubic-bezier(.4,0,.2,1)}
+.ck{width:24px;height:24px;min-width:24px;border:2px solid var(--chk);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:2px 12px 0 0;font-size:13px;color:#fff;background:#fff;transition:.25s cubic-bezier(.4,0,.2,1)}
 .row.done .ck{border-color:#10b981;background:#10b981;transform:scale(1.1)}
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1.05)}}
 .row.done .ck{animation:pop .3s ease}
 
 .r-b{flex:1;min-width:0}
 .r-t{font-size:14px;font-weight:600;line-height:1.3;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-.r-d{font-size:11px;color:#94a3b8;margin-top:2px;line-height:1.4}
+.r-d{font-size:11px;color:var(--t3);margin-top:2px;line-height:1.4}
 .r-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .tg{font-size:10px;padding:1px 7px;border-radius:5px;white-space:nowrap}
 .tg.who{background:#fef3c7;color:#92400e;font-weight:600}
-.tg.tab{background:#f1f5f9;color:#64748b}
+.tg.tab{background:var(--dim);color:#64748b}
 .tg.stamp{background:#10b981;color:#fff}
 .tg.fine{background:#ef4444;color:#fff;font-weight:700}
 
@@ -68,9 +68,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .row.must-fine.done{border-left-color:#10b981}
 
 .edit-btn{background:none;border:none;font-size:11px;cursor:pointer;padding:2px 5px;border-radius:4px;color:#cbd5e1;transition:.2s;flex-shrink:0}
-.edit-btn:hover{color:#64748b;background:#f1f5f9}
+.edit-btn:hover{color:var(--t2);background:#f1f5f9}
 
-.dl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s;min-height:48px}
+.dl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--bd2);cursor:pointer;transition:background .15s;min-height:48px}
 .dl:last-child{border-bottom:none}
 .dl.done{background:#f0fdf4}.dl.done .dl-t{text-decoration:line-through;color:#94a3b8}.dl.done .dl-m{color:#94a3b8}.dl.done .ck{border-color:#10b981;background:#10b981;animation:pop .3s ease}
 .dl:active{background:#f8fafc}
@@ -82,8 +82,8 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .dl.soon .dl-n .num{color:#ef4444}
 .dl-i{flex:1;min-width:0}
 .dl-t{font-size:13px;font-weight:700}
-.dl-m{font-size:10px;color:#94a3b8;margin-top:2px}
-.dl-c{width:24px;height:24px;min-width:24px;border:2px solid #cbd5e1;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;background:#fff;transition:.25s}
+.dl-m{font-size:10px;color:var(--t3);margin-top:2px}
+.dl-c{width:24px;height:24px;min-width:24px;border:2px solid var(--chk);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;background:#fff;transition:.25s}
 .dl.done .dl-c{border-color:#10b981;background:#10b981}
 .evt .dl-n .num{color:#6366f1;font-size:16px}
 
@@ -93,33 +93,33 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .temp-form input:focus{border-color:#6366f1}
 .temp-form button{width:40px;min-width:40px;border:none;border-radius:10px;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;font-weight:700;font-size:20px;cursor:pointer;transition:.2s}
 .temp-form button:active{transform:scale(.92)}
-.temp-item{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #f8fafc;font-size:13px;gap:8px;transition:background .15s}
-.temp-item .ti-ck{width:22px;height:22px;min-width:22px;border:2px solid #cbd5e1;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;background:#fff;transition:.2s}
+.temp-item{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--bd2);font-size:13px;gap:8px;transition:background .15s}
+.temp-item .ti-ck{width:22px;height:22px;min-width:22px;border:2px solid var(--chk);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;background:#fff;transition:.2s}
 .temp-item.done .ti-ck{border-color:#10b981;background:#10b981;color:#fff}
 .temp-item.done{background:#f0fdf4}
 .temp-item.done span{text-decoration:line-through;color:#94a3b8}
 
 /* Store visit */
-.sv-card{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:12px}
-.sv-card select,.sv-card textarea,.sv-card input{width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:9px 10px;font-size:13px;background:#f8fafc;color:#1e293b;font-family:inherit;margin-bottom:8px;transition:.2s}
+.sv-card{background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:12px}
+.sv-card select,.sv-card textarea,.sv-card input{width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:9px 10px;font-size:13px;background:var(--inp);color:var(--txt);font-family:inherit;margin-bottom:8px;transition:.2s}
 .sv-card select:focus,.sv-card textarea:focus,.sv-card input:focus{border-color:#6366f1;outline:none}
 .sv-card textarea{min-height:50px;resize:vertical}
-.sv-label{font-size:11px;font-weight:700;color:#64748b;margin-bottom:3px;display:block}
+.sv-label{font-size:11px;font-weight:700;color:var(--t2);margin-bottom:3px;display:block}
 .sv-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px}
-.sv-ck{width:22px;height:22px;min-width:22px;border:2px solid #cbd5e1;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;cursor:pointer;background:#fff;transition:.2s}
+.sv-ck{width:22px;height:22px;min-width:22px;border:2px solid var(--chk);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;cursor:pointer;background:#fff;transition:.2s}
 .sv-ck.checked{border-color:#10b981;background:#10b981;color:#fff}
 .sv-submit{width:100%;padding:11px;border:none;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:700;font-size:14px;cursor:pointer;margin-top:6px;transition:.2s;box-shadow:0 4px 12px rgba(99,102,241,.25)}
 .sv-submit:active{transform:scale(.97)}
-.sv-hist-item{font-size:12px;padding:7px 10px;border-bottom:1px solid #f8fafc;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.sv-hist-item{font-size:12px;padding:7px 10px;border-bottom:1px solid var(--bd2);display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 
-.ledger-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #f8fafc;font-size:13px}
+.ledger-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--bd2);font-size:13px}
 .ledger-item:last-child{border-bottom:none}
 .lg-cnt{font-weight:800;color:#6366f1;font-size:17px}
 .lg-note{font-size:10px;color:#cbd5e1;text-align:center;padding:6px}
 
 .btns{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
-.btns button{flex:1;min-width:70px;background:#fff;border:1.5px solid #e2e8f0;color:#64748b;font-size:10px;padding:9px 8px;border-radius:10px;cursor:pointer;font-weight:600;transition:.15s;white-space:nowrap}
-.btns button:active{background:#f1f5f9;transform:scale(.96)}
+.btns button{flex:1;min-width:70px;background:#fff;border:1.5px solid #e2e8f0;color:var(--t2);font-size:10px;padding:9px 8px;border-radius:10px;cursor:pointer;font-weight:600;transition:.15s;white-space:nowrap}
+.btns button:active{background:var(--dim);transform:scale(.96)}
 .foot{text-align:center;font-size:10px;color:#cbd5e1;margin-top:12px;line-height:1.6}
 
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.15)}
@@ -136,6 +136,13 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @media print{body{background:#fff;padding:0;color:#000}.header,.hint,.btns,.stats,.temp-form,.sv-card,.toast{display:none!important}.card{box-shadow:none;border:1px solid #ddd}}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 .toast.show{font-size:15px;padding:14px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 32px rgba(99,102,241,.4)}
+
+[data-theme="dark"] #svZone [style*="background:#fff"]{background:var(--card)!important}
+[data-theme="dark"] #svZone [style*="background:#f8fafc"]{background:var(--inp)!important}
+[data-theme="dark"] #svZone [style*="color:#1e293b"]{color:var(--txt)!important}
+[data-theme="dark"] #svZone [style*="color:#64748b"]{color:var(--t2)!important}
+[data-theme="dark"] #svZone [style*="color:#94a3b8"]{color:var(--t3)!important}
+[data-theme="dark"] #tempZone div[style*="background:#f8fafc"]{background:var(--inp)!important;color:var(--txt)!important}
 </style>
 </head>
 <body>
@@ -546,7 +553,7 @@ function renderAll(){
   const groups={urgent:[],soon:[],later:[],done:[]};
   sorted.forEach(d=>{if(s.dl[d.id]){groups.done.push(d);return}const dl=daysLeft(d.due);if(dl<=0)groups.urgent.push(d);else if(dl<=7)groups.soon.push(d);else groups.later.push(d);});
   let lz='';
-  function rg(label,items){if(!items||!items.length)return'';let h=`<div style="padding:6px 14px 4px;font-size:11px;font-weight:700;color:#94a3b8">${label} <span style="background:#f1f5f9;padding:1px 6px;border-radius:10px;font-size:10px">${items.length}</span></div>`;
+  function rg(label,items){if(!items||!items.length)return'';let h=`<div style="padding:6px 14px 4px;font-size:11px;font-weight:700;color:#94a3b8">${label} <span style="background:var(--dim);padding:1px 6px;border-radius:10px;font-size:10px">${items.length}</span></div>`;
     items.forEach(d=>{const done=!!s.dl[d.id];const dl=daysLeft(d.due);const c=done?'done':(dl<0?'over':(dl<=3?'soon':''))+(d.type==='evt'?' evt':'');const num=done?'✓':(dl<0?'超':dl);const u=done?`<div class="u">${s.dl[d.id].slice(5)}</div>`:(dl<0?`<div class="u">${Math.abs(dl)}天</div>`:(dl===0?'<div class="u">今天</div>':'<div class="u">天后</div>'));
       h+=`<div class="dl ${c}" onclick="tDl('${d.id}')"><div class="dl-n"><div class="num">${num}</div>${u}</div><div class="dl-i"><div class="dl-t">${s.cust2&&s.cust2[d.id]||d.title}<button class="edit-btn" onclick="event.stopPropagation();editDL('${d.id}')" title="编辑">✎</button><button class="edit-btn" onclick="event.stopPropagation();delAny('${d.id}')" title="删除">✕</button></div><div class="dl-m">${d.meta} · ${d.due.slice(5)}${d.tab?` · 📄${d.tab}`:''}</div></div><div class="ck">${done?'✓':''}</div></div>`;});
     return h;}
@@ -563,10 +570,10 @@ function renderAll(){
   document.getElementById('ledgerZone').innerHTML=gz;
 
   // Temp Tasks
-  let tz=`<div class="temp-form"><input id="tempInput" placeholder="✍️ 添加临时事项..." onkeydown="if(event.key==='Enter')addTempTask()" style="flex:2"/><input id="tempTime" placeholder="⏰ 时间（选填）" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px 8px;font-size:12px;outline:none;display:none" id="tempTimeRow"/><button onclick="toggleTempTime()" style="width:32px;min-width:32px;border:none;border-radius:10px;background:#e2e8f0;color:#64748b;font-weight:700;font-size:14px;cursor:pointer" title="添加时间">⏰</button><button onclick="addTempTask()">+</button></div>`;
+  let tz=`<div class="temp-form"><input id="tempInput" placeholder="✍️ 添加临时事项..." onkeydown="if(event.key==='Enter')addTempTask()" style="flex:2"/><input id="tempTime" placeholder="⏰ 时间（选填）" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px 8px;font-size:12px;outline:none;display:none" id="tempTimeRow"/><button onclick="toggleTempTime()" style="width:32px;min-width:32px;border:none;border-radius:10px;background:#e2e8f0;color:var(--t2);font-weight:700;font-size:14px;cursor:pointer" title="添加时间">⏰</button><button onclick="addTempTask()">+</button></div>`;
   const tm=s.tm||{};
   Object.keys(tm).sort().reverse().forEach(id=>{const tsk=tm[id];if(!tsk)return;if(tsk.done&&tsk.added!==t)return;
-    tz+=`<div class="temp-item${tsk.done?' done':''}"><div class="ti-ck" onclick="tTemp('${id}')">${tsk.done?'✓':''}</div><span style="flex:1;cursor:pointer" onclick="tTemp('${id}')">${tsk.text}</span><span style="font-size:10px;color:#94a3b8;margin:0 4px">${tsk.added.slice(5)}</span><button class="edit-btn" onclick="editTemp('${id}')" title="编辑">✎</button><button class="edit-btn" onclick="delTemp('${id}')" title="删除">✕</button></div>`;});
+    tz+=`<div class="temp-item${tsk.done?' done':''}"><div class="ti-ck" onclick="tTemp('${id}')">${tsk.done?'✓':''}</div><span style="flex:1;cursor:pointer" onclick="tTemp('${id}')">${tsk.text}</span><span style="font-size:10px;color:var(--t3);margin:0 4px">${tsk.added.slice(5)}</span><button class="edit-btn" onclick="editTemp('${id}')" title="编辑">✎</button><button class="edit-btn" onclick="delTemp('${id}')" title="删除">✕</button></div>`;});
   if(!Object.keys(tm).some(id=>{const tsk=tm[id];return tsk&&!(tsk.done&&tsk.added!==t);})){tz+=`<div style="padding:18px;text-align:center;font-size:12px;color:#cbd5e1">暂无事项 ✨</div>`;}
   document.getElementById('tempZone').innerHTML=tz;
 
@@ -576,14 +583,14 @@ function renderAll(){
 // Render Store Visit (separate to avoid ES escaping issues with svToggle)
 function renderSV(){
   const s=load();s.sv=s.sv||[];
-  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-size:14px;background:#f8fafc;color:#1e293b">`;
+  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-size:14px;background:var(--inp);color:#1e293b">`;
   ['长安花园','长安锦厦','环球','黄河','天安'].forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
-  h+=`</select><span style="font-size:12px;color:#64748b;white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
+  h+=`</select><span style="font-size:12px;color:var(--t2);white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
 
   SV_DIMENSIONS.forEach(dim=>{
     const dimOpen=svDraft['dim_open_'+dim.id]!==false;
     h+=`<div style="background:#fff;border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
-    h+=`<div onclick="svDraft['dim_open_'+'${dim.id}']=!${dimOpen};renderSV()" style="padding:12px 14px;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;color:#1e293b;user-select:none">${dim.label} <span style="font-size:18px;color:#94a3b8">${dimOpen?'▾':'▸'}</span></div>`;
+    h+=`<div onclick="svDraft['dim_open_'+'${dim.id}']=!${dimOpen};renderSV()" style="padding:12px 14px;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;color:var(--txt);user-select:none">${dim.label} <span style="font-size:18px;color:#94a3b8">${dimOpen?'▾':'▸'}</span></div>`;
     if(dimOpen){
       dim.items.forEach(it=>{
         const itemOpen=svDraft['item_open_'+it.id]!==false;
@@ -592,11 +599,11 @@ function renderSV(){
         if(itemOpen){
           h+=`<div style="padding:0 14px 10px">`;
           // Requirement
-          h+=`<div style="font-size:11px;color:#94a3b8;margin-bottom:6px;line-height:1.5">📋 <b>要求：</b>${it.req}</div>`;
+          h+=`<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.5">📋 <b>要求：</b>${it.req}</div>`;
 
           // Check items
           if(it.checks){
-            h+=`<div style="font-size:11px;color:#94a3b8;margin-bottom:4px;font-weight:600">📝 标准描述：</div>`;
+            h+=`<div style="font-size:11px;color:var(--t3);margin-bottom:4px;font-weight:600">📝 标准描述：</div>`;
             it.checks.forEach(ch=>{
               const v=svDraft.checks[ch.key];
               h+=`<div onclick="svToggle('${ch.key}')" style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;user-select:none">`;
@@ -614,14 +621,14 @@ function renderSV(){
           // Text input
           if(it.type==='text'){
             const val=svDraft.notes[it.key]||'';
-            h+=`<div style="margin-top:4px;font-size:11px;color:#94a3b8;margin-bottom:3px">${it.text}</div>`;
-            h+=`<textarea placeholder="${it.placeholder}" onchange="svSetNote('${it.key}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:11px;background:#fff;color:#1e293b;min-height:40px;resize:vertical;font-family:inherit">${val}</textarea>`;
+            h+=`<div style="margin-top:4px;font-size:11px;color:var(--t3);margin-bottom:3px">${it.text}</div>`;
+            h+=`<textarea placeholder="${it.placeholder}" onchange="svSetNote('${it.key}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:11px;background:#fff;color:var(--txt);min-height:40px;resize:vertical;font-family:inherit">${val}</textarea>`;
           }
 
           // Notes for every item
           const noteKey='note_'+it.id;
           const noteVal=svDraft.notes[noteKey]||'';
-          h+=`<input placeholder="补充备注..." value="${noteVal}" onchange="svSetNote('${noteKey}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;margin-top:6px;font-size:11px;background:#f8fafc;color:#475569;font-family:inherit"/>`;
+          h+=`<input placeholder="补充备注..." value="${noteVal}" onchange="svSetNote('${noteKey}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;margin-top:6px;font-size:11px;background:var(--inp);color:#475569;font-family:inherit"/>`;
           h+=`</div>`;
         }
         h+=`</div>`;
@@ -632,8 +639,8 @@ function renderSV(){
 
   // Communication and resolution
   h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
-  h+=`<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px">📝 与店长沟通核心重点及行动</div>`;
-  h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:#f8fafc;color:#1e293b;min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
+  h+=`<div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:8px">📝 与店长沟通核心重点及行动</div>`;
+  h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:var(--inp);color:var(--txt);min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
   h+=`</div>`;
 
   h+=`<button class="sv-submit" onclick="svSave()" style="margin-bottom:12px">💾 保存本次驻店记录</button>`;
@@ -641,7 +648,7 @@ function renderSV(){
   // History
   if(s.sv.length>0){
     h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b">📜 最近记录</div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
-    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:#94a3b8;margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
+    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
   }
   document.getElementById('svZone').innerHTML=h;
 }
