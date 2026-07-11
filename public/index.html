@@ -5,19 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>邹慧明 · 三季度工作台</title>
 <style>
-
-:root{
-  --bg:#f0f3f8;--card:#fff;--txt:#1e293b;--t2:#64748b;--t3:#94a3b8;
-  --bd:#e2e8f0;--bd2:#f8fafc;--inp:#f8fafc;--sh:0 1px 3px rgba(0,0,0,.04);
-  --dim-bg:#f1f5f9;--chk:#cbd5e1;
-}
-[data-theme="dark"]{
-  --bg:#0f172a;--card:#1e293b;--txt:#e2e8f0;--t2:#94a3b8;--t3:#64748b;
-  --bd:#334155;--bd2:#1a2332;--inp:#1a2332;--sh:0 1px 3px rgba(0,0,0,.2);
-  --dim-bg:#1a2332;--chk:#475569;
-}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:var(--txt);transition:background .3s,color .3s;padding:12px 11px 48px;max-width:860px;margin:0 auto;-webkit-font-smoothing:antialiased}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f0f3f8;color:#1e293b;padding:12px 11px 48px;max-width:860px;margin:0 auto;-webkit-font-smoothing:antialiased}
 
 .header{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px;padding:18px 16px 14px;margin-bottom:14px;box-shadow:0 4px 16px rgba(99,102,241,.25)}
 .header h1{font-size:19px;font-weight:800;letter-spacing:-.3px}
@@ -80,9 +69,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .edit-btn{background:none;border:none;font-size:11px;cursor:pointer;padding:2px 5px;border-radius:4px;color:#cbd5e1;transition:.2s;flex-shrink:0}
 .edit-btn:hover{color:#64748b;background:#f1f5f9}
 
-.dl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--bd,#f8fafc);cursor:pointer;transition:background .15s;min-height:48px}
+.dl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s;min-height:48px}
 .dl:last-child{border-bottom:none}
-.dl.done{background:#f0fdf4}.dl.done .dl-t{text-decoration:line-through;color:#94a3b8}.dl.done .dl-m{color:#94a3b8}
+.dl.done{background:#f0fdf4}
 .dl:active{background:#f8fafc}
 .dl-n{text-align:center;min-width:46px;flex-shrink:0}
 .dl-n .num{font-size:22px;font-weight:800;line-height:1;color:#f59e0b}
@@ -93,8 +82,8 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .dl-i{flex:1;min-width:0}
 .dl-t{font-size:13px;font-weight:700}
 .dl-m{font-size:10px;color:#94a3b8;margin-top:2px}
-.dl-c{width:28px;height:28px;min-width:28px;border:2px solid var(--chk,#cbd5e1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;background:var(--card,#fff);transition:.25s}
-.dl.done .dl-c{border-color:#10b981;background:#10b981;animation:pop .3s ease}
+.dl-c{width:24px;height:24px;min-width:24px;border:2px solid #cbd5e1;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:#fff;background:#fff;transition:.25s}
+.dl.done .dl-c{border-color:#10b981;background:#10b981}
 .evt .dl-n .num{color:#6366f1;font-size:16px}
 
 /* Temp tasks */
@@ -150,10 +139,11 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 </head>
 <body>
 
-<div class="header"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div>
+<div class="header">
   <h1>🧭 邹慧明 · 三季度工作台</h1>
   <div class="sub">上级：赵新华 &nbsp;|&nbsp; <span id="today"></span> &nbsp;|&nbsp; 核心：动作准时交</div>
-  <div class="quote" id="dailyQuote"></div></div><button id="themeBtn" onclick="toggleTheme()" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:20px;cursor:pointer;width:44px;height:44px;border-radius:50%;flex-shrink:0;min-width:44px">🌙</button></div></div>
+  <div class="quote" id="dailyQuote"></div>
+</div>
 
 
 <div class="stats" id="statsZone"></div>
@@ -472,7 +462,7 @@ function svSave(){
     msgtype:'markdown',
     markdown:{content:`## 📋 驻店记录 · ${record.store}\n> 日期：${record.date} ${record.time}\n> 合格项：${totalChecks} / ${totalItems}\n\n### 检查详情\n${bulletList}\n\n### 📝 与店长沟通要点\n> ${record.resolved||'（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台`}
   };
-  fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
+  fetch(WECOM_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
     if(j.errcode===0)toast('✅ 已保存并发送至企业微信');
     else toast('✅ 已保存（企业微信发送失败:'+j.errmsg+'）');
   }).catch(e=>{toast('✅ 已保存')});
@@ -554,8 +544,8 @@ function renderAll(){
 
   // Deadlines
   const sorted=[...DEADLINES].sort((a,b)=>daysLeft(a.due)-daysLeft(b.due));
-  const groups={urgent:[],soon:[],later:[]};
-  sorted.forEach(d=>{if(s.dl[d.id])return;const dl=daysLeft(d.due);if(dl<=0)groups.urgent.push(d);else if(dl<=7)groups.soon.push(d);else groups.later.push(d);});
+  const groups={urgent:[],soon:[],later:[],done:[]};
+  sorted.forEach(d=>{if(s.dl[d.id]){groups.done.push(d);return}const dl=daysLeft(d.due);if(dl<=0)groups.urgent.push(d);else if(dl<=7)groups.soon.push(d);else groups.later.push(d);});
   let lz='';
   function rg(label,items){if(!items||!items.length)return'';let h=`<div style="padding:6px 14px 4px;font-size:11px;font-weight:700;color:#94a3b8">${label} <span style="background:#f1f5f9;padding:1px 6px;border-radius:10px;font-size:10px">${items.length}</span></div>`;
     items.forEach(d=>{const done=!!s.dl[d.id];const dl=daysLeft(d.due);const c=done?'done':(dl<0?'over':(dl<=3?'soon':''))+(d.type==='evt'?' evt':'');const num=done?'✓':(dl<0?'超':dl);const u=done?`<div class="u">${s.dl[d.id].slice(5)}</div>`:(dl<0?`<div class="u">${Math.abs(dl)}天</div>`:(dl===0?'<div class="u">今天</div>':'<div class="u">天后</div>'));
@@ -564,7 +554,7 @@ function renderAll(){
   lz+=rg('🔴 已超期/今天',groups.urgent);
   lz+=rg('🟡 7天内截止',groups.soon);
   lz+=rg('⏺ 更晚截止',groups.later);
-  
+  lz+=rg('✅ 已完成',groups.done);
   document.getElementById('dlZone').innerHTML=lz;
 
   // Ledger
@@ -587,65 +577,77 @@ function renderAll(){
 // Render Store Visit (separate to avoid ES escaping issues with svToggle)
 function renderSV(){
   const s=load();s.sv=s.sv||[];
-  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1;border:2px solid #cbd5e1;border-radius:12px;padding:12px;font-size:15px;background:#f8fafc;color:#1e293b;min-height:48px">`;
+  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-size:14px;background:#f8fafc;color:#1e293b">`;
   ['长安花园','长安锦厦','环球','黄河','天安'].forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
-  h+=`</select><span style="font-size:13px;color:#64748b;white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
+  h+=`</select><span style="font-size:12px;color:#64748b;white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
 
   SV_DIMENSIONS.forEach(dim=>{
-    h+=`<div style="margin-bottom:14px">`;
-    h+=`<div style="font-size:15px;font-weight:800;color:#1e293b;margin-bottom:8px;padding:8px 0">${dim.label}</div>`;
-    dim.items.forEach(it=>{
-      h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
-      h+=`<div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:6px">${it.label}</div>`;
-      h+=`<div style="font-size:11px;color:#64748b;margin-bottom:8px;line-height:1.6;padding:8px 10px;background:#f8fafc;border-radius:8px;border-left:3px solid #6366f1">📋 ${it.req}</div>`;
-      if(it.checks){
-        it.checks.forEach(ch=>{
-          const v=svDraft.checks[ch.key];const bg=v===true?'#10b981':v===false?'#ef4444':'#cbd5e1';const tc=v?'#fff':'#64748b';
-          h+=`<div onclick="svCycleCheck('${ch.key}')" style="display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;user-select:none;min-height:44px"><div style="width:28px;height:28px;min-width:28px;border:2px solid ${bg};border-radius:7px;display:flex;align-items:center;justify-content:center;background:${v===true?'#10b981':v===false?'#ef4444':'#fff'};color:${v?'#fff':(v===false?'#fff':'#64748b')};font-size:14px">${v===true?'✓':v===false?'✗':''}</div><span style="font-size:13px;color:#1e293b">${ch.text}</span></div>`;
-        });
-      }
-      if(it.type==='number'){
-        const val=svDraft.numbers[it.key]||'';
-        h+=`<div style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="number" placeholder="${it.placeholder}" value="${val}" onchange="svSetNum('${it.key}',this.value)" style="width:90px;border:2px solid #cbd5e1;border-radius:8px;padding:10px;font-size:14px;min-height:44px;background:#f8fafc;color:#1e293b"/><span style="font-size:13px;color:#64748b">${it.unit}</span></div>`;
-      }
-      if(it.type==='text'){
-        const val=svDraft.notes[it.key]||'';
-        if(it.text)h+=`<div style="margin-top:6px;font-size:11px;color:#64748b;margin-bottom:4px">${it.text}</div>`;
-        h+=`<textarea placeholder="${it.placeholder}" onchange="svSetNote('${it.key}',this.value)" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:50px;background:#f8fafc;color:#1e293b;font-family:inherit;resize:vertical">${val}</textarea>`;
-      }
-      const noteKey='note_'+it.id;const noteVal=svDraft.notes[noteKey]||'';
-      h+=`<input placeholder="💬 补充备注..." value="${noteVal}" onchange="svSetNote('${noteKey}',this.value)" style="width:100%;border:2px solid #cbd5e1;border-radius:8px;padding:10px;margin-top:8px;font-size:13px;min-height:44px;background:#f8fafc;color:#1e293b;font-family:inherit"/>`;
-      h+=`</div>`;
-    });
+    const dimOpen=svDraft['dim_open_'+dim.id]!==false;
+    h+=`<div style="background:#fff;border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
+    h+=`<div onclick="svDraft['dim_open_'+'${dim.id}']=!${dimOpen};renderSV()" style="padding:12px 14px;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;color:#1e293b;user-select:none">${dim.label} <span style="font-size:18px;color:#94a3b8">${dimOpen?'▾':'▸'}</span></div>`;
+    if(dimOpen){
+      dim.items.forEach(it=>{
+        const itemOpen=svDraft['item_open_'+it.id]!==false;
+        h+=`<div style="border-bottom:1px solid #f1f5f9">`;
+        h+=`<div onclick="svDraft['item_open_'+'${it.id}']=!${itemOpen};renderSV()" style="padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;color:#475569;user-select:none">${it.label} <span style="font-size:14px;color:#94a3b8">${itemOpen?'▾':'▸'}</span></div>`;
+        if(itemOpen){
+          h+=`<div style="padding:0 14px 10px">`;
+          // Requirement
+          h+=`<div style="font-size:11px;color:#94a3b8;margin-bottom:6px;line-height:1.5">📋 <b>要求：</b>${it.req}</div>`;
+
+          // Check items
+          if(it.checks){
+            h+=`<div style="font-size:11px;color:#94a3b8;margin-bottom:4px;font-weight:600">📝 标准描述：</div>`;
+            it.checks.forEach(ch=>{
+              const v=svDraft.checks[ch.key];
+              h+=`<div onclick="svToggle('${ch.key}')" style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;user-select:none">`;
+              h+=`<div style="width:20px;height:20px;min-width:20px;border:2px solid ${v?'#10b981':'#cbd5e1'};border-radius:5px;display:flex;align-items:center;justify-content:center;background:${v?'#10b981':'#fff'};color:#fff;font-size:12px;transition:.2s">${v?'✓':''}</div>`;
+              h+=`<span style="font-size:12px;color:${v?'#10b981':'#475569'}">${ch.text}</span></div>`;
+            });
+          }
+
+          // Number input
+          if(it.type==='number'){
+            const val=svDraft.numbers[it.key]||'';
+            h+=`<div style="display:flex;align-items:center;gap:6px;margin-top:4px"><input type="number" placeholder="${it.placeholder}" value="${val}" onchange="svSetNum('${it.key}',this.value)" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:12px;background:#fff;color:#1e293b"/><span style="font-size:11px;color:#94a3b8">${it.unit}</span></div>`;
+          }
+
+          // Text input
+          if(it.type==='text'){
+            const val=svDraft.notes[it.key]||'';
+            h+=`<div style="margin-top:4px;font-size:11px;color:#94a3b8;margin-bottom:3px">${it.text}</div>`;
+            h+=`<textarea placeholder="${it.placeholder}" onchange="svSetNote('${it.key}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:11px;background:#fff;color:#1e293b;min-height:40px;resize:vertical;font-family:inherit">${val}</textarea>`;
+          }
+
+          // Notes for every item
+          const noteKey='note_'+it.id;
+          const noteVal=svDraft.notes[noteKey]||'';
+          h+=`<input placeholder="补充备注..." value="${noteVal}" onchange="svSetNote('${noteKey}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;margin-top:6px;font-size:11px;background:#f8fafc;color:#475569;font-family:inherit"/>`;
+          h+=`</div>`;
+        }
+        h+=`</div>`;
+      });
+    }
     h+=`</div>`;
   });
 
-  h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:8px">📝 与店长沟通核心重点及行动</div><textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:#f8fafc;color:#1e293b;font-family:inherit;resize:vertical">${svDraft.resolved}</textarea></div>`;
-  h+=`<button class="sv-submit" onclick="svSave()" style="padding:14px;margin-bottom:12px;font-size:15px;border-radius:12px">💾 保存本次驻店记录</button>`;
+  // Communication and resolution
+  h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
+  h+=`<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px">📝 与店长沟通核心重点及行动</div>`;
+  h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:#f8fafc;color:#1e293b;min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
+  h+=`</div>`;
 
+  h+=`<button class="sv-submit" onclick="svSave()" style="margin-bottom:12px">💾 保存本次驻店记录</button>`;
+
+  // History
   if(s.sv.length>0){
-    h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:13px;font-weight:700;color:#64748b">📜 最近记录</div><button onclick="svExportCSV()" style="background:#fff;border:1.5px solid #cbd5e1;color:#6366f1;font-size:12px;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:700;min-height:40px">📥 导出CSV</button></div>`;
-    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1;min-width:0"><b style="white-space:nowrap">${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:10px;color:#94a3b8;margin-top:2px">${r.summary.substring(0,50)}</div>`:''}</div><span style="font-size:10px;color:#94a3b8;white-space:nowrap;flex-shrink:0">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})" style="font-size:16px;padding:4px 8px;min-height:36px">✕</button></div>`;});
+    h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b">📜 最近记录</div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
+    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:#94a3b8;margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
   }
   document.getElementById('svZone').innerHTML=h;
 }
-
 // Init
-function toggleTheme(){
-  const html=document.documentElement;
-  const cur=html.getAttribute('data-theme')||'light';
-  const next=cur==='dark'?'light':'dark';
-  html.setAttribute('data-theme',next);
-  document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
-  localStorage.setItem('zm_theme',next);
-}
-function initTheme(){
-  const s=localStorage.getItem('zm_theme')||'light';
-  document.documentElement.setAttribute('data-theme',s);
-  document.getElementById('themeBtn').textContent=s==='dark'?'☀️':'🌙';
-}
 function boot(){
-  initTheme();
   renderAll();
   fetch('/api/workflow').then(r=>r.json()).then(j=>{if(j.data&&Object.keys(j.data).length>0){try{localStorage.setItem(KEY,JSON.stringify(j.data))}catch(e){}renderAll()}}).catch(()=>{});
   setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
