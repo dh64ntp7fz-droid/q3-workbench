@@ -186,7 +186,9 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 <div class="hint">⏰ 截止 & 日程</div>
 <div class="card" id="dlZone"></div>
 
-<div class="hint">📋 驻店记录 · 巡店检查（配套桌面巡店表）</div>
+<div class="hint" id="svToggle" style="cursor:pointer;user-select:none" onclick="toggleSV()">
+  <span id="svArrow">▼</span> 📋 驻店记录 · 巡店检查（配套桌面巡店表）
+</div>
 <div class="sv-card" id="svZone"></div>
 
 <div class="hint">📁 简易台账 · 每日提交累计</div>
@@ -399,7 +401,7 @@ function editTemp(id){const s=load();const tsk=s.tm[id];if(!tsk)return;const nt=
 
 // Store visit
 // ── 巡店记录数据（完全对齐区域经理巡店表.xlsx）──
-const SV_NAMES={长安花园:'长安花园',长安锦厦:'长安锦厦',环球:'环球',黄河:'黄河',天安:'天安'};
+const SV_NAMES={长安花园:'长安花园',长安锦厦:'长安锦厦',大朗环球:'大朗环球',凤岗黄河:'凤岗黄河',凤岗天安:'凤岗天安'};
 
 const SV_DIMENSIONS=[
   {id:'dim1',label:'👤 员工状态',open:true,items:[
@@ -466,6 +468,14 @@ const SV_DIMENSIONS=[
 
 let svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};
 function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];renderSV()}
+
+let svCollapsed=localStorage.getItem('zm_sv_collapsed')==='1';
+function toggleSV(){
+  svCollapsed=!svCollapsed;
+  localStorage.setItem('zm_sv_collapsed',svCollapsed?'1':'0');
+  document.getElementById('svArrow').textContent=svCollapsed?'▶':'▼';
+  document.getElementById('svZone').style.display=svCollapsed?'none':'block';
+}
 function svSetNum(key,val){svDraft.numbers[key]=val;}
 function svSetNote(key,val){svDraft.notes[key]=val;}
 function svSave(){
@@ -513,7 +523,10 @@ function svSave(){
     else toast('✅ 已保存（企业微信发送失败:'+j.errmsg+'）');
   }).catch(e=>{toast('✅ 已保存')});
 
-  svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};renderSV();
+  svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};
+  // 提交后自动展开
+  if(svCollapsed){svCollapsed=false;localStorage.setItem('zm_sv_collapsed','0');document.getElementById('svArrow').textContent='▼';document.getElementById('svZone').style.display='block';}
+  renderSV();
 }
 function svExportCSV(){
   const s=load();s.sv=s.sv||[];if(!s.sv.length){toast('暂无记录可导出');return;}
@@ -623,8 +636,12 @@ function renderAll(){
 // Render Store Visit (separate to avoid ES escaping issues with svToggle)
 function renderSV(){
   const s=load();s.sv=s.sv||[];
+  // 折叠状态初始化
+  document.getElementById('svArrow').textContent=svCollapsed?'▶':'▼';
+  if(svCollapsed){document.getElementById('svZone').style.display='none';return;}
+  document.getElementById('svZone').style.display='block';
   let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-size:14px;background:var(--inp);color:#1e293b">`;
-  ['长安花园','长安锦厦','环球','黄河','天安'].forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
+  ['长安花园','长安锦厦','大朗环球','凤岗黄河','凤岗天安'].forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
   h+=`</select><span style="font-size:12px;color:var(--t2);white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
 
   SV_DIMENSIONS.forEach(dim=>{
