@@ -784,10 +784,10 @@ function boot(){
   el.id='splash';
   el.style.cssText='position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#f97316,#ef4444,#ec4899);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-size:28px;font-weight:800;transition:opacity .5s';
   var emojis=['🌟','💪','🔥','✨','⚡','🏆','🎯','💫'];
-  var msgs=['邹慧明 · 三季度工作台','今天也是闪闪发光的一天','你比昨天更强了','专注当下，未来已在路上'];
+  var msgs=['🌟 今天也是闪闪发光的一天','💪 你比昨天更强了','🔥 专注当下，未来已在路上','✨ 再难的事拆开做就简单了','⚡ 你的执行力是最好的名片','🏆 每一个准时交的表都在为Q3加分','🎯 保持专注的一天开始了','💫 你比你想象的更强大'];
   var e=emojis[Math.floor(Math.random()*emojis.length)];
   var m=msgs[Math.floor(Math.random()*msgs.length)];
-  el.innerHTML='<div style="font-size:72px;margin-bottom:8px;animation:splashPop .6s ease-out">'+e+'</div><div style="animation:splashFade .8s ease-out">'+m+'</div><div style="font-size:12px;font-weight:400;opacity:.6;margin-top:16px;animation:splashFade 1s ease-out">⏳</div>';
+  el.innerHTML='<div style="font-size:72px;margin-bottom:6px;animation:splashPop .6s ease-out">'+e+'</div><div style="animation:splashFade .8s ease-out">'+m+'</div><div style="font-size:13px;font-weight:600;margin-top:14px;opacity:.85;animation:splashFade .9s ease-out">邹慧明 · 三季度工作台</div><div style="font-size:12px;font-weight:400;opacity:.5;margin-top:10px;animation:splashFade 1s ease-out">⏳</div>';
   document.body.appendChild(el);
   setTimeout(function(){el.style.opacity='0';setTimeout(function(){try{if(el.parentNode)el.parentNode.removeChild(el);}catch(e){}},500);},2500);
   var ss=document.createElement('style');
