@@ -857,9 +857,9 @@ function cheerMe(){
   const extra=done===MUST.length?'🎉 今日必交已全部完成！':'已交 '+done+'/'+MUST.length;
   toast(m.emoji+' '+m.title+'<br>'+extra,true);
 }
-// Click title for cheer
-document.getElementById('splashTitle').onclick=initSplash;
-document.getElementById('mainTitle').onclick=function(){cheerMe()};
+// Click title for cheer — must not throw even if splashTitle removed
+try{document.getElementById('splashTitle').onclick=initSplash;}catch(e){}
+try{document.getElementById('mainTitle').onclick=function(){cheerMe()};}catch(e){}
 function calcStreak(){
   const s=load();const t=todayStr();let streak=0,firstMiss=false;
   for(let d=new Date(t);;d.setDate(d.getDate()-1)){
