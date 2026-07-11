@@ -780,6 +780,15 @@ setInterval(()=>{
   }
 },600000);
 function boot(){
+  if(!localStorage.getItem('zm_splash_seen')){
+    localStorage.setItem('zm_splash_seen','1');
+    var el=document.createElement('div');
+    el.id='splash';
+    el.style.cssText='position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-size:28px;font-weight:800;transition:opacity .4s';
+    el.innerHTML='<div style="font-size:56px">🧭</div><div style="margin-top:8px">邹慧明 · 三季度工作台</div>';
+    document.body.appendChild(el);
+    setTimeout(function(){el.style.opacity='0';setTimeout(function(){try{if(el.parentNode)el.parentNode.removeChild(el);}catch(e){}},400);},800);
+  }
   renderAll();
   initSections();
   
