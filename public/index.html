@@ -368,77 +368,106 @@ function delTemp(id){const s=load();s.tm=s.tm||{};delete s.tm[id];save(s);render
 function editTemp(id){const s=load();const tsk=s.tm[id];if(!tsk)return;const nt=prompt('编辑：',tsk.text);if(nt!==null){tsk.text=nt.trim();save(s);renderAll();toast('✅ 已更新')}}
 
 // Store visit
+// ── 巡店记录数据（完全对齐区域经理巡店表.xlsx）──
 const SV_NAMES={长安花园:'长安花园',长安锦厦:'长安锦厦',环球:'环球',黄河:'黄河',天安:'天安'};
 
-// Full inspection form data matching 区域经理巡店表.xlsx
-const SV_FORM=[
-  {
-    cat:'👤 员工状态',
-    items:[
-      {id:'s_a1',label:'仪容仪表',type:'checks',checks:[
-        {key:'a1_1',label:'着装标准统一，干净整洁，无油污异味'},
-        {key:'a1_2',label:'化淡妆，工牌佩戴规范'},
-        {key:'a1_3',label:'无明显个人卫生问题'},
-      ]},
-      {id:'s_a2',label:'精神面貌',type:'checks',checks:[
-        {key:'a2_1',label:'无倚靠、扎堆闲聊、玩手机等闲散现象'},
-        {key:'a2_2',label:'热情笑容好、精神抖擞，无无精打采'},
-      ]},
-    ]
-  },
-  {
-    cat:'🍽️ 顾客满意（15分）',
-    items:[
-      {id:'s_b1',label:'服务理念',type:'checks',checks:[
-        {key:'b1_1',label:'遇客主动打招呼'},
-        {key:'b1_2',label:'与客交流面带微笑、语气让人舒服'},
-        {key:'b1_3',label:'主动欢迎欢送'},
-        {key:'b1_4',label:'使用礼貌用语（您好、请、谢谢）'},
-      ]},
-      {id:'s_b2',label:'餐中巡桌',type:'number',placeholder:'观察10分钟，记录员工主动服务次数（如倒水、撤盘、关火）',unit:'次'},
-      {id:'s_b3',label:'响应速度',type:'number',placeholder:'员工响应顾客呼叫时间',unit:'秒'},
-      {id:'s_b4',label:'需求到送到',type:'number',placeholder:'从提出需求（如加碗饭）到送到，时间',unit:'分钟'},
-      {id:'s_b5',label:'客诉处理',type:'text',placeholder:'模拟一个客诉（如菜太咸），看员工处理流程是否专业、得体。能妥善处理，态度诚恳，按流程补偿，不满意及时上报'},
-      {id:'s_b6',label:'随心服务',type:'checks',checks:[
-        {key:'b6_1',label:'观察到惊喜服务案例（送小食/加冰水/真诚沟通），有意外体验'},
-      ]},
-    ]
-  },
-  {
-    cat:'🧹 环境卫生（4D标准）',
-    items:[
-      {id:'s_c1',label:'咨客区',sub:'含外摆500米',type:'checks',checks:[
-        {key:'c1_1',label:'设备/用具用品/台面/地面/死角卫生达标'},
-      ]},
-      {id:'s_c2',label:'传菜区',type:'checks',checks:[
-        {key:'c2_1',label:'设备/用具用品/台面/地面/死角卫生达标'},
-      ]},
-      {id:'s_c3',label:'前厅区域',type:'checks',checks:[
-        {key:'c3_1',label:'设备/用具用品/台面/餐具/地面/死角卫生达标'},
-      ]},
-      {id:'s_c4',label:'收银台/米饭区',type:'checks',checks:[
-        {key:'c4_1',label:'设备/用具用品/台面/地面/死角卫生达标'},
-      ]},
-      {id:'s_c5',label:'洗手间',type:'checks',checks:[
-        {key:'c5_1',label:'设备/用具用品/台面/地面/死角卫生、气味达标'},
-      ]},
-    ]
-  },
+const SV_DIMENSIONS=[
+  {id:'dim1',label:'👤 员工状态',open:true,items:[
+    {id:'s_a1',label:'仪容仪表',open:true,
+     req:'着各岗位标准服装，干净整洁，无油污异味，工牌佩戴规范。',
+     checks:[
+       {key:'a1_a',text:'着装是否标准统一？'},
+       {key:'a1_b',text:'是否化淡妆，工牌是否佩戴？'},
+       {key:'a1_c',text:'是否存在明显个人卫生问题？'},
+     ]},
+    {id:'s_a2',label:'精神面貌',open:true,
+     req:'热情笑容好、精神抖擞，无倚靠、扎堆闲聊、玩手机等闲散现象。',
+     checks:[
+       {key:'a2_a',text:'是否有员工闲散、无所事事？'},
+       {key:'a2_b',text:'上班是否无精打采？'},
+     ]},
+  ]},
+  {id:'dim2',label:'🍽️ 顾客满意（共15分）',open:true,items:[
+    {id:'s_b1',label:'服务理念',open:true,
+     req:'态度谦卑、诚恳，使用礼貌用语，无居高临下或不耐烦的表现。能热情、主动地打招呼，动作快！',
+     checks:[
+       {key:'b1_a',text:'遇客是否主动打招呼？'},
+       {key:'b1_b',text:'与客交流是否面带微笑、语气让人舒服？'},
+       {key:'b1_c',text:'是否有主动欢迎欢送？'},
+       {key:'b1_d',text:'是否使用礼貌用语（您好、请、谢谢）？'},
+     ]},
+    {id:'s_b2',label:'餐中巡桌',open:false,
+     req:'伙伴眼里有活（三齐一撤一关一剩），观察10分钟，记录主动服务次数。',
+     type:'number',key:'b2_n',unit:'次',placeholder:'观察10分钟，记录主动服务次数'},
+    {id:'s_b3',label:'响应速度',open:false,
+     req:'能主动发现顾客需求；对客呼叫能立即响应，并小步快跑前往。',
+     type:'number',key:'b3_n',unit:'秒',placeholder:'员工响应时间（秒）'},
+    {id:'s_b4',label:'需求到送到时间',open:false,
+     req:'从提出需求（如：加碗饭）到送到的时间。',
+     type:'number',key:'b4_n',unit:'分钟',placeholder:'从需求提出到送达时间'},
+    {id:'s_b5',label:'客诉处理',open:false,
+     req:'能妥善处理一般性客诉（如菜品太辣、有异物、上错菜），态度诚恳，按流程补偿（如退换、赠送），最终让顾客满意。不满意者及时上报店长！',
+     type:'text',key:'b5_t',text:'主观评价：模拟一个客诉（如：菜太咸），看员工处理流程是否专业、得体。',placeholder:'记录客诉处理表现...'},
+    {id:'s_b6',label:'随心服务',open:false,
+     req:'能通过自然、真诚的沟通或小的惊喜动作（如：给顾客打小吃、送冰水解辣等）拉近与顾客距离，让顾客有"哇"的意外体验。',
+     checks:[
+       {key:'b6_a',text:'观察期间是否看到惊喜服务案例？'},
+     ],
+     type:'text',key:'b6_t',text:'客观记录：描述看到的惊喜服务案例',placeholder:'描述惊喜服务案例...'},
+  ]},
+  {id:'dim3',label:'🧹 环境卫生（4D标准）',open:true,items:[
+    {id:'s_c1',label:'咨客区',open:false,
+     req:'（设备、用具用品、台面、地面、死角卫生）包括外摆500米。干净整洁，符合4D标准。',
+     checks:[{key:'c1_a',text:'达标'}]},
+    {id:'s_c2',label:'传菜区',open:false,
+     req:'（设备、用具用品、台面、地面、死角卫生）干净整洁，符合4D标准。',
+     checks:[{key:'c2_a',text:'达标'}]},
+    {id:'s_c3',label:'前厅区域',open:false,
+     req:'（设备、用具用品、台面、餐具、地面、死角卫生）干净整洁，符合4D标准。',
+     checks:[{key:'c3_a',text:'达标'}]},
+    {id:'s_c4',label:'收银台、米饭区',open:false,
+     req:'（设备、用具用品、台面、地面、死角卫生）干净整洁，符合4D标准。',
+     checks:[{key:'c4_a',text:'达标'}]},
+    {id:'s_c5',label:'洗手间',open:false,
+     req:'（设备、用具用品、台面、地面、死角卫生、气味）干净整洁，符合4D标准。',
+     checks:[{key:'c5_a',text:'达标'}]},
+  ]},
 ];
 
 let svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};
 function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];renderSV()}
-function svSetNumber(id,val){svDraft.numbers[id]=val;renderSV()}
-// svDraft: store, results (id→'pass'|'fail'|''), details (id→note), notes, resolved
-function svToggle(id){svDraft.checks[id]=!svDraft.checks[id];renderSV()}
+function svSetNum(key,val){svDraft.numbers[key]=val;}
+function svSetNote(key,val){svDraft.notes[key]=val;}
 function svSave(){
   const s=load();s.sv=s.sv||[];
   const totalChecks=Object.values(svDraft.checks).filter(Boolean).length;
+  const totalItems=Object.values(svDraft.checks).length;
   const noteSummary=[];
   Object.keys(svDraft.notes).forEach(id=>{if(svDraft.notes[id])noteSummary.push(id+':'+svDraft.notes[id].substring(0,40));});
-  s.sv.unshift({store:svDraft.store,date:todayStr(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),checks:{...svDraft.checks},notes:{...svDraft.notes},numbers:{...svDraft.numbers},resolved:svDraft.resolved,checkCount:totalChecks,summary:noteSummary.join('; ')});
+  const record={store:svDraft.store,date:todayStr(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),checks:{...svDraft.checks},notes:{...svDraft.notes},numbers:{...svDraft.numbers},resolved:svDraft.resolved,checkCount:totalChecks,summary:noteSummary.join('; ')};
+  s.sv.unshift(record);
   if(s.sv.length>30)s.sv=s.sv.slice(0,30);
-  save(s);svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};renderSV();toast('✅ 驻店记录已保存');
+  save(s);
+
+  // Send to WeChat Work webhook
+  const WECOM_URL='https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d35ec9fd-b3e2-4132-848c-0fbc7ab38107';
+  const now=new Date().toLocaleString('zh-CN');
+  let bulletList=SV_DIMENSIONS.map(dim=>dim.items.map(it=>{
+    if(it.checks)return it.checks.map(ch=>`> ${ch.text.substring(0,20)}：`+(record.checks[ch.key]?'<font color=\"info\">✓</font>':'<font color=\"warning\">✗</font>')).join('\n');
+    if(it.type==='number')return '> '+it.label+'：'+((record.numbers||{})[it.key]||'未填')+it.unit;
+    if(it.type==='text')return '> '+it.label+'：'+((record.notes||{})[it.key]||'未填').substring(0,30);
+    return '';
+  }).join('\n')).join('\n> \n');
+  const md={
+    msgtype:'markdown',
+    markdown:{content:`## 📋 驻店记录 · ${record.store}\n> 日期：${record.date} ${record.time}\n> 合格项：${totalChecks} / ${totalItems}\n\n### 检查详情\n${bulletList}\n\n### 📝 与店长沟通要点\n> ${record.resolved||'（未填写）'}\n\n---\n> 👤 邹慧明 · 三季度工作台`}
+  };
+  fetch(WECOM_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(md)}).then(r=>r.json()).then(j=>{
+    if(j.errcode===0)toast('✅ 已保存并发送至企业微信');
+    else toast('✅ 已保存（企业微信发送失败:'+j.errmsg+'）');
+  }).catch(e=>{toast('✅ 已保存')});
+
+  svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};renderSV();
 }
 function svExportCSV(){
   const s=load();s.sv=s.sv||[];if(!s.sv.length){toast('暂无记录可导出');return;}
@@ -552,37 +581,60 @@ function renderSV(){
   ['长安花园','长安锦厦','环球','黄河','天安'].forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
   h+=`</select><span style="font-size:12px;color:#64748b;white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
 
-  SV_FORM.forEach(section=>{
-    h+=`<div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:12px;border:1px solid #e2e8f0">`;
-    h+=`<div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:10px;display:flex;align-items:center;gap:6px">${section.cat}</div>`;
+  SV_DIMENSIONS.forEach(dim=>{
+    const dimOpen=svDraft['dim_open_'+dim.id]!==false;
+    h+=`<div style="background:#fff;border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
+    h+=`<div onclick="svDraft['dim_open_'+'${dim.id}']=!${dimOpen};renderSV()" style="padding:12px 14px;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;color:#1e293b;user-select:none">${dim.label} <span style="font-size:18px;color:#94a3b8">${dimOpen?'▾':'▸'}</span></div>`;
+    if(dimOpen){
+      dim.items.forEach(it=>{
+        const itemOpen=svDraft['item_open_'+it.id]!==false;
+        h+=`<div style="border-bottom:1px solid #f1f5f9">`;
+        h+=`<div onclick="svDraft['item_open_'+'${it.id}']=!${itemOpen};renderSV()" style="padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;color:#475569;user-select:none">${it.label} <span style="font-size:14px;color:#94a3b8">${itemOpen?'▾':'▸'}</span></div>`;
+        if(itemOpen){
+          h+=`<div style="padding:0 14px 10px">`;
+          // Requirement
+          h+=`<div style="font-size:11px;color:#94a3b8;margin-bottom:6px;line-height:1.5">📋 <b>要求：</b>${it.req}</div>`;
 
-    section.items.forEach(it=>{
-      h+=`<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #e2e8f0">`;
-      h+=`<div style="font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px">${it.label}${it.sub?` <span style="font-weight:400;color:#94a3b8">(${it.sub})</span>`:''}</div>`;
+          // Check items
+          if(it.checks){
+            h+=`<div style="font-size:11px;color:#94a3b8;margin-bottom:4px;font-weight:600">📝 标准描述：</div>`;
+            it.checks.forEach(ch=>{
+              const v=svDraft.checks[ch.key];
+              h+=`<div onclick="svToggle('${ch.key}')" style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;user-select:none">`;
+              h+=`<div style="width:20px;height:20px;min-width:20px;border:2px solid ${v?'#10b981':'#cbd5e1'};border-radius:5px;display:flex;align-items:center;justify-content:center;background:${v?'#10b981':'#fff'};color:#fff;font-size:12px;transition:.2s">${v?'✓':''}</div>`;
+              h+=`<span style="font-size:12px;color:${v?'#10b981':'#475569'}">${ch.text}</span></div>`;
+            });
+          }
 
-      if(it.type==='checks'){
-        it.checks.forEach(ch=>{
-          const v=svDraft.checks[ch.key]||false;
-          h+=`<div style="display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12px;cursor:pointer" onclick="svToggle('${ch.key}')"><div style="width:20px;height:20px;min-width:20px;border:2px solid ${v?'#10b981':'#cbd5e1'};border-radius:5px;display:flex;align-items:center;justify-content:center;background:${v?'#10b981':'#fff'};color:#fff;font-size:12px;transition:.2s;flex-shrink:0">${v?'✓':''}</div><span style="color:${v?'#10b981':'#64748b'}">${ch.label}</span></div>`;
-        });
-      }
-      else if(it.type==='number'){
-        const val=svDraft.numbers[it.id]||'';
-        h+=`<input type="number" placeholder="${it.placeholder}" value="${val}" onchange="svSetNumber('${it.id}',this.value)" style="width:80px;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:12px;background:#fff;color:#1e293b"/> <span style="font-size:11px;color:#94a3b8">${it.unit}</span>`;
-      }
-      else if(it.type==='text'){
-        const val=svDraft.notes[it.id]||'';
-        h+=`<textarea placeholder="${it.placeholder}" onchange="svDraft.notes['${it.id}']=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:11px;background:#fff;color:#1e293b;min-height:40px;resize:vertical;font-family:inherit">${val}</textarea>`;
-      }
-      h+=`<textarea placeholder="备注..." onchange="svDraft.notes['${it.id}']=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:11px;background:#fff;color:#1e293b;min-height:28px;resize:none;margin-top:4px;font-family:inherit">${svDraft.notes[it.id]||''}</textarea>`;
-      h+=`</div>`;
-    });
+          // Number input
+          if(it.type==='number'){
+            const val=svDraft.numbers[it.key]||'';
+            h+=`<div style="display:flex;align-items:center;gap:6px;margin-top:4px"><input type="number" placeholder="${it.placeholder}" value="${val}" onchange="svSetNum('${it.key}',this.value)" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:12px;background:#fff;color:#1e293b"/><span style="font-size:11px;color:#94a3b8">${it.unit}</span></div>`;
+          }
+
+          // Text input
+          if(it.type==='text'){
+            const val=svDraft.notes[it.key]||'';
+            h+=`<div style="margin-top:4px;font-size:11px;color:#94a3b8;margin-bottom:3px">${it.text}</div>`;
+            h+=`<textarea placeholder="${it.placeholder}" onchange="svSetNote('${it.key}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:11px;background:#fff;color:#1e293b;min-height:40px;resize:vertical;font-family:inherit">${val}</textarea>`;
+          }
+
+          // Notes for every item
+          const noteKey='note_'+it.id;
+          const noteVal=svDraft.notes[noteKey]||'';
+          h+=`<input placeholder="补充备注..." value="${noteVal}" onchange="svSetNote('${noteKey}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;margin-top:6px;font-size:11px;background:#f8fafc;color:#475569;font-family:inherit"/>`;
+          h+=`</div>`;
+        }
+        h+=`</div>`;
+      });
+    }
     h+=`</div>`;
   });
 
-  h+=`<div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:12px;border:1px solid #e2e8f0">`;
-  h+=`<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:6px">📝 与店长沟通核心重点及行动</div>`;
-  h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:#fff;color:#1e293b;min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
+  // Communication and resolution
+  h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
+  h+=`<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px">📝 与店长沟通核心重点及行动</div>`;
+  h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:#f8fafc;color:#1e293b;min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
   h+=`</div>`;
 
   h+=`<button class="sv-submit" onclick="svSave()" style="margin-bottom:12px">💾 保存本次驻店记录</button>`;
@@ -594,7 +646,6 @@ function renderSV(){
   }
   document.getElementById('svZone').innerHTML=h;
 }
-
 // Init
 function boot(){
   renderAll();
