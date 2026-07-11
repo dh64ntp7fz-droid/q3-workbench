@@ -13,9 +13,6 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f0f3f8;color
 .header .sub{font-size:11px;opacity:.8;margin-top:4px}
 .header .quote{font-size:10px;opacity:.6;margin-top:8px;font-style:italic}
 
-.cheer{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-radius:14px;padding:14px 16px;margin:12px 0;text-align:center;box-shadow:0 4px 12px rgba(16,185,129,.2);transition:.3s}
-.cheer .msg{font-size:16px;font-weight:700}
-.cheer .subm{font-size:11px;opacity:.8;margin-top:4px}
 
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .stat-card{background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
@@ -143,7 +140,6 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f0f3f8;color
   <div class="quote" id="dailyQuote"></div>
 </div>
 
-<div class="cheer" id="cheerZone"></div>
 
 <div class="stats" id="statsZone"></div>
 
@@ -262,58 +258,45 @@ function decadeStr(){return String(Math.floor((new Date()-new Date('2026-01-01')
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2000)}
+const C_MSGS=['👏 又搞定一个！','✨ 太棒了！','🎯 稳准狠！','🔥 势不可挡！','💎 干得漂亮！','🚀 执行力拉满！','🏆 Q3冲刺！','🌟 邹慧明牛！'];
+function emoToast(){
+  const s=load();const t=todayStr();const muDone=MUST.filter(m=>s.mu[m.id]===t).length;
+  let msg;
+  if(muDone===MUST.length)msg='🏆 今日必交全部完成！你太靠谱了！';
+  else if(muDone>=MUST.length-1)msg='🔥 还差1个就全清了！';
+  else msg=C_MSGS[Math.floor(Math.random()*C_MSGS.length)];
+  toast(msg);
+}
 
 // Emotional cheer messages
-const CHEERS=[
-  '👏 又搞定一个！邹慧明今天真棒',
-  '✨ 太优秀了，赵总看到得给你加分',
-  '🎯 稳准狠！这个动作完成得漂亮',
-  '🔥 一个接一个，你今天势不可挡',
-  '💎 小事情做到位，大结果自然来',
-  '🚀 这执行力，没谁了',
-  '🏆 Q3冲刺，你是认真的',
-  '🌟 每一个✓都是你对团队的责任心',
-];
-function cheer(){
-  let msg='';
-  const s=load();s.mu=s.mu||{};const t=todayStr();
-  const muDone=MUST.filter(m=>s.mu[m.id]===t).length;
-  if(muDone===MUST.length){msg='🏆 今日必交全部完成！邹慧明你太靠谱了！赵总看在眼里 👏';}
-  else if(muDone>=MUST.length-1){msg='🔥 还差一点点就全清了，冲啊！';}
-  else if(muDone>=Math.ceil(MUST.length/2)){msg='💪 进度不错，继续加油！';}
-  else if(muDone>0){msg=CHEERS[Math.floor(Math.random()*CHEERS.length)];}
-  const c=document.getElementById('cheerZone');
-  if(!msg){c.style.display='none';return}
-  c.style.display='block';
-  c.innerHTML='<div class="msg">'+msg+'</div>';
-}
+
 
 // Toggles
 function tMust(id){
   const s=load();s.mu=s.mu||{};const t=todayStr();
   if(s.mu[id]===t)delete s.mu[id];else s.mu[id]=t;
-  save(s);bumpLedger(id);renderAll();toast('✓ 已标记');
+  save(s);bumpLedger(id);renderAll();emoToast();
 }
 function tDaily(id){
   const s=load();s.dy=s.dy||{};const t=todayStr();
   if(s.dy[id]===t)delete s.dy[id];else s.dy[id]=t;
-  save(s);renderAll();
+  save(s);renderAll();emoToast();
 }
 function tWact(id){
   const s=load();s.wk=s.wk||{};const cur=weekStr();
   if(s.wk[id]===cur)delete s.wk[id];else s.wk[id]=cur;
-  save(s);renderAll();
+  save(s);renderAll();emoToast();
 }
 function tCycle(id,k){
   const s=load();s.cy=s.cy||{};const cur=k==='monthly'?monthStr():(k==='decade'?decadeStr():weekStr());
   if(s.cy[id]&&s.cy[id].p===cur)delete s.cy[id];
   else s.cy[id]={p:cur,d:todayStr()};
-  save(s);renderAll();
+  save(s);renderAll();emoToast();
 }
 function tDl(id){
   const s=load();s.dl=s.dl||{};
   if(s.dl[id])delete s.dl[id];else s.dl[id]=todayStr();
-  save(s);renderAll();
+  save(s);renderAll();emoToast();
 }
 function bumpLedger(id){
   const s=load();s.lg=s.lg||{};const t=todayStr();s.lgd=s.lgd||{};
@@ -321,43 +304,69 @@ function bumpLedger(id){
 }
 
 // Edit & Delete
+function findCycleItem(id){for(const c of CYCLES)for(const t of c.tasks)if(t.id===id)return t;return null}
+function findDL(id){return DEADLINES.find(d=>d.id===id)}
+function editDL(id){
+  const s=load();const d=findDL(id);if(!d)return;
+  const nt=prompt('修改标题：',d.title);if(nt===null)return;
+  s.cust2=s.cust2||{};s.cust2[id]=nt.trim();save(s);renderAll();toast('✅ 已更新');
+}
 function editText(id,type){
-  const s=load();const arr=type==='must'?MUST:type==='daily'?DAILY:WACT;
-  const item=arr.find(x=>x.id===id);if(!item)return;
+  const s=load();
+  let item;
+  if(type==='cycle'){item=findCycleItem(id);}
+  else{const arr=type==='must'?MUST:type==='daily'?DAILY:WACT;item=arr.find(x=>x.id===id);}
+  if(!item)return;
   const cur=s.cust&&s.cust[id]||item.text||item.title||'';
   const nt=prompt('修改名称：',cur);if(nt===null)return;
   s.cust=s.cust||{};s.cust[id]=nt.trim();save(s);renderAll();toast('✅ 已更新');
 }
+function delAny(id){const s=load();s.delIds=s.delIds||[];s.delIds.push(id);save(s);renderAll();toast('已删除');}
 function delItem(id,type){
-  if(!confirm('确定删除「'+(s.cust&&s.cust[id]||id)+'」?'))return;
-  const s=load();s.delIds=s.delIds||[];s.delIds.push(id);save(s);renderAll();toast('已删除');
+  const s=load();
+  const label=s.cust&&s.cust[id]||id;
+  if(!confirm('确定删除「'+label+'」?'))return;
+  s.delIds=s.delIds||[];s.delIds.push(id);save(s);renderAll();toast('已删除');
 }
 
 // Temp tasks
 function addTempTask(){
-  const inp=document.getElementById('tempInput');const txt=inp.value.trim();if(!txt)return;
-  const s=load();s.tm=s.tm||{};s.tm['tmp_'+Date.now()]={text:txt,added:todayStr(),done:false};
-  inp.value='';save(s);renderAll();toast('✅ 已添加');
+  const inp=document.getElementById('tempInput');
+  const time=document.getElementById('tempTime');
+  const txt=inp.value.trim();if(!txt)return;
+  const t=time&&time.value?time.value:'';
+  const label=t?txt+' ('+t+')':txt;
+  const s=load();s.tm=s.tm||{};s.tm['tmp_'+Date.now()]={text:label,added:todayStr(),done:false,rawTime:t};
+  inp.value='';if(time)time.value='';
+  save(s);renderAll();toast('✅ 已添加');
+}
+function toggleTempTime(){
+  const row=document.getElementById('tempTimeRow');
+  row.style.display=row.style.display==='none'?'flex':'none';
 }
 function tTemp(id){const s=load();s.tm=s.tm||{};if(s.tm[id]){s.tm[id].done=!s.tm[id].done;save(s);renderAll()}}
 function delTemp(id){const s=load();s.tm=s.tm||{};delete s.tm[id];save(s);renderAll()}
 function editTemp(id){const s=load();const tsk=s.tm[id];if(!tsk)return;const nt=prompt('编辑：',tsk.text);if(nt!==null){tsk.text=nt.trim();save(s);renderAll();toast('✅ 已更新')}}
 
 // Store visit
-let svDraft={store:'花',checks:{},notes:'',resolved:''};
 const SV_NAMES={花:'长安花园',厦:'长安锦厦',环:'环球',河:'黄河',天:'天安'};
 const SV_ITEMS=[
   {cat:'👤 员工状态',items:[{id:'a1',label:'仪容仪表达标'},{id:'a2',label:'精神面貌良好'}]},
   {cat:'🍽️ 顾客满意',items:[{id:'b1',label:'服务理念/礼貌用语'},{id:'b2',label:'餐中巡桌活跃'},{id:'b3',label:'响应速度快'}]},
   {cat:'🧹 环境卫生 (4D)',items:[{id:'c1',label:'咨客区达标'},{id:'c2',label:'传菜区达标'},{id:'c3',label:'前厅区域达标'},{id:'c4',label:'收银台/米饭区达标'},{id:'c5',label:'洗手间达标'}]},
 ];
+// svDraft: store, results (id→'pass'|'fail'|''), details (id→note), notes, resolved
+let svDraft={store:'花',results:{},details:{},notes:'',resolved:''};
 function svToggle(id){svDraft.checks[id]=!svDraft.checks[id];renderSV()}
 function svSave(){
   const s=load();s.sv=s.sv||[];
-  const total=Object.values(svDraft.checks).filter(Boolean).length;
-  s.sv.unshift({store:svDraft.store,date:todayStr(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),checks:{...svDraft.checks},notes:svDraft.notes,resolved:svDraft.resolved,total});
+  const total=Object.values(svDraft.results).filter(v=>v==='pass').length;
+  const fails=Object.values(svDraft.results).filter(v=>v==='fail').length;
+  const detailSummary=[];
+  Object.keys(svDraft.details).forEach(id=>{if(svDraft.details[id])detailSummary.push(id+':'+svDraft.details[id].substring(0,30));});
+  s.sv.unshift({store:svDraft.store,date:todayStr(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),results:{...svDraft.results},details:{...svDraft.details},notes:svDraft.notes,resolved:svDraft.resolved,total,fails,detailSummary:detailSummary.join('; ')});
   if(s.sv.length>30)s.sv=s.sv.slice(0,30);
-  save(s);svDraft={store:'花',checks:{},notes:'',resolved:''};renderSV();toast('✅ 驻店记录已保存');
+  save(s);svDraft={store:'花',results:{},details:{},notes:'',resolved:''};renderSV();toast('✅ 驻店记录已保存');
 }
 function svDelete(i){const s=load();s.sv=s.sv||[];s.sv.splice(i,1);save(s);renderSV()}
 
@@ -371,13 +380,12 @@ function resetAll(){localStorage.removeItem(KEY);renderAll();toast('已清空')}
 
 // ── RENDER ──
 function renderAll(){
-  const s=load();s.mu=s.mu||{};s.dy=s.dy||{};s.wk=s.wk||{};s.cy=s.cy||{};s.dl=s.dl||{};s.lg=s.lg||{};s.cust=s.cust||{};s.tm=s.tm||{};s.sv=s.sv||[];s.delIds=s.delIds||[];
+  const s=load();s.mu=s.mu||{};s.dy=s.dy||{};s.wk=s.wk||{};s.cy=s.cy||{};s.dl=s.dl||{};s.lg=s.lg||{};s.cust=s.cust||{};s.cust2=s.cust2||{};s.tm=s.tm||{};s.sv=s.sv||[];s.delIds=s.delIds||[];
   const t=todayStr();const wcur=weekStr();
   document.getElementById('today').textContent=(new Date().getMonth()+1)+'月'+new Date().getDate()+'日 周'+['日','一','二','三','四','五','六'][new Date().getDay()];
   document.getElementById('dailyQuote').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
 
   // Cheer
-  cheer();
 
   // Stats
   let muDone=0;MUST.forEach(m=>{if(s.mu[m.id]===t)muDone++});
@@ -418,8 +426,8 @@ function renderAll(){
     let cur=c.key==='monthly'?monthStr():(c.key==='decade'?decadeStr():weekStr());let sd=0;
     c.tasks.forEach(tk=>{if(s.cy[tk.id]&&s.cy[tk.id].p===cur)sd++;});
     cz+=`<div class="card grp-${c.key}" style="margin-bottom:10px"><div class="grp-head"><span>${c.label} <span class="cyc">· ${c.cyc}</span></span><span class="prog">${sd}/${c.tasks.length}</span></div>`;
-    c.tasks.forEach(tk=>{const rec=s.cy[tk.id];const done=rec&&rec.p===cur;
-      cz+=`<div class="row${done?' done':''}" onclick="tCycle('${tk.id}','${c.key}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${tk.title}</div><div class="r-d">${tk.desc}</div><div class="r-tags"><span class="tg who">交：${tk.who}</span>${tk.tab!=='—'?`<span class="tg tab">📄${tk.tab}</span>`:''}${done?`<span class="tg stamp">✓${rec.d.slice(5)}交</span>`:''}</div></div></div>`;});
+    c.tasks.forEach(tk=>{if(s.delIds.includes(tk.id))return;const ttl2=s.cust[tk.id]||tk.title;const rec=s.cy[tk.id];const done=rec&&rec.p===cur;
+      cz+=`<div class="row${done?' done':''}" onclick="tCycle('${tk.id}','${c.key}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl2}<button class="edit-btn" onclick="event.stopPropagation();editText('${tk.id}','cycle')">✎</button><button class="edit-btn" onclick="event.stopPropagation();delAny('${tk.id}')">✕</button></div><div class="r-d">${tk.desc}</div><div class="r-tags"><span class="tg who">交：${tk.who}</span>${tk.tab!=='—'?`<span class="tg tab">📄${tk.tab}</span>`:''}${done?`<span class="tg stamp">✓${rec.d.slice(5)}交</span>`:''}</div></div></div>`;});
     cz+=`</div>`;});
   document.getElementById('cycleZone').innerHTML=cz;
 
@@ -430,7 +438,7 @@ function renderAll(){
   let lz='';
   function rg(label,items){if(!items||!items.length)return'';let h=`<div style="padding:6px 14px 4px;font-size:11px;font-weight:700;color:#94a3b8">${label} <span style="background:#f1f5f9;padding:1px 6px;border-radius:10px;font-size:10px">${items.length}</span></div>`;
     items.forEach(d=>{const done=!!s.dl[d.id];const dl=daysLeft(d.due);const c=done?'done':(dl<0?'over':(dl<=3?'soon':''))+(d.type==='evt'?' evt':'');const num=done?'✓':(dl<0?'超':dl);const u=done?`<div class="u">${s.dl[d.id].slice(5)}</div>`:(dl<0?`<div class="u">${Math.abs(dl)}天</div>`:(dl===0?'<div class="u">今天</div>':'<div class="u">天后</div>'));
-      h+=`<div class="dl ${c}" onclick="tDl('${d.id}')"><div class="dl-n"><div class="num">${num}</div>${u}</div><div class="dl-i"><div class="dl-t">${d.title}</div><div class="dl-m">${d.meta} · ${d.due.slice(5)}${d.tab?` · 📄${d.tab}`:''}</div></div><div class="dl-c">${done?'✓':''}</div></div>`;});
+      h+=`<div class="dl ${c}" onclick="tDl('${d.id}')"><div class="dl-n"><div class="num">${num}</div>${u}</div><div class="dl-i"><div class="dl-t">${s.cust2&&s.cust2[d.id]||d.title}<button class="edit-btn" onclick="event.stopPropagation();editDL('${d.id}')" title="编辑">✎</button><button class="edit-btn" onclick="event.stopPropagation();delAny('${d.id}')" title="删除">✕</button></div><div class="dl-m">${d.meta} · ${d.due.slice(5)}${d.tab?` · 📄${d.tab}`:''}</div></div><div class="dl-c">${done?'✓':''}</div></div>`;});
     return h;}
   lz+=rg('🔴 已超期/今天',groups.urgent);
   lz+=rg('🟡 7天内截止',groups.soon);
@@ -445,7 +453,7 @@ function renderAll(){
   document.getElementById('ledgerZone').innerHTML=gz;
 
   // Temp Tasks
-  let tz=`<div class="temp-form"><input id="tempInput" placeholder="✍️ 添加临时事项..." onkeydown="if(event.key==='Enter')addTempTask()"/><button onclick="addTempTask()">+</button></div>`;
+  let tz=`<div class="temp-form"><input id="tempInput" placeholder="✍️ 添加临时事项..." onkeydown="if(event.key==='Enter')addTempTask()" style="flex:2"/><input id="tempTime" placeholder="⏰ 时间（选填）" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px 8px;font-size:12px;outline:none;display:none" id="tempTimeRow"/><button onclick="toggleTempTime()" style="width:32px;min-width:32px;border:none;border-radius:10px;background:#e2e8f0;color:#64748b;font-weight:700;font-size:14px;cursor:pointer" title="添加时间">⏰</button><button onclick="addTempTask()">+</button></div>`;
   const tm=s.tm||{};
   Object.keys(tm).sort().reverse().forEach(id=>{const tsk=tm[id];if(!tsk)return;if(tsk.done&&tsk.added!==t)return;
     tz+=`<div class="temp-item${tsk.done?' done':''}"><div class="ti-ck" onclick="tTemp('${id}')">${tsk.done?'✓':''}</div><span style="flex:1;cursor:pointer" onclick="tTemp('${id}')">${tsk.text}</span><span style="font-size:10px;color:#94a3b8;margin:0 4px">${tsk.added.slice(5)}</span><button class="edit-btn" onclick="editTemp('${id}')" title="编辑">✎</button><button class="edit-btn" onclick="delTemp('${id}')" title="删除">✕</button></div>`;});
@@ -458,22 +466,34 @@ function renderAll(){
 // Render Store Visit (separate to avoid ES escaping issues with svToggle)
 function renderSV(){
   const s=load();s.sv=s.sv||[];
-  let h=`<div style="display:flex;gap:8px;margin-bottom:10px"><select id="svStore" onchange="svDraft.store=this.value">`;
+  let h=`<div style="display:flex;gap:8px;margin-bottom:12px"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1">`;
   Object.entries(SV_NAMES).forEach(([k,v])=>{h+=`<option value="${k}"${svDraft.store===k?' selected':''}>${v}</option>`;});
   h+=`</select><span style="font-size:12px;color:#64748b;align-self:center;white-space:nowrap">${todayStr().slice(5)}</span></div>`;
   SV_ITEMS.forEach(cat=>{
-    h+=`<div class="sv-label">${cat.cat}</div>`;
-    cat.items.forEach(it=>{const chk=svDraft.checks[it.id];
-      h+=`<div class="sv-item"><div class="sv-ck${chk?' checked':''}" onclick="svDraft.checks['${it.id}']=!svDraft.checks['${it.id}'];renderSV()">${chk?'✓':''}</div><span>${it.label}</span></div>`;});
+    h+=`<div class="sv-label" style="margin-top:8px">${cat.cat}</div>`;
+    cat.items.forEach(it=>{
+      const r=svDraft.results[it.id]||'';
+      const d=svDraft.details[it.id]||'';
+      const isPass=r==='pass',isFail=r==='fail';
+      h+=`<div class="sv-item" style="flex-wrap:wrap;gap:6px;padding:6px 0;border-bottom:1px solid #f8fafc">`;
+      h+=`<div style="display:flex;align-items:center;gap:6px">`;
+      h+=`<span style="min-width:80px;font-size:13px">${it.label}</span>`;
+      h+=`<button style="padding:4px 10px;border:${isPass?'none':'1.5px solid #10b981'};border-radius:6px;background:${isPass?'#10b981':'#fff'};color:${isPass?'#fff':'#10b981'};font-size:11px;cursor:pointer;font-weight:600;transition:.15s" onclick="svPass('${it.id}')">✓ 合格</button>`;
+      h+=`<button style="padding:4px 10px;border:${isFail?'none':'1.5px solid #ef4444'};border-radius:6px;background:${isFail?'#ef4444':'#fff'};color:${isFail?'#fff':'#ef4444'};font-size:11px;cursor:pointer;font-weight:600;transition:.15s;margin-right:4px" onclick="svFail('${it.id}')">✗ 不合格</button>`;
+      h+=`${r?`<button style="background:none;border:none;font-size:10px;color:#94a3b8;cursor:pointer" onclick="svClear('${it.id}')">清除</button>`:''}`;
+      h+=`</div>`;
+      h+=`<input placeholder="备注..." value="${d}" onchange="svDraft.details['${it.id}']=this.value" style="flex:1;min-width:150px;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:11px;background:#f8fafc;color:#1e293b"/>`;
+      h+=`</div>`;
+    });
   });
-  h+=`<div class="sv-label" style="margin-top:6px">📝 问题点与整改（巡店表"与店长沟通"栏）</div>`;
-  h+=`<textarea placeholder="发现问题、整改要点..." onchange="svDraft.notes=this.value">${svDraft.notes}</textarea>`;
+  h+=`<div class="sv-label" style="margin-top:10px">📝 整体问题点与整改</div>`;
+  h+=`<textarea placeholder="发现问题、整改要点...（对应巡店表"与店长沟通"栏）" onchange="svDraft.notes=this.value">${svDraft.notes}</textarea>`;
   h+=`<div class="sv-label">✅ 帮门店解决了什么</div>`;
   h+=`<input placeholder="如：协调维修、调配物料..." onchange="svDraft.resolved=this.value" value="${svDraft.resolved}"/>`;
   h+=`<button class="sv-submit" onclick="svSave()">💾 保存本次驻店记录</button>`;
   if(s.sv.length>0){
     h+=`<div style="font-size:12px;font-weight:700;color:#64748b;margin:12px 0 6px">📜 最近记录</div>`;
-    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${SV_NAMES[r.store]||r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.total}项✓</span>${r.notes?`<div style="font-size:10px;color:#94a3b8;margin-top:1px">${r.notes.substring(0,40)}${r.notes.length>40?'…':''}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
+    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${SV_NAMES[r.store]||r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.total||0}✓</span>${r.fails?` <span style="color:#ef4444">${r.fails}✗</span>`:''}${r.notes?`<div style="font-size:10px;color:#94a3b8;margin-top:1px">${r.notes.substring(0,40)}${r.notes.length>40?'…':''}</div>`:''}${r.detailSummary?`<div style="font-size:9px;color:#cbd5e1;margin-top:1px">${r.detailSummary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
   }
   document.getElementById('svZone').innerHTML=h;
 }
