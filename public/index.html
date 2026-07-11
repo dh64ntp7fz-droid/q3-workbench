@@ -884,71 +884,19 @@ function gameLoop(){
 }
 function drawGame(){
   var c=document.getElementById('gameCanvas');
-  if(!c)return;var ctx=c.getContext('2d');
-  // clear
-  ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,320,120);
-  // ground
-  ctx.fillStyle='#16213e';ctx.fillRect(0,100,320,20);
-  ctx.fillStyle='#0f3460';for(var i=0;i<320;i+=16){ctx.fillRect(i,100,8,3);}
-  // player (pixel dude)
+  if(!c||!c.getContext)return;
+  var ctx=c.getContext('2d');
+  ctx.clearRect(0,0,320,120);
+  ctx.fillStyle='#f0f0f0';ctx.fillRect(0,0,320,120);
+  ctx.fillStyle='#ddd';ctx.fillRect(0,100,320,20);
   ctx.fillStyle='#e94560';
   ctx.fillRect(player.x,player.y,player.w,player.h);
   ctx.fillStyle='#fff';ctx.fillRect(player.x+2,player.y+2,3,3);ctx.fillRect(player.x+7,player.y+2,3,3);
-  // obstacles (pixel blocks)
-  ctx.fillStyle='#c7c7c7';
+  ctx.fillStyle='#888';
   for(var i=0;i<obstacles.length;i++){
     var o=obstacles[i];
     ctx.fillRect(o.x,o.y,o.w,o.h);
-    ctx.fillStyle='#888';ctx.fillRect(o.x+2,o.y+2,2,2);ctx.fillStyle='#c7c7c7';
   }
-  // score
-  if(!gameOver&&gameRun){ctx.fillStyle='#e2e8f0';ctx.font='8px monospace';ctx.fillText('分数:'+Math.floor(gameScore/5),260,20);}
-  if(gameOver){ctx.fillStyle='#ef4444';ctx.font='10px monospace';ctx.fillText('游戏结束',130,55);ctx.fillStyle='#94a3b8';ctx.font='7px monospace';ctx.fillText('点击"开始"重玩',120,80);}
-  if(gameOver&&!gameRun){ctx.fillStyle='#e94560';ctx.font='8px monospace';ctx.fillText('得分:'+Math.floor(gameScore/5),140,40);}
-}
-// keyboard
-document.addEventListener('keydown',function(e){
-  if(e.code==='Space'||e.code==='ArrowUp'){
-    e.preventDefault();
-    if(gameOver||!gameRun){if(!gameRun)startGame();return;}
-    if(!player.jumping){player.vy=-5;player.jumping=true;}
-  }
-});
-// touch
-document.addEventListener('click',function(e){
-  var c=document.getElementById('gameCanvas');
-  if(c&&c.contains(e.target)){
-    if(!gameRun){startGame();return;}
-    if(!player.jumping&&!gameOver){player.vy=-5;player.jumping=true;}
-  }
-});
-// initial draw
-setTimeout(function(){drawGame();},500);
-
-function boot(){
-  renderAll();
-  
-  initSections();
-  
-  fetch('/api/workflow').then(r=>r.json()).then(j=>{
-    if(j.data&&Object.keys(j.data).length>0){
-      try{
-        const existing=JSON.parse(localStorage.getItem(KEY))||{};
-        const merged={...j.data};
-        Object.keys(merged).forEach(k=>{
-          if(existing[k]!==undefined)delete merged[k];
-        });
-        if(Object.keys(merged).length>0){
-          localStorage.setItem(KEY,JSON.stringify({...existing,...merged}));
-          renderAll();
-        }
-      }catch(e){/*ignore*/}
-    }
-  }).catch(()=>{});
-  setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
-  setInterval(renderAll,60000);
-}
-boot();
-</script>
-</body>
-</html>
+  if(gameRun){ctx.fillStyle='#333';ctx.font='10px monospace';ctx.fillText('分数:'+Math.floor(gameScore/5),260,20);}
+  if(gameOver){ctx.fillStyle='#e94560';ctx.font='bold 14px monospace';ctx.textAlign='center';ctx.fillText('游戏结束',160,50);ctx.fillStyle='#888';ctx.font='10px monospace';ctx.fillText('点击/空格 重新开始',160,70);ctx.textAlign='left';}
+}>
