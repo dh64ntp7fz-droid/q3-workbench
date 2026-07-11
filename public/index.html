@@ -201,7 +201,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes dotPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.4);opacity:1}}
 
 /* ── 减压小游戏 ── */
-.game-wrap{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:12px;display:block}
+.game-wrap{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:12px;display:block;border:2px solid var(--bd)}
 .game-wrap.show{display:block}
 .game-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--card);color:var(--txt);border-bottom:1px solid var(--bd2);cursor:pointer;user-select:none}
 .game-bar span{font-size:13px;font-weight:700}
@@ -853,7 +853,7 @@ function startGame(){
 function _gLoop(){
   if(!_gRun)return;
   _gF++;_gP.y+=_gP.y<82?2:0;if(_gP.y>82)_gP.y=82;
-  if(_gF%40===0)_gO.push({x:320,y:88,w:8,h:10});
+  if(_gF%55===0)_gO.push({x:320,y:88,w:8,h:10});
   for(var i=_gO.length-1;i>=0;i--){_gO[i].x-=3;if(_gO[i].x+_gO[i].w<0)_gO.splice(i,1);}
   for(var i=0;i<_gO.length;i++){var o=_gO[i];if(_gP.x+_gP.w>o.x&&_gP.x<o.x+o.w&&_gP.y+_gP.h>o.y){_gOver=true;_gRun=false;}}
   if(!_gOver)_gScore+=1;
@@ -865,23 +865,23 @@ function drawGame(){
   var ctx=c.getContext('2d');
   ctx.clearRect(0,0,320,120);
   ctx.fillStyle='var(--bg)';ctx.fillRect(0,0,320,120);
-  ctx.fillStyle='var(--bd)';ctx.fillRect(0,100,320,2);
-  ctx.fillStyle='var(--t3)';ctx.font='10px monospace';
+  ctx.fillStyle='#cbd5e1';ctx.fillRect(0,100,320,2);
+  ctx.fillStyle='#475569';ctx.font='11px monospace';
   ctx.fillText('🏆 '+(_gRun?Math.floor(_gScore/5):_gOver?'game over':'0'),260,15);
-  ctx.fillStyle='#6366f1';
+  ctx.fillStyle='#ef4444';
   ctx.fillRect(_gP.x,_gP.y,_gP.w,_gP.h);
   ctx.fillStyle='#fff';ctx.fillRect(_gP.x+2,_gP.y+2,3,3);ctx.fillRect(_gP.x+5,_gP.y+2,3,3);
-  ctx.fillStyle='#94a3b8';
+  ctx.fillStyle='#475569';
   for(var i=0;i<_gO.length;i++)ctx.fillRect(_gO[i].x,_gO[i].y,_gO[i].w,_gO[i].h);
 }
 document.addEventListener('keydown',function(e){
   if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();
-    if(_gOver||!_gRun){startGame();return;}if(_gP.y>=80)_gP.y-=18;
+    if(_gOver||!_gRun){startGame();return;}if(_gP.y>=80)_gP.y-=25;
   }
 });
 document.addEventListener('click',function(e){
   var c=document.getElementById('gameCanvas');
-  if(c&&c.contains(e.target)){if(!_gRun){startGame();return;}if(_gP.y>=80)_gP.y-=18;}
+  if(c&&c.contains(e.target)){if(!_gRun){startGame();return;}if(_gP.y>=80)_gP.y-=25;}
 });
 setTimeout(function(){drawGame();},200);
 </script>
