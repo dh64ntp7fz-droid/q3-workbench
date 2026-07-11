@@ -832,36 +832,34 @@ const GREETINGS={
   night:['🌙 辛苦了，早点休息','✨ 今天也很棒，明天继续','🌟 慧明今天辛苦了，好梦'],
 };
 function initSplash(){
-  const h=new Date().getHours();let period='morning';
-  if(h>=6&&h<12)period='morning';else if(h>=12&&h<14)period='noon';else if(h>=14&&h<18)period='afternoon';else period='night';
-  const greet=GREETINGS[period][Math.floor(Math.random()*GREETINGS[period].length)];
-  const msg=SPLASH_MSGS[Math.floor(Math.random()*SPLASH_MSGS.length)];
-  document.getElementById('splashEmoji').textContent=msg.emoji;
-  document.getElementById('splashTitle').textContent=msg.title;
-  document.getElementById('splashDaily').textContent=greet;
-  // Background floating emojis
-  const bg=document.getElementById('splashBg');
-  const emojis=['🔥','💪','🎯','🌟','✅','📊','🏆','💎','⚡','✨'];
-  for(let i=0;i<8;i++){
-    const s=document.createElement('span');
-    s.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-    s.style.left=Math.random()*90+'%';s.style.top=Math.random()*90+'%';
-    s.style.animationDelay=Math.random()*3+'s';s.style.fontSize=(24+Math.random()*30)+'px';
-    bg.appendChild(s);
-  }
-  // After 2.8s: fade out splash, then remove from DOM completely
-  setTimeout(()=>{
-    const el=document.getElementById('splash');
+  try{
+    const h=new Date().getHours();let p='morning';
+    if(h>=6&&h<12)p='morning';else if(h>=12&&h<14)p='noon';else if(h>=14&&h<18)p='afternoon';else p='night';
+    const g=GREETINGS[p][Math.floor(Math.random()*GREETINGS[p].length)];
+    const m=SPLASH_MSGS[Math.floor(Math.random()*SPLASH_MSGS.length)];
+    const se=document.getElementById('splashEmoji');if(se)se.textContent=m.emoji;
+    const st=document.getElementById('splashTitle');if(st)st.textContent=m.title;
+    const sd=document.getElementById('splashDaily');if(sd)sd.textContent=g;
+    const bg=document.getElementById('splashBg');
+    if(bg)for(let i=0;i<6;i++){
+      const s=document.createElement('span');
+      s.textContent=['🔥','💪','🎯','🌟','✅','📊','🏆','💎','⚡','✨'][Math.floor(Math.random()*10)];
+      s.style.cssText='position:absolute;left:'+(Math.random()*90)+'%;top:'+(Math.random()*90)+'%;font-size:'+(24+Math.random()*30)+'px;opacity:.15;animation:floatBg '+(4+Math.random()*4)+'s ease-in-out infinite;animation-delay:'+(Math.random()*3)+'s';
+      bg.appendChild(s);
+    }
+  }catch(e){/* ignore splash errors */}
+  // MUST dismiss after 3s no matter what
+  setTimeout(function(){
+    var el=document.getElementById('splash');
     if(el){
-      el.style.transition='opacity .5s ease,transform .5s ease';
-      el.style.opacity='0';el.style.transform='scale(1.05)';
-      setTimeout(()=>{
-        el.style.display='none';
-        // Pop emojis after splash gone
-        for(let i=0;i<4;i++)setTimeout(()=>popEmoji(),i*150);
+      el.style.transition='opacity .5s';
+      el.style.opacity='0';
+      setTimeout(function(){
+        if(el)el.style.display='none';
+        try{for(var i=0;i<3;i++)setTimeout(function(){popEmoji();},i*200);}catch(e){}
       },500);
     }
-  },2800);
+  },3000);
 }function popEmoji(){
   const el=document.createElement('div');el.className='pop-emoji';
   el.textContent=['🎉','🎊','✨','💫','🔥','⭐','💪'][Math.floor(Math.random()*7)];
