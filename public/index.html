@@ -573,6 +573,7 @@ function toggleSV(){
   localStorage.setItem('zm_sv_collapsed',svCollapsed?'1':'0');
   document.getElementById('svArrow').textContent=svCollapsed?'▶':'▼';
   document.getElementById('svZone').style.display=svCollapsed?'none':'block';
+  if(!svCollapsed)renderSV();
 }
 function svSetNum(key,val){svDraft.numbers[key]=val;}
 function svSetNote(key,val){svDraft.notes[key]=val;}
