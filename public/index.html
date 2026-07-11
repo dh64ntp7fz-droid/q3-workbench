@@ -494,8 +494,8 @@ const SV_DIMENSIONS=[
      checks:[{key:'c5_a',text:'达标'}]},
   ]},
 ];
-
-localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
+let svDraft={store:'长安花园',checks:{},notes:{},numbers:{},resolved:''};
+try{var _d=JSON.parse(localStorage.getItem('zm_sv_draft'));if(_d)svDraft=_d;}catch(e){}
 function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));renderSV()}
 
 let sections={};
