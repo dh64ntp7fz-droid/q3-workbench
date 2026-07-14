@@ -39,7 +39,6 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .grp-weekly .grp-head{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#5c3d06}
 .grp-biweekly .grp-head{background:linear-gradient(135deg,#ec4899,#f472b6)}
 .grp-monthly .grp-head{background:linear-gradient(135deg,#6366f1,#818cf8)}
-.grp-decade .grp-head{background:linear-gradient(135deg,#14b8a6,#2dd4bf)}
 
 .row{display:flex;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--bd2);min-height:48px;cursor:pointer;user-select:none;transition:background .15s,transform .1s}
 .row:last-child{border-bottom:none}
@@ -173,19 +172,17 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 
 
-<div class="hint" id="h_must" style="cursor:pointer;user-select:none" onclick="toggleSection('must')"><span id="a_must">▼</span> 🔴 每日必交 · 不交有后果</div>
+<div class="hint" id="h_must" style="cursor:pointer;user-select:none" onclick="toggleSection('must')"><span id="a_must">▼</span> 🔴 每日必交 · 日报/打卡/锻造班</div>
 <div class="card grp-must" id="mustZone"></div>
 
-<div class="hint" id="h_daily" style="cursor:pointer;user-select:none" onclick="toggleSection('daily')"><span id="a_daily">▼</span> 🔧 每日动作 · 自查</div>
-<div class="card grp-daily" id="dailyZone"></div>
 
-<div class="hint" id="h_wact" style="cursor:pointer;user-select:none" onclick="toggleSection('wact')"><span id="a_wact">▼</span> 📅 每周固定动作 · 自查（周一重置）</div>
+<div class="hint" id="h_wact" style="cursor:pointer;user-select:none" onclick="toggleSection('wact')"><span id="a_wact">▼</span> 📅 每周固定动作 · 排班/整改/带教/辅导/驻店/宿舍</div>
 <div class="card grp-weekly" id="wactZone"></div>
 
 <div class="hint" id="h_temp" style="cursor:pointer;user-select:none" onclick="toggleSection('temp')"><span id="a_temp">▼</span> 📋 临时事项 · 随手添加，自动同步</div>
 <div class="card" id="tempZone"></div>
 
-<div class="hint" id="h_cycle" style="cursor:pointer;user-select:none" onclick="toggleSection('cycle')"><span id="a_cycle">▼</span> 📤 周期交付 · 赵总/运营部检核</div>
+<div class="hint" id="h_cycle" style="cursor:pointer;user-select:none" onclick="toggleSection('cycle')"><span id="a_cycle">▼</span> 📤 周期交付 · 每周/双周/每月</div>
 <div id="cycleZone"></div>
 
 <div class="hint" id="h_dl" style="cursor:pointer;user-select:none" onclick="toggleSection('dl')"><span id="a_dl">▼</span> ⏰ 截止 & 日程 <span class="gear-btn" onclick="event.stopPropagation();openSettings('dl')" style="color:var(--t2)!important;font-size:12px">⚙</span></div>
@@ -232,35 +229,26 @@ const QUOTES=[
 const MUST=[
   {id:'x1',title:'📝 每日日报提交',desc:'当天工作+明日计划',fine:false},
   {id:'x2',title:'🔴 五个一打卡',desc:'每天必发，不发罚款',fine:true},
-  {id:'x3',title:'📚 黄埔锻造班打卡+作业',desc:'每日打卡+交作业',fine:false},
-  {id:'x4',title:'🐟 分鱼头话术执行',desc:'区域门店分鱼头80%执行，输出话术',fine:false},
+  {id:'x3',title:'📚 黄埔锻造班作业',desc:'每日完成作业并提交',fine:false},
 ];
 
-const DAILY=[
-  {id:'d1',text:'📊 菜品推荐完成率≥80%'},
-  {id:'d2',text:'🌅 早例会复盘（驻店时）'},
-  {id:'d3',text:'🏠 驻花园店（本周≥2天）'},
-  {id:'d4',text:'🛏️ 宿舍4D不扣分'},
-  {id:'d5',text:'🍲 锦厦：厨师长开档前试菜签字'},
-  {id:'d6',text:'📷 锦厦：赖小凤23:00前发反馈表照片'},
-];
+const DAILY=[];
 
 const WACT=[
-  {id:'k1',text:'🍲 锦厦试菜3道',sub:'周三前到店'},
-  {id:'k2',text:'📺 小事常事直播',sub:'周四'},
-  {id:'k3',text:'🙏 转发区域积福分享',sub:'周五转发'},
-  {id:'k4',text:'✍️ 写个人积福分享',sub:'周六'},
-  {id:'k5',text:'🚶 巡店达标',sub:'锦厦≥3 花园≥2 环球≥2 黄河≥1 天安≥1'},
-  {id:'k6',text:'📝 店长带教案例输出',sub:'本周带教记录+案例'},
-  {id:'k7',text:'👥 服务员辅导记录',sub:'一对一培训辅导'},
+  {id:'k1',text:'📋 驻店排班表（按周更新）',sub:'交运营部'},
+  {id:'k2',text:'📋 驻店整改记录汇报',sub:'问题点+改善，交运营部'},
+  {id:'k3',text:'👥 一对一服务员沟通培训辅导记录',sub:'自助存档'},
+  {id:'k4',text:'📝 店长带教案例输出',sub:'本周带教记录+案例'},
+  {id:'k5',text:'🏠 长安花园驻店≥2天（连续）',sub:'自查'},
+  {id:'k6',text:'🛏️ 宿舍检查不扣分',sub:'自查'},
 ];
 
 const CYCLES=[
   {key:'weekly',label:'📅 每周交',cyc:'周一重置',tasks:[
     {id:'w1',title:'驻店排班表',desc:'按周更新',who:'运营部',tab:'驻店排班表'},
     {id:'w2',title:'驻店整改记录',desc:'问题点+改善',who:'运营部',tab:'整改完成表'},
-    {id:'w3',title:'锦厦周报',desc:'周五发',who:'赵浪美',tab:'—'},
-    {id:'w4',title:'电费+可控费用汇总',desc:'周一更新',who:'自查',tab:'—'},
+    {id:'w3',title:'服务员辅导记录',desc:'一对一培训辅导',who:'自查',tab:'—'},
+    {id:'w4',title:'店长带教案例输出',desc:'本周带教记录',who:'自查',tab:'—'},
   ]},
   {key:'biweekly',label:'🔄 每两周交',cyc:'隔周周三',tasks:[
     {id:'b1',title:'线上案例分享记录表',desc:'周三≥40分钟',who:'运营部',tab:'案例分享记录表'},
@@ -269,38 +257,32 @@ const CYCLES=[
     {id:'m1',title:'顾客信息登记表',desc:'每店≥100人',who:'营运',tab:'顾客信息登记表'},
     {id:'m2',title:'菜式意见整改完成表',desc:'整改追踪',who:'营运',tab:'整改完成表'},
     {id:'m3',title:'场景考核视频+记录',desc:'每店3场景×3岗位',who:'运营部',tab:'场景考核记录'},
-    {id:'m4',title:'店长外出学习心得+落地',desc:'花园店长外出2天',who:'运营部',tab:'学习心得落地表'},
-  ]},
-  {key:'decade',label:'🔟 每10天交',cyc:'上次交后10天',tasks:[
-    {id:'dc1',title:'📦 区域盘点',desc:'每10天进行一次盘点',who:'自查',tab:'盘点表'},
+    {id:'m4',title:'花园店长外出学习心得+落地',desc:'外出2天→心得+计划',who:'运营部',tab:'学习心得落地表'},
   ]},
 ];
 
 const DEADLINES=[
-  {id:'l1',type:'evt',title:'能量报表第8次',meta:'截止',due:'2026-07-10'},
-  {id:'l2',type:'evt',title:'赵浪美区域经营分析会',meta:'21:30-23:30',due:'2026-07-10'},
-  {id:'l3',type:'dl',title:'🔴 明星员工名单',meta:'每店≥3人→运营部',due:'2026-07-15',tab:'明星员工名单'},
-  {id:'l4',type:'evt',title:'特战队培训(3天)',meta:'7/18-20',due:'2026-07-18'},
-  {id:'l5',type:'dl',title:'🔴 客户微信移交协议',meta:'门店签协议+微信交公司',due:'2026-07-31',tab:'微信移交协议'},
-  {id:'l6',type:'evt',title:'长安锦厦二阶段验收',meta:'第二阶段',due:'2026-07-31'},
-  {id:'l7',type:'dl',title:'📦 闲置资产清理',meta:'图片+规格+数量',due:'2026-09-30',tab:'闲置资产盘点'},
-  {id:'l8',type:'dl',title:'🔧 区域维修完成',meta:'5店全闭环',due:'2026-09-30',tab:'区域维修追踪表'},
-  {id:'l9',type:'evt',title:'月度早会',meta:'总部 · 每月第一周周一',due:'2026-08-03'},
+  {id:'l1',type:'dl',title:'🔴 明星员工培养名单',meta:'每店≥3人=15人→运营部',due:'2026-07-15',tab:'明星员工名单'},
+  {id:'l2',type:'dl',title:'🔴 客户资料协议签订+微信交公司',meta:'门店签协议+微信交公司',due:'2026-07-31',tab:'微信移交协议'},
+  {id:'l3',type:'dl',title:'📦 闲置资产清理',meta:'图片+规格+数量',due:'2026-09-30',tab:'闲置资产盘点'},
+  {id:'l4',type:'dl',title:'🔧 区域维修完成（无超2000以上大修）',meta:'季度内',due:'2026-09-30',tab:'区域维修追踪表'},
+  {id:'l5',type:'dl',title:'🛏️ 宿舍最后一个月不扣分',meta:'季度末赵总检核',due:'2026-09-30'},
+  {id:'l6',type:'dl',title:'🎥 视频抽检分鱼头80%执行',meta:'季度末赵总检核',due:'2026-09-30'},
 ];
 
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function weekStr(){const d=new Date();const y=d.getFullYear();const d0=new Date(y,0,1);return y+'-W'+String(Math.ceil(((d-d0)/86400000+d0.getDay()+1)/7)).padStart(2,'0')}
 function monthStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
 function daysLeft(due){const d=new Date(due);d.setHours(0,0,0,0);return Math.round((d-new Date(new Date().setHours(0,0,0,0)))/86400000)}
-function decadeStr(){return String(Math.floor((new Date()-new Date('2026-01-01'))/86400000/10))}
 
-const ALL_ITEMS = { must: MUST, daily: DAILY, wact: WACT, cycle: CYCLES, dl: DEADLINES };
-const CAT_NAMES = { must: '每日必交', daily: '每日动作', wact: '每周固定动作', cycle: '周期交付', dl: '截止&日程' };
+
+const ALL_ITEMS = { must: MUST, wact: WACT, cycle: CYCLES, dl: DEADLINES };
+const CAT_NAMES = { must: '每日必交', wact: '每周固定动作', cycle: '周期交付', dl: '截止&日程' };
 function openSettings(cat){var s=load();s.pushItems=s.pushItems||{};document.getElementById('settingsTitle').textContent='⚙ '+(CAT_NAMES[cat]||'')+' 设置';var html='';var flat=[];if(cat==='cycle'){CYCLES.forEach(function(g){g.tasks&&g.tasks.forEach(function(t){flat.push(t);});});}else if(cat==='dl'){flat=DEADLINES;}else{flat=ALL_ITEMS[cat]||[];}flat.forEach(function(it){var id=it.id;var label=it.title||it.text||'';var isPush=s.pushItems[id];html+='<div class="settings-row"><span>'+label+'</span><button class="settings-toggle '+(isPush?'on':'off')+'" onclick="togglePush(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)"></button><button class="settings-del" onclick="deleteItem(&apos;'+id+'&apos;,&apos;'+cat+'&apos;)">✕</button></div>';});document.getElementById('settingsItems').innerHTML=html||'<div style="padding:10px;color:#94a3b8;text-align:center">暂无项目</div>';document.getElementById('settingsOverlay').classList.add('show');}
 function closeSettings(){document.getElementById('settingsOverlay').classList.remove('show');}
 function togglePush(id,cat){var s=load();s.pushItems=s.pushItems||{};if(s.pushItems[id])delete s.pushItems[id];else s.pushItems[id]=true;save(s);openSettings(cat);}
 function deleteItem(id,cat){if(!confirm('确定删除？'))return;var s=load();s.delIds=s.delIds||[];s.delIds.push(id);save(s);renderAll();closeSettings();}
-function getPushSummary(){var s=load();s.pushItems=s.pushItems||{};var t=todayStr();var items=[];MUST.forEach(function(m){if(s.pushItems[m.id]&&s.mu&&s.mu[m.id]===t)items.push((s.cust&&s.cust[m.id])||m.title);});DAILY.forEach(function(d){if(s.pushItems[d.id]&&s.dy&&s.dy[d.id]===t)items.push((s.cust&&s.cust[d.id])||d.text);});WACT.forEach(function(w){if(s.pushItems[w.id]&&s.wk&&s.wk[w.id]===weekStr())items.push((s.cust&&s.cust[w.id])||w.text);});return items.length?'✅ '+items.join('\n✅ '):'暂无';}
+function getPushSummary(){var s=load();s.pushItems=s.pushItems||{};var t=todayStr();var items=[];MUST.forEach(function(m){if(s.pushItems[m.id]&&s.mu&&s.mu[m.id]===t)items.push((s.cust&&s.cust[m.id])||m.title);});WACT.forEach(function(w){if(s.pushItems[w.id]&&s.wk&&s.wk[w.id]===weekStr())items.push((s.cust&&s.cust[w.id])||w.text);});return items.length?'✅ '+items.join('\n✅ '):'暂无';}
 
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})}
@@ -358,18 +340,13 @@ function tMust(id){
   if(s.mu[id]===t)delete s.mu[id];else s.mu[id]=t;
   save(s);bumpLedger(id);renderAll();emoToast();
 }
-function tDaily(id){
-  const s=load();s.dy=s.dy||{};const t=todayStr();
-  if(s.dy[id]===t)delete s.dy[id];else s.dy[id]=t;
-  save(s);renderAll();emoToast();
-}
 function tWact(id){
   const s=load();s.wk=s.wk||{};const cur=weekStr();
   if(s.wk[id]===cur)delete s.wk[id];else s.wk[id]=cur;
   save(s);renderAll();emoToast();
 }
 function tCycle(id,k){
-  const s=load();s.cy=s.cy||{};const cur=k==='monthly'?monthStr():(k==='decade'?decadeStr():weekStr());
+  const s=load();s.cy=s.cy||{};const cur=k==='monthly'?monthStr():weekStr();
   if(s.cy[id]&&s.cy[id].p===cur)delete s.cy[id];
   else s.cy[id]={p:cur,d:todayStr()};
   save(s);renderAll();emoToast();
@@ -500,7 +477,7 @@ function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];localStorage.set
 
 let sections={};
 function initSections(){
-  ['must','daily','wact','temp','cycle','dl','ledger'].forEach(k=>{
+  ['must','wact','temp','cycle','dl','ledger'].forEach(k=>{
     const v=localStorage.getItem('sec_'+k);
     sections[k]=v===null?true:v==='1';
     applySec(k);
@@ -512,7 +489,7 @@ function initSections(){
 }
 function applySec(k){
   const a=document.getElementById('a_'+k);if(a)a.textContent=sections[k]?'▼':'▶';
-  const ids={must:'mustZone',daily:'dailyZone',wact:'wactZone',temp:'tempZone',cycle:'cycleZone',dl:'dlZone',ledger:'ledgerZone'};
+  const ids={must:'mustZone',wact:'wactZone',temp:'tempZone',cycle:'cycleZone',dl:'dlZone',ledger:'ledgerZone'};
   const el=document.getElementById(ids[k]);if(el)el.style.display=sections[k]?'block':'none';
 }
 function toggleSection(k){
@@ -614,13 +591,12 @@ function renderAll(){
 
   // Stats
   let muDone=0;MUST.forEach(m=>{if(s.mu[m.id]===t)muDone++});
-  let dyDone=0;DAILY.forEach(d=>{if(s.dy[d.id]===t)dyDone++});
   let cyTotal=0,cyDone=0;CYCLES.forEach(c=>{
-    let cur=c.key==='monthly'?monthStr():(c.key==='decade'?decadeStr():weekStr());
+    let cur=c.key==='monthly'?monthStr():weekStr();
     c.tasks.forEach(tk=>{cyTotal++;if(s.cy[tk.id]&&s.cy[tk.id].p===cur)cyDone++});
   });
   let dlPending=0;DEADLINES.forEach(d=>{if(!s.dl[d.id]&&daysLeft(d.due)>=0)dlPending++});
-  let todayPct=Math.round((muDone+dyDone)/(MUST.length+DAILY.length)*100);
+  let todayPct=Math.round(muDone/MUST.length*100);
   document.getElementById('statsZone').innerHTML=
     `<div class="stat-card red"><div class="l">今日必交</div><div class="v">${muDone}<span class="sub">/${MUST.length}</span></div><div class="stat-bar"><div class="fill" style="width:${muDone/MUST.length*100}%;background:#ef4444"></div></div></div>`+
     `<div class="stat-card blue"><div class="l">待办截止</div><div class="v">${dlPending}<span class="sub">项</span></div></div>`+
@@ -633,11 +609,6 @@ function renderAll(){
     mz+=`<div class="row must-fine${done?' done':''}" onclick="tMust('${m.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${m.id}','must')" title="编辑">✎</button></div><div class="r-d">${m.desc}</div><div class="r-tags">${m.fine?'<span class="tg fine">不发罚款</span>':''}${done?'<span class="tg stamp">已交</span>':''}</div></div></div>`;});
   document.getElementById('mustZone').innerHTML=`<div class="grp-head"><span>🔴 每日必交 <span class="gear-btn" onclick="event.stopPropagation();openSettings('must')">⚙</span></span><span class="prog">${muDone}/${MUST.length}</span></div>`+mz;
 
-  // Daily
-  let dz='';
-  DAILY.forEach(d=>{if(s.delIds.includes(d.id))return;const ttl=s.cust[d.id]||d.text;const done=s.dy[d.id]===t;
-    dz+=`<div class="row${done?' done':''}" onclick="tDaily('${d.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${d.id}','daily')" title="编辑">✎</button></div></div></div>`;});
-  document.getElementById('dailyZone').innerHTML=`<div class="grp-head"><span>🔧 每日动作 <span class="gear-btn" onclick="event.stopPropagation();openSettings('daily')">⚙</span></span><span class="prog">${dyDone}/${DAILY.length}</span></div>`+dz;
 
   // Weekly
   let wz='',wDone=0;
@@ -648,7 +619,7 @@ function renderAll(){
   // Cycles
   let cz='';
   CYCLES.forEach(c=>{
-    let cur=c.key==='monthly'?monthStr():(c.key==='decade'?decadeStr():weekStr());let sd=0;
+    let cur=c.key==='monthly'?monthStr():weekStr();let sd=0;
     c.tasks.forEach(tk=>{if(s.cy[tk.id]&&s.cy[tk.id].p===cur)sd++;});
     cz+=`<div class="card grp-${c.key}" style="margin-bottom:10px"><div class="grp-head"><span>${c.label} <span class="cyc">· ${c.cyc}</span></span><span><span class="gear-btn" onclick="event.stopPropagation();openSettings('cycle')">⚙</span> <span class="prog">${sd}/${c.tasks.length}</span></span></div>`;
     c.tasks.forEach(tk=>{if(s.delIds.includes(tk.id))return;const ttl2=s.cust[tk.id]||tk.title;const rec=s.cy[tk.id];const done=rec&&rec.p===cur;
