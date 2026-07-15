@@ -10,7 +10,7 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 .header h1{font-size:16px;font-weight:800;letter-spacing:-.3px}.header h1 span{color:var(--accent)}
 .header .sub{font-size:10px;color:var(--t2)}.header .time{font-size:9px;color:var(--t3);margin-top:1px}
 .header .btns{display:flex;gap:4px}.header .btns button{background:var(--btn-bg);border:1px solid var(--border);color:var(--t2);padding:4px 7px;border-radius:6px;cursor:pointer;font-size:9px;white-space:nowrap;transition:all .2s}.header .btns button:hover{background:rgba(249,115,22,.2);color:var(--accent)}
-.stats{display:flex;gap:5px;margin-bottom:10px}.stat{flex:1;background:var(--card);border-radius:var(--radius);padding:7px;border:1px solid var(--border);text-align:center}.stat .l{font-size:9px;color:var(--t3);font-weight:600}.stat .v{font-size:18px;font-weight:800;margin-top:1px}.stat .v .u{font-size:9px;font-weight:400;color:var(--t3)}.stat.o .v{color:var(--accent)}.stat.g .v{color:var(--green)}.stat.b .v{color:var(--blue)}.stat.p .v{color:var(--purple)}
+.stats{display:flex;gap:5px;margin-bottom:10px}.stat{flex:1;background:var(--card);border-radius:var(--radius);padding:7px;border:1px solid var(--border);text-align:center;cursor:pointer}.stat:active{opacity:.7}.stat .l{font-size:9px;color:var(--t3);font-weight:600}.stat .v{font-size:18px;font-weight:800;margin-top:1px}.stat .v .u{font-size:9px;font-weight:400;color:var(--t3)}.stat.o .v{color:var(--accent)}.stat.g .v{color:var(--green)}.stat.b .v{color:var(--blue)}.stat.p .v{color:var(--purple)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.col{min-width:0}
 .section h2{font-size:11px;font-weight:700;color:var(--txt);margin-bottom:5px;display:flex;align-items:center;gap:4px}
 .section h2 .badge{font-size:8px;padding:1px 5px;border-radius:6px;font-weight:600}
@@ -87,23 +87,23 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;backgr
 <div class="stats" id="stats"></div>
 
 <div class="row2">
-  <div class="col section">
+  <div id="cronSec" class="col section">
     <h2>⏰ 定时任务 <span class="badge badge-o" id="cronBadge">0</span></h2>
     <div id="cronList"><div class="empty">加载中...</div></div>
   </div>
-  <div class="col section">
+  <div id="scriptSec" class="col section">
     <h2>📜 脚本 <span class="badge badge-p" id="scriptBadge">0</span></h2>
     <div id="scriptList"><div class="empty">加载中...</div></div>
   </div>
 </div>
 
-<div class="section">
+<div id="projSec" class="section">
   <h2>🛠️ 数字系统 <span class="badge badge-g" id="projectBadge">0</span></h2>
   <div id="projectList"></div>
 </div>
 
 <div class="row2">
-  <div class="col section">
+  <div id="skillSec" class="col section">
     <h2>🧠 技能 <span class="badge badge-p" id="skillBadge">0</span></h2>
     <div id="skillList"><div class="empty">加载中...</div></div>
   </div>
@@ -133,7 +133,7 @@ function stg(o){if(o.paused_at)return'<span class="s-pause">⏸</span>';if(!o.en
 
 function render(cr,sr,pr,sk){
   const j=cr.jobs||[],sp=sr.scripts||[],pj=pr.projects||[];
-  $('stats').innerHTML=`<div class="stat o"><div class="l">定时</div><div class="v">${j.length}<span class="u">个</span></div></div><div class="stat p"><div class="l">脚本</div><div class="v">${sp.length}<span class="u">个</span></div></div><div class="stat g"><div class="l">系统</div><div class="v">${pj.length}<span class="u">套</span></div></div><div class="stat b"><div class="l">技能</div><div class="v">${(sk&&sk.total)||0}<span class="u">个</span></div></div>`;
+  $('stats').innerHTML=`<div class="stat o" onclick="document.getElementById('cronSec').scrollIntoView({behavior:'smooth'})"><div class="l">定时</div><div class="v">${j.length}<span class="u">个</span></div></div><div class="stat p" onclick="document.getElementById('scriptSec').scrollIntoView({behavior:'smooth'})"><div class="l">脚本</div><div class="v">${sp.length}<span class="u">个</span></div></div><div class="stat g" onclick="document.getElementById('projSec').scrollIntoView({behavior:'smooth'})"><div class="l">系统</div><div class="v">${pj.length}<span class="u">套</span></div></div><div class="stat b" onclick="document.getElementById('skillSec').scrollIntoView({behavior:'smooth'})"><div class="l">技能</div><div class="v">${(sk&&sk.total)||0}<span class="u">个</span></div></div>`;
 
   $('cronBadge').textContent=j.length;
   $('cronList').innerHTML=j.length?j.map(o=>{
