@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>明哥 · 自动化总览</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0f1a;--card:#1a1a2e;
+  --txt:#e0e0f0;--t2:#9494b8;--t3:#6b6b8a;
+  --accent:#f97316;--red:#ef4444;--green:#22c55e;
+  --blue:#3b82f6;--purple:#8b5cf6;--yellow:#eab308;
+  --border:#2a2a4a;--radius:10px;
+  --hdr-from:#1a1a3e;--hdr-to:#2d1b4e;
+  --err-bg:rgba(239,68,68,.08);
+  --pre-bg:rgba(0,0,0,.2);
+  --btn-bg:rgba(255,255,255,.08);
+  --popup-bg:rgba(0,0,0,.6);
+}
+[data-theme="light"]{
+  --bg:#f0f3f8;--card:#ffffff;
+  --txt:#1e293b;--t2:#475569;--t3:#94a3b8;
+  --accent:#ea580c;--red:#dc2626;--green:#16a34a;
+  --blue:#2563eb;--purple:#7c3aed;--yellow:#ca8a04;
+  --border:#e2e8f0;
+  --hdr-from:#f1f5f9;--hdr-to:#e2e8f0;
+  --err-bg:rgba(220,38,38,.06);
+  --pre-bg:rgba(0,0,0,.04);
+  --btn-bg:rgba(0,0,0,.06);
+  --popup-bg:rgba(0,0,0,.3);
+}
+body{
+  font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--txt);
+  padding:14px 12px 40px;max-width:960px;margin:0 auto;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── Header ── */
+.header{
+  background:linear-gradient(135deg,var(--hdr-from),var(--hdr-to));
+  border-radius:var(--radius);padding:16px 14px;margin-bottom:12px;
+  border:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.header h1{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.header h1 span{color:var(--accent)}
+.header .sub{font-size:10px;color:var(--t2);margin-top:2px}
+.header .time{font-size:9px;color:var(--t3);margin-top:3px}
+.header .btns{display:flex;gap:6px}
+.header .btns button{
+  background:var(--btn-bg);border:1px solid var(--border);
+  color:var(--t2);padding:5px 10px;border-radius:6px;cursor:pointer;
+  font-size:10px;white-space:nowrap;transition:all .2s;
+}
+.header .btns button:hover{background:rgba(249,115,22,.2);color:var(--accent)}
+
+/* ── Stats row ── */
+.stats{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.stat{
+  flex:1;min-width:70px;background:var(--card);border-radius:var(--radius);
+  padding:10px;border:1px solid var(--border);text-align:center;
+}
+.stat .l{font-size:9px;color:var(--t3);font-weight:600}
+.stat .v{font-size:22px;font-weight:800;margin-top:2px;line-height:1.2}
+.stat .v .u{font-size:10px;font-weight:400;color:var(--t3)}
+.stat.o .v{color:var(--accent)}
+.stat.g .v{color:var(--green)}
+.stat.b .v{color:var(--blue)}
+.stat.p .v{color:var(--purple)}
+
+/* ── Section ── */
+.section{margin-bottom:14px}
+.section h2{
+  font-size:12px;font-weight:700;color:var(--txt);
+  margin-bottom:6px;display:flex;align-items:center;gap:5px;
+}
+.section h2 .badge{
+  font-size:9px;padding:1px 6px;border-radius:8px;font-weight:600;
+}
+.badge-o{background:rgba(249,115,22,.15);color:var(--accent)}
+.badge-g{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-p{background:rgba(139,92,246,.15);color:var(--purple)}
+.badge-b{background:rgba(59,130,246,.15);color:var(--blue)}
+
+/* ── Card Grid ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px}
+
+/* ── Card ── */
+.card{
+  background:var(--card);border-radius:var(--radius);
+  padding:10px 12px;border:1px solid var(--border);transition:border .2s;
+  cursor:pointer;
+}
+.card:hover{border-color:rgba(249,115,22,.3)}
+.card .h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.card .h .n{font-size:12px;font-weight:700;display:flex;align-items:center;gap:4px}
+.card .h .toggle{font-size:8px;color:var(--t3);transition:transform .2s;flex-shrink:0;margin-top:2px}
+.card.open .h .toggle{transform:rotate(180deg)}
+.card .extra{display:none;margin-top:4px;padding-top:4px;border-top:1px solid var(--border)}
+.card.open .extra{display:block}
+.card .full-desc{font-size:10px;color:var(--txt);line-height:1.5;white-space:pre-wrap}
+.card .h .tag{
+  font-size:8px;padding:1px 6px;border-radius:8px;font-weight:600;white-space:nowrap;
+}
+.tag-ok{background:rgba(34,197,94,.12);color:var(--green)}
+.tag-err{background:rgba(239,68,68,.12);color:var(--red)}
+.tag-active{background:rgba(59,130,246,.12);color:var(--blue)}
+.tag-remote{background:rgba(148,148,184,.12);color:var(--t2)}
+.tag-python{background:rgba(139,92,246,.12);color:var(--purple)}
+.tag-shell{background:rgba(234,179,8,.12);color:var(--yellow)}
+
+.card .m{font-size:10px;color:var(--t2);margin:3px 0;display:flex;gap:8px;flex-wrap:wrap}
+.card .d{font-size:10px;color:var(--t3);line-height:1.4;margin-top:2px}
+.card .err{font-size:9px;color:var(--red);background:var(--err-bg);padding:3px 5px;border-radius:4px;margin-top:4px}
+.card .b{font-size:9px;color:var(--t3);border-top:1px solid var(--border);padding-top:4px;margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── Script preview ── */
+.card .preview{font-size:9px;color:var(--t3);background:var(--pre-bg);padding:4px 6px;border-radius:4px;margin-top:4px;font-family:monospace;line-height:1.3;white-space:pre-wrap;overflow:hidden;max-height:32px}
+
+/* ── Skills row ── */
+.skills-row{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
+.skills-row span{
+  font-size:9px;background:rgba(59,130,246,.08);color:var(--blue);
+  padding:2px 6px;border-radius:4px;border:1px solid rgba(59,130,246,.1);cursor:default;
+}
+
+/* ── Timeline ── */
+.tl{padding-left:14px;position:relative}
+.tl::before{content:'';position:absolute;left:4px;top:4px;bottom:4px;width:1.5px;background:var(--border)}
+.tl-item{position:relative;padding:3px 0 6px 10px}
+.tl-item::before{
+  content:'';position:absolute;left:-14px;top:6px;
+  width:6px;height:6px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);
+}
+.tl-item.ok::before{background:var(--green)}
+.tl-item.ko::before{background:var(--red)}
+.tl-item .tt{font-size:9px;color:var(--t3)}
+.tl-item .tn{font-size:11px;font-weight:600;margin:1px 0}
+.tl-item .ts{font-size:9px}
+.tl-item .ts.ok{color:var(--green)}
+.tl-item .ts.ko{color:var(--red)}
+
+/* ── Category label ── */
+.cat{font-size:9px;font-weight:600;color:var(--t3);margin:6px 0 3px 2px;text-transform:uppercase;letter-spacing:.3px}
+
+/* ── Popup ── */
+.popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;justify-content:center;align-items:flex-start;padding:32px 12px;overflow-y:auto}
+.popup.show{display:flex}
+.popup-inner{background:var(--card);border-radius:var(--radius);padding:16px;max-width:600px;width:100%;border:1px solid var(--border);animation:fade .2s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.popup-inner h3{font-size:14px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.popup-inner h3 button{background:transparent;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:0 4px}
+.popup-inner .body{max-height:60vh;overflow-y:auto}
+.popup-inner .sc{margin-bottom:8px}
+.popup-inner .sc h4{font-size:11px;color:var(--accent);margin-bottom:3px;font-weight:600}
+.popup-inner .sc .si{font-size:10px;color:var(--t2);padding:2px 0;border-bottom:1px solid var(--border)}
+
+.empty{padding:14px;text-align:center;color:var(--t3);font-size:11px}
+
+/* ── Responsive ── */
+@media(max-width:480px){
+  body{padding:10px 8px 32px}
+  .stats{gap:4px}
+  .stat{padding:8px 6px;min-width:55px}
+  .stat .v{font-size:18px}
+  .grid{grid-template-columns:1fr;gap:5px}
+  .header{flex-wrap:wrap;gap:8px}
+  .header .btns{width:100%;justify-content:flex-end}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🤖 <span>明哥</span> · 自动化总览</h1>
+    <div class="sub">所有定时任务 / 脚本 / 系统 / 技能</div>
+    <div class="time" id="updateTime">—</div>
+  </div>
+  <div class="btns">
+    <button onclick="showSkills()">🧠 技能</button>
+    <button id="themeBtn" onclick="toggleTheme()">☀️</button>
+    <button onclick="refresh()">🔄 刷新</button>
+  </div>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="section">
+  <h2>⏰ 定时任务 <span class="badge badge-o" id="cronBadge">0</span></h2>
+  <div class="grid" id="cronList"><div class="empty">加载中...</div></div>
+</div>
+
+<div class="section">
+  <h2>📜 自动化脚本 <span class="badge badge-p" id="scriptBadge">0</span></h2>
+  <div class="grid" id="scriptList"><div class="empty">加载中...</div></div>
+</div>
+
+<div class="section">
+  <h2>🛠️ 数字系统 <span class="badge badge-g" id="projectBadge">0</span></h2>
+  <div id="projectList"></div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+  <div class="section">
+    <h2>🧠 技能系统 <span class="badge badge-p" id="skillBadge">0</span></h2>
+    <div id="skillList"><div class="empty">加载中...</div></div>
+  </div>
+  <div class="section">
+    <h2>📊 最近运行</h2>
+    <div class="tl" id="tlList"><div class="empty">加载中...</div></div>
+  </div>
+</div>
+
+<div class="popup" id="skillPopup">
+  <div class="popup-inner">
+    <h3>🧠 全部技能 <button onclick="hideSkills()">✕</button></h3>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">共 <span id="skillTotal">0</span> 个</div>
+    <div class="body" id="skillDetail"></div>
+  </div>
+</div>
+
+<script>
+const API = '/api/automation';
+const $ = id => document.getElementById(id);
+
+function ago(t){
+  if(!t)return '—';
+  const m = (Date.now()-new Date(t).getTime())/60000;
+  if(m<1)return'刚刚';if(m<60)return Math.round(m)+'分钟前';
+  const h=Math.floor(m/60);if(h<24)return h+'小时前';
+  return Math.floor(h/24)+'天前';
+}
+function tm(t){
+  if(!t)return'—';
+  const d=new Date(t);
+  return String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function tr(s,n=55){return s&&s.length>n?s.slice(0,n)+'…':s||''}
+
+function renderStats(c,sr,sk,pj){
+  const c1=(c.jobs||[]).length;
+  const c2=(sr.scripts||[]).length;
+  const c3=(pj.projects||[]).length;
+  const c4=sk.total||0;
+  $('stats').innerHTML=
+    `<div class="stat o"><div class="l">定时任务</div><div class="v">${c1}<span class="u">个</span></div></div>`+
+    `<div class="stat p"><div class="l">脚本</div><div class="v">${c2}<span class="u">个</span></div></div>`+
+    `<div class="stat g"><div class="l">系统</div><div class="v">${c3}<span class="u">套</span></div></div>`+
+    `<div class="stat b"><div class="l">技能</div><div class="v">${c4}<span class="u">个</span></div></div>`;
+}
+
+function renderCron(d){
+  const j=d.jobs||[];
+  $('cronBadge').textContent=j.length;
+  if(!j.length){$('cronList').innerHTML='<div class="empty">无定时任务</div>';return}
+  $('cronList').innerHTML=j.map(o=>{
+    const ok=o.last_status==='ok',e=o.last_status==='error';
+    const sched=o.schedule_display||(o.schedule&&o.schedule.expr)||'—';
+    const fullPrompt=o.prompt||'';
+    const shortDesc=o.prompt?tr(o.prompt.replace(/\n/g,' '),40):(o.script||'—');
+    const extra=o.last_error ? `<div class="full-desc">❌ ${o.last_error.replace(/\n/g,'\n')}</div>` : '';
+    return `<div class="card" onclick="this.classList.toggle('open')">
+      <div class="h">
+        <div class="n">${e?'⚠️':'⏰'}${o.name||'未命名'}</div>
+        <span class="toggle">▼</span>
+      </div>
+      <div class="m">
+        <span>🕐${sched}</span>
+        <span>▶${tm(o.next_run_at)}</span>
+        <span>◀${tm(o.last_run_at)}</span>
+      </div>
+      ${o.last_error?`<div class="err">${tr(o.last_error,60)}</div>`:''}
+      <div class="b">
+        <span>${shortDesc}</span>
+        <span>🔄${o.repeat?.completed||0}次</span>
+      </div>
+      <div class="extra">
+        <div class="full-desc">状态：${ok?'✅ 成功':'❌ 失败（'+tm(o.last_run_at)+'）'}\n计划：${sched}\n已执行：${o.repeat?.completed||0}次\n描述：${fullPrompt||o.script||'—'}</div>
+        ${extra}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderScripts(d){
+  const sr=d.scripts||[];
+  $('scriptBadge').textContent=sr.length;
+  if(!sr.length){$('scriptList').innerHTML='<div class="empty">无脚本</div>';return}
+  $('scriptList').innerHTML=sr.map(s=>{
+    const py=s.name.endsWith('.py');
+    const prev=s.header?s.header.replace(/#/g,'').trim() : '(无说明)';
+    const fullHeader=s.header||'(无注释)';
+    return `<div class="card" onclick="this.classList.toggle('open')">
+      <div class="h">
+        <div class="n">${py?'🐍':'📜'}${s.name}</div>
+        <span class="toggle">▼</span>
+      </div>
+      <div class="b">
+        <span>📏${(s.size/1024).toFixed(1)}KB</span>
+        <span>📅${ago(s.modified)}</span>
+      </div>
+      <div class="preview">${tr(prev,60)}</div>
+      <div class="extra">
+        <div class="full-desc">文件名：${s.name}\n大小：${(s.size/1024).toFixed(1)}KB\n修改：${ago(s.modified)}\n\n${fullHeader}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderProjects(d){
+  const p=d.projects||[];
+  $('projectBadge').textContent=p.length;
+  if(!p.length){$('projectList').innerHTML='<div class="empty">无系统</div>';return}
+  const g={};p.forEach(o=>{const c=o.category||'其他';if(!g[c])g[c]=[];g[c].push(o)});
+  let html='';
+  Object.entries(g).forEach(([cat,items])=>{
+    html+=`<div class="cat">${cat} (${items.length})</div><div class="grid">`;
+    items.forEach(o=>{
+      html+=`<div class="card" onclick="this.classList.toggle('open')">
+        <div class="h">
+          <div class="n">${o.icon||'🔧'}${o.name}</div>
+          <span class="toggle">▼</span>
+        </div>
+        <div class="d">${tr(o.desc,60)}</div>
+        <div class="b"><span>🔧${o.tech||'—'}</span>${o.version?'<span>📌v'+o.version+'</span>':''}</div>
+        <div class="extra">
+          <div class="full-desc">${o.desc||'无详细描述'}\n技术栈：${o.tech||'—'}\n${o.version?'版本：v'+o.version:''}</div>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  $('projectList').innerHTML=html;
+}
+
+function renderSkills(d){
+  const cs=d.byCategory||{},t=d.total||0;
+  $('skillBadge').textContent=t;$('skillTotal').textContent=t;
+  const es=Object.entries(cs);
+  if(!es.length){$('skillList').innerHTML='<div class="empty">无技能</div>';return}
+  const labels={'restaurant-management':'🍽️餐饮','apple':'🍎Apple','autonomous-ai-agents':'🤖AI代理','data-science':'📊数据','openclaw-imports':'📦导入','mlops':'🧪MLOps','productivity':'⚡效率','creative':'🎨创意'};
+  $('skillList').innerHTML=es.slice(0,4).map(([cat,items])=>{
+    const lb=labels[cat]||cat.replace(/-/g,'·');
+    return `<div style="margin-bottom:5px">
+      <div style="font-size:10px;font-weight:600;color:var(--accent);margin-bottom:2px">${lb} (${items.length})</div>
+      <div class="skills-row">${items.slice(0,6).map(n=>`<span>${n}</span>`).join('')}${items.length>6?`<span style="background:rgba(249,115,22,.08);color:var(--accent)">+${items.length-6}</span>`:''}</div>
+    </div>`;
+  }).join('');
+  if(es.length>4)$('skillList').innerHTML+=`<div style="font-size:9px;color:var(--t3);margin-top:3px;cursor:pointer" onclick="showSkills()">📋查看全部${t}个→</div>`;
+  $('skillDetail').innerHTML=es.map(([cat,items])=>
+    `<div class="sc"><h4>${cat.replace(/-/g,'·')} (${items.length})</h4>${items.map(n=>`<div class="si">${n}</div>`).join('')}</div>`
+  ).join('');
+}
+
+function renderTL(d){
+  const runs=(d.cron&&d.cron.jobs||[]).filter(j=>j.last_run_at).sort((a,b)=>new Date(b.last_run_at)-new Date(a.last_run_at)).slice(0,8);
+  if(!runs.length){$('tlList').innerHTML='<div class="empty">暂无记录</div>';return}
+  $('tlList').innerHTML=runs.map(j=>{
+    const ok=j.last_status==='ok';
+    return `<div class="tl-item ${ok?'ok':'ko'}">
+      <div class="tt">${tm(j.last_run_at)} · ${ago(j.last_run_at)}</div>
+      <div class="tn">${j.name||'未知'}</div>
+      <div class="ts ${ok?'ok':'ko'}">${ok?'✅成功':'❌失败'}</div>
+    </div>`;
+  }).join('');
+}
+
+function showSkills(){$('skillPopup').classList.add('show')}
+function hideSkills(){$('skillPopup').classList.remove('show')}
+
+/* ── Theme toggle ── */
+function toggleTheme(){
+  const html=document.documentElement;
+  const isLight=html.getAttribute('data-theme')==='light';
+  if(isLight){
+    html.removeAttribute('data-theme');
+    $('themeBtn').textContent='☀️';
+    localStorage.setItem('zm_dash_theme','dark');
+  } else {
+    html.setAttribute('data-theme','light');
+    $('themeBtn').textContent='🌙';
+    localStorage.setItem('zm_dash_theme','light');
+  }
+}
+(function initTheme(){
+  const saved=localStorage.getItem('zm_dash_theme');
+  if(saved==='light'){
+    document.documentElement.setAttribute('data-theme','light');
+    if($('themeBtn'))$('themeBtn').textContent='🌙';
+  }
+})();
+
+async function refresh(){
+  $('updateTime').textContent='刷新中...';
+  try{
+    const t=Date.now();
+    const [cr,sr,pr,sk]=await Promise.all([
+      fetch(API+'/cron?_='+t).then(r=>r.json()),
+      fetch(API+'/scripts?_='+t).then(r=>r.json()),
+      fetch(API+'/projects?_='+t).then(r=>r.json()),
+      fetch(API+'/skills?_='+t).then(r=>r.json()),
+    ]);
+    renderStats(cr,sr,sk,pr);
+    renderCron(cr);
+    renderScripts(sr);
+    renderProjects(pr);
+    renderSkills(sk);
+    renderTL({cron:cr});
+    $('updateTime').textContent='🟢 '+new Date().toLocaleTimeString('zh-CN',{hour12:false});
+  }catch(e){
+    $('updateTime').textContent='🔴 '+e.message;
+  }
+}
+
+refresh();
+setInterval(refresh,30000);
+</script>
+</body>
+</html>
