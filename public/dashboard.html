@@ -1,96 +1,36 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!DOCTYPE html><html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>明哥 · 自动化总览</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0f0f1a;--card:#1a1a2e;--txt:#e0e0f0;--t2:#9494b8;--t3:#6b6b8a;--accent:#f97316;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--purple:#8b5cf6;--yellow:#eab308;--border:#2a2a4a;--radius:10px;--hdr-from:#1a1a3e;--hdr-to:#2d1b4e;--err-bg:rgba(239,68,68,.08);--pre-bg:rgba(0,0,0,.2);--btn-bg:rgba(255,255,255,.08);--popup-bg:rgba(0,0,0,.6);--paused:#94a3b8}
-[data-theme="light"]{--bg:#f0f3f8;--card:#fff;--txt:#1e293b;--t2:#475569;--t3:#94a3b8;--accent:#ea580c;--red:#dc2626;--green:#16a34a;--blue:#2563eb;--purple:#7c3aed;--yellow:#ca8a04;--border:#e2e8f0;--hdr-from:#f1f5f9;--hdr-to:#e2e8f0;--err-bg:rgba(220,38,38,.06);--pre-bg:rgba(0,0,0,.04);--btn-bg:rgba(0,0,0,.06);--popup-bg:rgba(0,0,0,.3)}
+:root{--bg:#0f0f1a;--card:#1a1a2e;--txt:#e0e0f0;--t2:#9494b8;--t3:#6b6b8a;--accent:#f97316;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;--purple:#8b5cf6;--border:#2a2a4a;--radius:10px;--hdr-from:#1a1a3e;--hdr-to:#2d1b4e;--err-bg:rgba(239,68,68,.08);--pre-bg:rgba(0,0,0,.2);--btn-bg:rgba(255,255,255,.08);--paused:#94a3b8}
+[data-theme="light"]{--bg:#f0f3f8;--card:#fff;--txt:#1e293b;--t2:#475569;--t3:#94a3b8;--accent:#ea580c;--red:#dc2626;--green:#16a34a;--blue:#2563eb;--purple:#7c3aed;--border:#e2e8f0;--hdr-from:#f1f5f9;--hdr-to:#e2e8f0;--err-bg:rgba(220,38,38,.06);--pre-bg:rgba(0,0,0,.04);--btn-bg:rgba(0,0,0,.06)}
 body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--txt);padding:14px 12px 40px;max-width:960px;margin:0 auto;-webkit-font-smoothing:antialiased}
 .header{background:linear-gradient(135deg,var(--hdr-from),var(--hdr-to));border-radius:var(--radius);padding:14px;margin-bottom:12px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.header h1{font-size:17px;font-weight:800;letter-spacing:-.3px}
-.header h1 span{color:var(--accent)}
-.header .sub{font-size:10px;color:var(--t2);margin-top:2px}
-.header .time{font-size:9px;color:var(--t3);margin-top:2px}
-.header .src{border-radius:4px;padding:1px 5px;font-size:8px;font-weight:600}
-.src-local{background:rgba(34,197,94,.12);color:var(--green)}
-.src-snap{background:rgba(234,179,8,.12);color:var(--yellow)}
-.header .btns{display:flex;gap:5px}
-.header .btns button{background:var(--btn-bg);border:1px solid var(--border);color:var(--t2);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:10px;white-space:nowrap;transition:all .2s}
-.header .btns button:hover{background:rgba(249,115,22,.2);color:var(--accent)}
-.stats{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.stat{flex:1;min-width:65px;background:var(--card);border-radius:var(--radius);padding:8px;border:1px solid var(--border);text-align:center}
-.stat .l{font-size:9px;color:var(--t3);font-weight:600}
-.stat .v{font-size:20px;font-weight:800;margin-top:2px;line-height:1.2}
-.stat .v .u{font-size:9px;font-weight:400;color:var(--t3)}
-.stat.o .v{color:var(--accent)}.stat.g .v{color:var(--green)}.stat.b .v{color:var(--blue)}.stat.p .v{color:var(--purple)}
-.section{margin-bottom:14px}
-.section h2{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.section h2 .badge{font-size:9px;padding:1px 6px;border-radius:8px;font-weight:600}
-.badge-o{background:rgba(249,115,22,.15);color:var(--accent)}.badge-g{background:rgba(34,197,94,.15);color:var(--green)}.badge-p{background:rgba(139,92,246,.15);color:var(--purple)}.badge-b{background:rgba(59,130,246,.15);color:var(--blue)}.badge-y{background:rgba(234,179,8,.15);color:var(--yellow)}
+.header h1{font-size:17px;font-weight:800;letter-spacing:-.3px}.header h1 span{color:var(--accent)}.header .sub{font-size:10px;color:var(--t2);margin-top:2px}.header .time{font-size:9px;color:var(--t3);margin-top:2px}.header .src{border-radius:4px;padding:1px 5px;font-size:8px;font-weight:600}.src-local{background:rgba(34,197,94,.12);color:var(--green)}.src-snap{background:rgba(234,179,8,.12);color:var(--yellow)}
+.header .btns{display:flex;gap:5px}.header .btns button{background:var(--btn-bg);border:1px solid var(--border);color:var(--t2);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:10px;white-space:nowrap;transition:all .2s}.header .btns button:hover{background:rgba(249,115,22,.2);color:var(--accent)}
+.stats{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}.stat{flex:1;min-width:65px;background:var(--card);border-radius:var(--radius);padding:8px;border:1px solid var(--border);text-align:center}.stat .l{font-size:9px;color:var(--t3);font-weight:600}.stat .v{font-size:20px;font-weight:800;margin-top:2px;line-height:1.2}.stat .v .u{font-size:9px;font-weight:400;color:var(--t3)}.stat.o .v{color:var(--accent)}.stat.g .v{color:var(--green)}.stat.b .v{color:var(--blue)}.stat.p .v{color:var(--purple)}
+.section{margin-bottom:14px}.section h2{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:6px;display:flex;align-items:center;gap:5px}.section h2 .badge{font-size:9px;padding:1px 6px;border-radius:8px;font-weight:600}.badge-o{background:rgba(249,115,22,.15);color:var(--accent)}.badge-g{background:rgba(34,197,94,.15);color:var(--green)}.badge-p{background:rgba(139,92,246,.15);color:var(--purple)}.badge-b{background:rgba(59,130,246,.15);color:var(--blue)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:6px}
-.card{background:var(--card);border-radius:var(--radius);padding:9px 11px;border:1px solid var(--border);transition:border .2s;cursor:pointer}
-.card:hover{border-color:rgba(249,115,22,.3)}
-.card .h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
-.card .h .n{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;flex:1;min-width:0}
-.card .h .n .s{font-size:8px;padding:1px 5px;border-radius:4px;font-weight:600;margin-left:auto;flex-shrink:0}
-.s-running{background:rgba(59,130,246,.12);color:var(--blue)}
-.s-paused{background:rgba(148,163,184,.12);color:var(--paused)}
-.s-ok{background:rgba(34,197,94,.12);color:var(--green)}
-.s-err{background:rgba(239,68,68,.12);color:var(--red)}
-.card .h .toggle{font-size:8px;color:var(--t3);transition:transform .2s;flex-shrink:0;margin-top:2px}
-.card.open .h .toggle{transform:rotate(180deg)}
-.card .extra{display:none;margin-top:4px;padding-top:4px;border-top:1px solid var(--border)}
-.card.open .extra{display:block}
-.card .full-desc{font-size:9px;color:var(--txt);line-height:1.5;white-space:pre-wrap}
-.card .m{font-size:9px;color:var(--t2);margin:2px 0;display:flex;gap:6px;flex-wrap:wrap}
-.card .d{font-size:9px;color:var(--t3);line-height:1.4;margin-top:2px}
-.card .err{font-size:8px;color:var(--red);background:var(--err-bg);padding:2px 5px;border-radius:4px;margin-top:3px}
-.card .b{font-size:9px;color:var(--t3);border-top:1px solid var(--border);padding-top:3px;margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.card .preview{font-size:9px;color:var(--t3);background:var(--pre-bg);padding:3px 5px;border-radius:4px;margin-top:3px;font-family:monospace;line-height:1.3;white-space:pre-wrap;overflow:hidden;max-height:28px}
-.skills-row{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
-.skills-row span{font-size:9px;background:rgba(59,130,246,.08);color:var(--blue);padding:2px 6px;border-radius:4px;border:1px solid rgba(59,130,246,.1);cursor:default}
-.tl{padding-left:14px;position:relative}
-.tl::before{content:'';position:absolute;left:4px;top:4px;bottom:4px;width:1.5px;background:var(--border)}
-.tl-item{position:relative;padding:3px 0 5px 10px}
-.tl-item::before{content:'';position:absolute;left:-14px;top:6px;width:6px;height:6px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
-.tl-item.ok::before{background:var(--green)}.tl-item.ko::before{background:var(--red)}
-.tl-item .tt{font-size:9px;color:var(--t3)}.tl-item .tn{font-size:10px;font-weight:600;margin:1px 0}.tl-item .ts{font-size:9px}
-.tl-item .ts.ok{color:var(--green)}.tl-item .ts.ko{color:var(--red)}
-.cat{font-size:9px;font-weight:600;color:var(--t3);margin:6px 0 3px 2px;text-transform:uppercase;letter-spacing:.3px}
-.popup{display:none;position:fixed;inset:0;background:var(--popup-bg);z-index:999;justify-content:center;align-items:flex-start;padding:32px 12px;overflow-y:auto}
-.popup.show{display:flex}
-.popup-inner{background:var(--card);border-radius:var(--radius);padding:16px;max-width:600px;width:100%;border:1px solid var(--border);animation:fade .2s}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.popup-inner h3{font-size:14px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
-.popup-inner h3 button{background:transparent;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:0 4px}
-.popup-inner .body{max-height:60vh;overflow-y:auto}
-.popup-inner .sc{margin-bottom:8px}
-.popup-inner .sc h4{font-size:11px;color:var(--accent);margin-bottom:3px;font-weight:600}
-.popup-inner .sc .si{font-size:10px;color:var(--t2);padding:2px 0;border-bottom:1px solid var(--border)}
+.card{background:var(--card);border-radius:var(--radius);padding:9px 11px;border:1px solid var(--border);cursor:pointer}.card:hover{border-color:rgba(249,115,22,.3)}.card .h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}.card .h .n{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;flex:1;min-width:0}
+.card .h .n .s{font-size:8px;padding:1px 5px;border-radius:4px;font-weight:600;margin-left:auto;flex-shrink:0}.s-running{background:rgba(59,130,246,.12);color:var(--blue)}.s-paused{background:rgba(148,163,184,.12);color:var(--paused)}.s-ok{background:rgba(34,197,94,.12);color:var(--green)}.s-err{background:rgba(239,68,68,.12);color:var(--red)}
+.card .h .toggle{font-size:8px;color:var(--t3);transition:transform .2s;flex-shrink:0;margin-top:2px}.card.open .h .toggle{transform:rotate(180deg)}.card .extra{display:none;margin-top:4px;padding-top:4px;border-top:1px solid var(--border)}.card.open .extra{display:block}.card .full-desc{font-size:9px;color:var(--txt);line-height:1.5;white-space:pre-wrap}
+.card .m{font-size:9px;color:var(--t2);margin:2px 0;display:flex;gap:6px;flex-wrap:wrap}.card .d{font-size:9px;color:var(--t3);line-height:1.4;margin-top:2px}.card .err{font-size:8px;color:var(--red);background:var(--err-bg);padding:2px 5px;border-radius:4px;margin-top:3px}
+.card .b{font-size:9px;color:var(--t3);border-top:1px solid var(--border);padding-top:3px;margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}.card .preview{font-size:9px;color:var(--t3);background:var(--pre-bg);padding:3px 5px;border-radius:4px;margin-top:3px;font-family:monospace;line-height:1.3;white-space:pre-wrap;overflow:hidden;max-height:28px}
+.skills-row{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}.skills-row span{font-size:9px;background:rgba(59,130,246,.08);color:var(--blue);padding:2px 6px;border-radius:4px;border:1px solid rgba(59,130,246,.1);cursor:default}
+.tl{padding-left:14px;position:relative}.tl::before{content:'';position:absolute;left:4px;top:4px;bottom:4px;width:1.5px;background:var(--border)}.tl-item{position:relative;padding:3px 0 5px 10px}.tl-item::before{content:'';position:absolute;left:-14px;top:6px;width:6px;height:6px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}.tl-item.ok::before{background:var(--green)}.tl-item.ko::before{background:var(--red)}.tl-item .tt{font-size:9px;color:var(--t3)}.tl-item .tn{font-size:10px;font-weight:600;margin:1px 0}.tl-item .ts{font-size:9px}.tl-item .ts.ok{color:var(--green)}.tl-item .ts.ko{color:var(--red)}
+.cat{font-size:9px;font-weight:600;color:var(--t3);margin:6px 0 3px 2px;letter-spacing:.3px}
+.popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;justify-content:center;align-items:flex-start;padding:32px 12px;overflow-y:auto}.popup.show{display:flex}.popup-inner{background:var(--card);border-radius:var(--radius);padding:16px;max-width:600px;width:100%;border:1px solid var(--border);animation:fade .2s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.popup-inner h3{font-size:14px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}.popup-inner h3 button{background:transparent;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:0 4px}.popup-inner .body{max-height:60vh;overflow-y:auto}.popup-inner .sc{margin-bottom:8px}.popup-inner .sc h4{font-size:11px;color:var(--accent);margin-bottom:3px;font-weight:600}.popup-inner .sc .si{font-size:10px;color:var(--t2);padding:2px 0;border-bottom:1px solid var(--border)}
 .empty{padding:14px;text-align:center;color:var(--t3);font-size:11px}
-@media(max-width:480px){body{padding:10px 8px 32px}.stats{gap:4px}.stat{padding:6px;min-width:50px}.stat .v{font-size:17px}.grid{grid-template-columns:1fr;gap:5px}.header{flex-wrap:wrap;gap:6px}.header .btns{width:100%;justify-content:flex-end}}
-</style>
-</head>
-<body>
-
-<script>
-// ═══ 离线快照 ═══
-var __SNAPSHOT__ = {
-  cron:{"jobs":[{"id":"65d84d423ed7","name":"竞品每日早报+Word","prompt":"# 每日竞品报告任务\n\n## 第一步：推送Word报告\n执行命令：python3 /Users/johnny/.hermes/scripts/daily_brief_full.py\n\n## 第二步：尝试抓取最新数据（非必须，能抓到就更新）\n使用浏览器工具访问以下大众点评移动端页面，尝试提取最新的评分数据：\n1. m.dianping.com/shop/58611806（本店）\n2. m.dianping.com/shop/jruTpD2cfcqUczD0（湖南老饭铺）\n3. m.dianping.com/shop/H9vtwyxBz3OH5ABC（润泽园）\n\n如果页面能加载成功，读取页面中的评分和人均数据。\n\n## 第三步：完成后\n回复我：今日报告已推送完成","skills":[],"skill":null,"model":null,"provider":null,"base_url":null,"script":null,"no_agent":false,"context_from":null,"schedule":{"kind":"cron","expr":"0 9 * * *","display":"0 9 * * *"},"schedule_display":"0 9 * * *","repeat":{"times":null,"completed":47},"enabled":true,"state":"scheduled","paused_at":null,"paused_reason":null,"created_at":"2026-05-30T15:42:18.980834+08:00","next_run_at":"2026-07-16T09:00:00+08:00","last_run_at":"2026-07-15T09:19:31.260390+08:00","last_status":"ok","last_error":null,"last_delivery_error":null,"deliver":"local","origin":null,"enabled_toolsets":["terminal","browser"],"workdir":null,"profile":null,"fire_claim":null},{"id":"22b2347c8a11","name":"日报自动同步备忘录","prompt":"Run the daily report sync script: python3 /Users/johnny/.hermes/scripts/sync_daily_report_to_notes.py\nIt will scan ~/Desktop/日报/ for new reports and sync missing ones to Apple Notes 日报 folder.\nOnly report if new notes were synced. If nothing new, respond with [SILENT].","skills":[],"skill":null,"model":null,"provider":null,"base_url":null,"script":null,"no_agent":false,"context_from":null,"schedule":{"kind":"cron","expr":"30 23 * * *","display":"30 23 * * *"},"schedule_display":"30 23 * * *","repeat":{"times":null,"completed":26},"enabled":true,"state":"scheduled","paused_at":null,"paused_reason":null,"created_at":"2026-06-20T00:51:05.943662+08:00","next_run_at":"2026-07-16T23:30:00+08:00","last_run_at":"2026-07-15T23:31:25.638660+08:00","last_status":"ok","last_error":null,"last_delivery_error":null,"deliver":"local","origin":null,"enabled_toolsets":["terminal"],"workdir":null,"profile":null,"fire_claim":null},{"id":"6c6c0a073cab","name":"每日回顾提醒（21:00）","prompt":"","skills":[],"skill":null,"model":null,"provider":null,"provider_snapshot":null,"model_snapshot":null,"base_url":null,"script":"daily_review_reminder.sh","no_agent":true,"context_from":null,"schedule":{"kind":"cron","expr":"10 22 * * *","display":"10 22 * * *"},"schedule_display":"10 22 * * *","repeat":{"times":null,"completed":12},"enabled":true,"state":"scheduled","paused_at":null,"paused_reason":null,"created_at":"2026-07-04T00:33:54.710235+08:00","next_run_at":"2026-07-16T22:10:00+08:00","last_run_at":"2026-07-15T21:10:30.038252+08:00","last_status":"ok","last_error":null,"last_delivery_error":null,"deliver":"local","origin":null,"enabled_toolsets":null,"workdir":null,"fire_claim":null},{"id":"44b13031a207","name":"看板快照自动同步","prompt":"Run the snapshot sync script.","skills":[],"skill":null,"model":null,"provider":null,"provider_snapshot":null,"model_snapshot":null,"base_url":null,"script":"sync_dashboard_snapshot.py","no_agent":true,"context_from":null,"schedule":{"kind":"cron","expr":"0 3 * * *","display":"0 3 * * *"},"schedule_display":"0 3 * * *","repeat":{"times":null,"completed":1},"enabled":true,"state":"scheduled","paused_at":null,"paused_reason":null,"created_at":"2026-07-16T02:26:42.552554+08:00","next_run_at":"2026-07-16T03:00:00+08:00","last_run_at":"2026-07-16T02:26:47.766214+08:00","last_status":"ok","last_error":null,"last_delivery_error":null,"deliver":"local","origin":null,"enabled_toolsets":null,"workdir":null,"fire_claim":null}],"updated_at":"2026-07-16T02:26:47.766690+08:00"},
-  scripts:[{"name":"daily_brief_full.py","size":12846,"modified":"2026-05-30T08:44:45.000Z","header":"#!/usr/bin/env python3"},{"name":"daily_brief_push.sh","size":422,"modified":"2026-06-18T10:30:21.000Z","header":"#!/bin/bash\n# 每日09:30 预订简报推送"},{"name":"daily_reminder_sync.sh","size":1322,"modified":"2026-06-07T18:22:49.000Z","header":"#!/bin/bash\n# ===== 每晚23:00日报提醒 =====\n# 提醒明哥汇报今日工作+明日计划\n# 零token消耗（系统crontab触发）\n# ===== 清理旧的日报提醒 ====="},{"name":"daily_report_reminder.sh","size":642,"modified":"2026-06-07T18:13:05.000Z","header":"#!/bin/bash\n# 日报提醒脚本 — 每天弹macOS通知\n# 零token消耗，走系统定时任务"},{"name":"daily_review_reminder.sh","size":412,"modified":"2026-07-03T16:33:48.000Z","header":"#!/bin/bash\n# 每日21:00 回顾提醒 → 企业微信群"},{"name":"daily_summary_push.sh","size":424,"modified":"2026-06-18T10:30:24.000Z","header":"#!/bin/bash\n# 每日22:00 预订汇总推送"},{"name":"keepalive.sh","size":326,"modified":"2026-06-06T04:56:26.000Z","header":"#!/bin/bash\n# 湘阁里辣包间预订系统保活脚本\n# 每10分钟执行一次，防止 Render 免费版休眠"},{"name":"sync_daily_report_to_notes.py","size":3940,"modified":"2026-06-19T16:51:01.000Z","header":"#!/usr/bin/env python3"},{"name":"sync_dashboard_snapshot.py","size":6733,"modified":"2026-07-15T18:32:48.000Z","header":"#!/usr/bin/env python3"}],
-  projects:[{"name":"包间预订系统","tech":"Node.js + Supabase + Render","icon":"📅","desc":"5店包间预订管理，每日自动推送4次（09:30/17:00/22:00/03:00），手机号AES加密，Token认证","category":"🌐 在线系统","version":"2.0.0"},{"name":"食材上报系统","tech":"FastAPI + Supabase · Render","icon":"🥩","desc":"不能隔夜菜品上报，5店全覆盖，每日早10晚17两次推送","category":"🌐 在线系统"},{"name":"三季度工作台","tech":"Node.js + Express","icon":"🧭","desc":"驻店检查、任务追踪、经营看板（含本自动化看板页）","category":"🌐 在线系统","version":"2.0.0"},{"name":"排队叫号系统","tech":"Supabase + 共享账号","icon":"🔢","desc":"与预订系统共享Supabase项目，门店排队取号管理","category":"🌐 在线系统"},{"name":"新鲜食材·菜品推荐系统","tech":"FastAPI + Supabase","icon":"🍲","desc":"新鲜食材推荐+菜品搭配推荐，独立部署","category":"🌐 在线系统"},{"name":"招聘聊天系统","tech":"纯前端 · GitHub Pages","icon":"💼","desc":"湘阁里辣招聘对话机器人，GLM AI兜底，企微通知","category":"📄 独立页面"},{"name":"发票自动开票系统","tech":"百望金穗云 · 自动化","icon":"🧾","desc":"数电自助开票+自动登录扫码认证，输入金额自动生成二维码","category":"📄 独立页面"},{"name":"免费伞借还追踪系统","tech":"小程序","icon":"☂️","desc":"门店免费伞借用/归还登记","category":"📄 独立页面"},{"name":"竞品每日早报系统","tech":"Cron + Python + Word","icon":"📊","desc":"每日9:00自动抓取大众点评评分+竞品数据，生成Word报告推送","category":"🤖 自动化工具"},{"name":"顾客反馈归类分析系统","tech":"Python + python-docx","icon":"📋","desc":"CSV导入→自动归类分析→Word报告输出，7类+8类投诉分类","category":"🤖 自动化工具"},{"name":"能量辅导简报系统","tech":"Skill + Python + Word","icon":"⚡","desc":"能量事件→6节框架+8维度+5心法分析→docx报告","category":"🤖 自动化工具"},{"name":"日报自动同步系统","tech":"Cron + Python + AppleScript","icon":"📝","desc":"每日23:30自动扫描日报文件→同步到Apple备忘录","category":"🤖 自动化工具"},{"name":"每日回顾提醒","tech":"Cron + Shell + 企微","icon":"🔔","desc":"每日22:10企业微信提醒回顾","category":"🤖 自动化工具"},{"name":"AI知识库","tech":"本地文件系统","icon":"📚","desc":"门店运营/会议纪要/AI脚本工具/固定规则库/素材资料统一归档","category":"📁 数据资产"},{"name":"三季度工具表格（15张）","tech":"Excel","icon":"📑","desc":"整改完成表/顾客反馈/维修追踪/早例会复盘/带教辅导/场景考核等","category":"📁 数据资产"}],
-  skills:{"total":52,"byCategory":{"apple":["apple-reminders","macos-computer-use","apple-eventkit-batch-import","wechat-reconnect","macos-terminal-theming","imessage","findmy","apple-notes","vision-image-extraction"],"openclaw-imports":["skillhub-preference","find-skills","bw-invoice-login","bw-invoice-issue"],".archive":["drucker-homework-writing","wecom-notifications","document-series-organization","session-recall","member-data-analysis"],"data-science":["jupyter-live-kernel","restaurant-data-analysis","customer-feedback-analysis"],"restaurant-management":["daily-report-writing","fenggang-huanghe","store-lightweight-tools","management-sharing-host","energy-coaching-briefing","store-digital-systems","changan-jinxia","store-feedback-table","store-feedback-analysis","changan-huayuan","core-work-results-sheet4","service-adjustment-plan","dalang-huanqiu","profit-summary-table","three-indicator-analysis","recruit-chat-system","area-manager-daily-report","huanqiu-competitor-intel","fenggang-tianan"],"creative":["creative-ideation"],"autonomous-ai-agents":["hermes-maintenance","codex","multi-ai-workspace","hermes-skin-authoring","hermes-agent","hermes-provider-troubleshooting","hermes-gateway-troubleshooting"],"productivity":["real-time-dashboard","restaurant-regional-management","petdex","project-planning-review"]}}
-};
-</script>
+@media(max-width:480px){body{padding:10px 8px 32px}.stats{gap:4px}.stat{padding:6px;min-width:50px}.stat .v{font-size:17px}.grid{grid-template-columns:1fr;gap:5px}.header{flex-wrap:wrap}.header .btns{width:100%;justify-content:flex-end}}
+</style></head><body>
 
 <div class="header">
   <div>
     <h1>🤖 <span>明哥</span> · 自动化总览</h1>
     <div class="sub">所有定时任务 / 脚本 / 系统 / 技能</div>
-    <div class="time" id="updateTime">— <span id="dataSrc" class="src src-snap">📷快照</span></div>
+    <div class="time" id="updateTime">加载中...</div>
   </div>
   <div class="btns">
     <button onclick="showSkills()">🧠 技能</button>
@@ -101,199 +41,84 @@ var __SNAPSHOT__ = {
 
 <div class="stats" id="stats"></div>
 
-<div class="section">
-  <h2>⏰ 定时任务 <span class="badge badge-o" id="cronBadge">0</span></h2>
-  <div class="grid" id="cronList"><div class="empty">加载中...</div></div>
-</div>
-
-<div class="section">
-  <h2>📜 自动化脚本 <span class="badge badge-p" id="scriptBadge">0</span></h2>
-  <div class="grid" id="scriptList"><div class="empty">加载中...</div></div>
-</div>
-
-<div class="section">
-  <h2>🛠️ 数字系统 <span class="badge badge-g" id="projectBadge">0</span></h2>
-  <div id="projectList"></div>
-</div>
-
+<div class="section"><h2>⏰ 定时任务 <span class="badge badge-o" id="cronBadge">0</span></h2><div class="grid" id="cronList"><div class="empty">加载中...</div></div></div>
+<div class="section"><h2>📜 自动化脚本 <span class="badge badge-p" id="scriptBadge">0</span></h2><div class="grid" id="scriptList"><div class="empty">加载中...</div></div></div>
+<div class="section"><h2>🛠️ 数字系统 <span class="badge badge-g" id="projectBadge">0</span></h2><div id="projectList"></div></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-  <div class="section">
-    <h2>🧠 技能系统 <span class="badge badge-p" id="skillBadge">0</span></h2>
-    <div id="skillList"><div class="empty">加载中...</div></div>
-  </div>
-  <div class="section">
-    <h2>📊 最近运行</h2>
-    <div class="tl" id="tlList"><div class="empty">加载中...</div></div>
-  </div>
+  <div class="section"><h2>🧠 技能系统 <span class="badge badge-p" id="skillBadge">0</span></h2><div id="skillList"><div class="empty">加载中...</div></div></div>
+  <div class="section"><h2>📊 最近运行</h2><div class="tl" id="tlList"><div class="empty">加载中...</div></div></div>
 </div>
 
-<div class="popup" id="skillPopup">
-  <div class="popup-inner">
-    <h3>🧠 全部技能 <button onclick="hideSkills()">✕</button></h3>
-    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">共 <span id="skillTotal">0</span> 个</div>
-    <div class="body" id="skillDetail"></div>
-  </div>
-</div>
+<div class="popup" id="skillPopup"><div class="popup-inner">
+  <h3>🧠 全部技能 <button onclick="hideSkills()">✕</button></h3>
+  <div style="font-size:10px;color:var(--t3);margin-bottom:6px">共 <span id="skillTotal">0</span> 个</div>
+  <div class="body" id="skillDetail"></div>
+</div></div>
 
 <script>
-const API = '/api/automation';
-const $ = id => document.getElementById(id);
+/* SNAPSHOT_DATA */
+var __SNAPSHOT__ = {"cron":{"jobs":[{"id":"65d84d423ed7","name":"竞品每日早报+Word","prompt":"# 每日竞品报告任务\n\n## 第一步：推送Word报告\n执行命令：python3 /Users/johnny/.hermes/scripts/daily_brief_full.py\n\n## 第二步：尝试抓取最新数据（非必须，能抓到就更新）\n使用浏览器工具访问以下大众点评移动端页面，尝试提取最新的评分数据：\n1. m.dianping.com/shop/58611806（本店）\n2. m.dianping.com/shop/jruTpD2cfcqUczD0（湖南老饭铺）\n3. m.dianping.com/shop/H9vtwyxBz3OH5ABC（润泽园）\n\n如果页面能加载成功，读取页面中的评分和人均数据。\n\n## 第三步：完成后\n回复我：今日报告已推送完成","skills":[],"skill":null,"model":null,"provider":null,"base_url":null,"script":null,"no_agent":false,"context_from":null,"schedule":{"kind":"cron","expr":"0 9 * * *","display":"0 9 * * *"},"schedule_display":"0 9 * * *","repeat":{"times":null,"completed":47},"enabled":true,"state":"scheduled","paused_at":null,"paused_reason":null,"created_at":"2026-05-30T15:42:18.980834+08:00","next_run_at":"2026-07-16T09:00:00+08:00","last_run_at":"2026-07-15T09:19:31.260390+08:00","last_status":"ok","last_error":null,"last_delivery_error":null,"deliver":"local","origin":null,"enabled_toolsets":["terminal","browser"],"workdir":null,"profile":null,"fire_claim":null},{"id":"22b2347c8a11","name":"日报自动同步备忘录","prompt":"Run the daily report sync script: python3 /Users/johnny/.hermes/scripts/sync_daily_report_to_notes.py\nIt will scan ~/Desktop/日报/ for new reports and sync missing ones to Apple Notes 日报 folder.\nOnly report if new notes were synced. If nothing new, respond with [SILENT].","skills":[],"skill":null,"model":null,"provider":null,"base_url":null,"script":null,"no_agent":false,"context_from":null,"schedule":{"kind":"cron","expr":"30 23 * * *","display":"30 23 * * *"},"schedule_display":"30 23 * * *","repeat":{"times":null,"completed":26},"enabled":true,"state":"scheduled","paused_at":null,"paused_reason":null,"created_at":"2026-06-20T00:51:05.943662+08:00","next_run_at":"2026-07-16T23:30:00+08:00","last_run_at":"2026-07-15T23:31:25.638660+08:00","last_status":"ok","last_error":null,"last_delivery_error":null,"deliver":"local","origin":null,"enabled_toolsets":["terminal"],"workdir":null,"profile":null,"fire_claim":null},{"id":"6c6c0a073cab","name":"每日回顾提醒（21:00）","prompt":"","skills":[],"skill":null,"model":null,"provider":null,"provider_snapshot":null,"model_snapshot":null,"base_url":null,"script":"daily_review_reminder.sh","no_agent":true,"context_from":null,"schedule":{"kind":"cron","expr":"10 22 * * *","display":"10 22 * * *"},"schedule_display":"10 22 * * *","repeat":{"times":null,"completed":12},"enabled":true,"state":"scheduled","paused_at":null,"paused_reason":null,"created_at":"2026-07-04T00:33:54.710235+08:00","next_run_at":"2026-07-16T22:10:00+08:00","last_run_at":"2026-07-15T21:10:30.038252+08:00","last_status":"ok","last_error":null,"last_delivery_error":null,"deliver":"local","origin":null,"enabled_toolsets":null,"workdir":null,"fire_claim":null},{"id":"44b13031a207","name":"看板快照自动同步","prompt":"Run the snapshot sync script.","skills":[],"skill":null,"model":null,"provider":null,"provider_snapshot":null,"model_snapshot":null,"base_url":null,"script":"sync_dashboard_snapshot.py","no_agent":true,"context_from":null,"schedule":{"kind":"cron","expr":"0 3 * * *","display":"0 3 * * *"},"schedule_display":"0 3 * * *","repeat":{"times":null,"completed":1},"enabled":true,"state":"scheduled","paused_at":null,"paused_reason":null,"created_at":"2026-07-16T02:26:42.552554+08:00","next_run_at":"2026-07-16T03:00:00+08:00","last_run_at":"2026-07-16T02:26:47.766214+08:00","last_status":"ok","last_error":null,"last_delivery_error":null,"deliver":"local","origin":null,"enabled_toolsets":null,"workdir":null,"fire_claim":null}],"updated_at":"2026-07-16T02:26:47.766690+08:00"},"scripts":[{"name":"daily_brief_full.py","size":12846,"modified":"2026-05-30T08:44:45.000Z","header":"#!/usr/bin/env python3"},{"name":"daily_brief_push.sh","size":422,"modified":"2026-06-18T10:30:21.000Z","header":"#!/bin/bash\n# 每日09:30 预订简报推送"},{"name":"daily_reminder_sync.sh","size":1322,"modified":"2026-06-07T18:22:49.000Z","header":"#!/bin/bash\n# ===== 每晚23:00日报提醒 =====\n# 提醒明哥汇报今日工作+明日计划\n# 零token消耗（系统crontab触发）\n# ===== 清理旧的日报提醒 ====="},{"name":"daily_report_reminder.sh","size":642,"modified":"2026-06-07T18:13:05.000Z","header":"#!/bin/bash\n# 日报提醒脚本 — 每天弹macOS通知\n# 零token消耗，走系统定时任务"},{"name":"daily_review_reminder.sh","size":412,"modified":"2026-07-03T16:33:48.000Z","header":"#!/bin/bash\n# 每日21:00 回顾提醒 → 企业微信群"},{"name":"daily_summary_push.sh","size":424,"modified":"2026-06-18T10:30:24.000Z","header":"#!/bin/bash\n# 每日22:00 预订汇总推送"},{"name":"keepalive.sh","size":326,"modified":"2026-06-06T04:56:26.000Z","header":"#!/bin/bash\n# 湘阁里辣包间预订系统保活脚本\n# 每10分钟执行一次，防止 Render 免费版休眠"},{"name":"sync_daily_report_to_notes.py","size":3940,"modified":"2026-06-19T16:51:01.000Z","header":"#!/usr/bin/env python3"},{"name":"sync_dashboard_snapshot.py","size":6490,"modified":"2026-07-15T18:37:46.000Z","header":"#!/usr/bin/env python3"}],"projects":[{"name":"包间预订系统","tech":"Node.js + Supabase + Render","icon":"📅","desc":"5店包间预订管理，每日自动推送4次（09:30/17:00/22:00/03:00），手机号AES加密，Token认证","category":"🌐 在线系统","version":"2.0.0"},{"name":"食材上报系统","tech":"FastAPI + Supabase · Render","icon":"🥩","desc":"不能隔夜菜品上报，5店全覆盖，每日早10晚17两次推送","category":"🌐 在线系统"},{"name":"三季度工作台","tech":"Node.js + Express","icon":"🧭","desc":"驻店检查、任务追踪、经营看板（含本自动化看板页）","category":"🌐 在线系统","version":"2.0.0"},{"name":"排队叫号系统","tech":"Supabase + 共享账号","icon":"🔢","desc":"与预订系统共享Supabase项目，门店排队取号管理","category":"🌐 在线系统"},{"name":"新鲜食材·菜品推荐系统","tech":"FastAPI + Supabase","icon":"🍲","desc":"新鲜食材推荐+菜品搭配推荐，独立部署","category":"🌐 在线系统"},{"name":"招聘聊天系统","tech":"纯前端 · GitHub Pages","icon":"💼","desc":"湘阁里辣招聘对话机器人，GLM AI兜底，企微通知","category":"📄 独立页面"},{"name":"发票自动开票系统","tech":"百望金穗云 · 自动化","icon":"🧾","desc":"数电自助开票+自动登录扫码认证，输入金额自动生成二维码","category":"📄 独立页面"},{"name":"免费伞借还追踪系统","tech":"小程序","icon":"☂️","desc":"门店免费伞借用/归还登记","category":"📄 独立页面"},{"name":"竞品每日早报系统","tech":"Cron + Python + Word","icon":"📊","desc":"每日9:00自动抓取大众点评评分+竞品数据，生成Word报告推送","category":"🤖 自动化工具"},{"name":"顾客反馈归类分析系统","tech":"Python + python-docx","icon":"📋","desc":"CSV导入→自动归类分析→Word报告输出，7类+8类投诉分类","category":"🤖 自动化工具"},{"name":"能量辅导简报系统","tech":"Skill + Python + Word","icon":"⚡","desc":"能量事件→6节框架+8维度+5心法分析→docx报告","category":"🤖 自动化工具"},{"name":"日报自动同步系统","tech":"Cron + Python + AppleScript","icon":"📝","desc":"每日23:30自动扫描日报文件→同步到Apple备忘录","category":"🤖 自动化工具"},{"name":"每日回顾提醒","tech":"Cron + Shell + 企微","icon":"🔔","desc":"每日22:10企业微信提醒回顾","category":"🤖 自动化工具"},{"name":"AI知识库","tech":"本地文件系统","icon":"📚","desc":"门店运营/会议纪要/AI脚本工具/固定规则库/素材资料统一归档","category":"📁 数据资产"},{"name":"三季度工具表格（15张）","tech":"Excel","icon":"📑","desc":"整改完成表/顾客反馈/维修追踪/早例会复盘/带教辅导/场景考核等","category":"📁 数据资产"}],"skills":{"total":52,"byCategory":{"apple":["apple-reminders","macos-computer-use","apple-eventkit-batch-import","wechat-reconnect","macos-terminal-theming","imessage","findmy","apple-notes","vision-image-extraction"],"openclaw-imports":["skillhub-preference","find-skills","bw-invoice-login","bw-invoice-issue"],".archive":["drucker-homework-writing","wecom-notifications","document-series-organization","session-recall","member-data-analysis"],"data-science":["jupyter-live-kernel","restaurant-data-analysis","customer-feedback-analysis"],"restaurant-management":["daily-report-writing","fenggang-huanghe","store-lightweight-tools","management-sharing-host","energy-coaching-briefing","store-digital-systems","changan-jinxia","store-feedback-table","store-feedback-analysis","changan-huayuan","core-work-results-sheet4","service-adjustment-plan","dalang-huanqiu","profit-summary-table","three-indicator-analysis","recruit-chat-system","area-manager-daily-report","huanqiu-competitor-intel","fenggang-tianan"],"creative":["creative-ideation"],"autonomous-ai-agents":["hermes-maintenance","codex","multi-ai-workspace","hermes-skin-authoring","hermes-agent","hermes-provider-troubleshooting","hermes-gateway-troubleshooting"],"productivity":["real-time-dashboard","restaurant-regional-management","petdex","project-planning-review"]}}};</script>
+
+<script>
+const $=id=>document.getElementById(id);
+const SNAP=typeof __SNAPSHOT__!=='undefined'?__SNAPSHOT__:null;
 
 function ago(t){if(!t)return'—';const m=(Date.now()-new Date(t).getTime())/60000;if(m<1)return'刚刚';if(m<60)return Math.round(m)+'分钟前';const h=Math.floor(m/60);if(h<24)return h+'小时前';return Math.floor(h/24)+'天前'}
 function tm(t){if(!t)return'—';const d=new Date(t);return String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 function tr(s,n=55){return s&&s.length>n?s.slice(0,n)+'…':s||''}
+function stg(o){if(o.paused_at)return'<span class="s s-paused">⏸暂停</span>';if(!o.enabled)return'<span class="s s-paused">⛔关闭</span>';return'<span class="s s-running">▶运行</span>'}
 
-function statusTag(o){
-  if(o.paused_at)return '<span class="s s-paused">⏸暂停</span>';
-  if(!o.enabled)return '<span class="s s-paused">⛔关闭</span>';
-  if(o.state==='scheduled')return '<span class="s s-running">▶运行</span>';
-  if(o.state==='paused')return '<span class="s s-paused">⏸暂停</span>';
-  return '<span class="s s-running">▶运行</span>';
-}
+function render(cr,sr,pr,sk){
+  const j=cr.jobs||[],sp=sr.scripts||[],pj=pr.projects||[];
+  $('stats').innerHTML=`<div class="stat o"><div class="l">定时任务</div><div class="v">${j.length}<span class="u">个</span></div></div><div class="stat p"><div class="l">脚本</div><div class="v">${sp.length}<span class="u">个</span></div></div><div class="stat g"><div class="l">系统</div><div class="v">${pj.length}<span class="u">套</span></div></div><div class="stat b"><div class="l">技能</div><div class="v">${(sk&&sk.total)||0}<span class="u">个</span></div></div>`;
 
-function renderStats(c,sr,sk,pj){
-  const c1=(c.jobs||[]).length;const c2=(sr.scripts||[]).length;
-  const c3=(pj.projects||[]).length;const c4=sk.total||0;
-  $('stats').innerHTML=`<div class="stat o"><div class="l">定时任务</div><div class="v">${c1}<span class="u">个</span></div></div><div class="stat p"><div class="l">脚本</div><div class="v">${c2}<span class="u">个</span></div></div><div class="stat g"><div class="l">系统</div><div class="v">${c3}<span class="u">套</span></div></div><div class="stat b"><div class="l">技能</div><div class="v">${c4}<span class="u">个</span></div></div>`;
-}
-
-function renderCron(d){
-  const j=d.jobs||[];$('cronBadge').textContent=j.length;
-  if(!j.length){$('cronList').innerHTML='<div class="empty">无定时任务</div>';return}
-  $('cronList').innerHTML=j.map(o=>{
+  $('cronBadge').textContent=j.length;
+  $('cronList').innerHTML=j.length?j.map(o=>{
     const ok=o.last_status==='ok',e=o.last_status==='error';
     const sched=o.schedule_display||(o.schedule&&o.schedule.expr)||'—';
-    const fullPrompt=o.prompt||'';
-    const shortDesc=o.prompt?tr(o.prompt.replace(/\n/g,' '),40):(o.script||'—');
-    const extra=o.last_error ? `<div class="full-desc">❌ ${o.last_error.replace(/\n/g,'\n')}</div>` : '';
-    const stat=statusTag(o);
-    return `<div class="card" onclick="this.classList.toggle('open')">
-      <div class="h">
-        <div class="n">${e?'⚠️':'⏰'}${o.name||'未命名'}${stat}</div>
-        <span class="toggle">▼</span>
-      </div>
-      <div class="m">
-        <span>🕐${sched}</span>
-        <span>▶${tm(o.next_run_at)}</span>
-        <span>◀${tm(o.last_run_at)}</span>
-      </div>
-      ${o.last_error?`<div class="err">${tr(o.last_error,55)}</div>`:''}
-      <div class="b">
-        <span>${shortDesc}</span>
-        <span>🔄${o.repeat?.completed||0}次</span>
-      </div>
-      <div class="extra">
-        <div class="full-desc">状态：${ok?'✅ 成功':'❌ 失败（'+tm(o.last_run_at)+'）'}\n运行：${o.enabled===false?'⛔ 已关闭':o.paused_at?'⏸ 已暂停':'▶ 运行中'}\n计划：${sched}\n已执行：${o.repeat?.completed||0}次\n描述：${fullPrompt||o.script||'—'}</div>
-        ${extra}
-      </div>
-    </div>`;
-  }).join('');
-}
+    const sd=o.prompt?tr(o.prompt.replace(/\n/g,' '),40):(o.script||'—');
+    return `<div class="card" onclick="this.classList.toggle('open')"><div class="h"><div class="n">${e?'⚠️':'⏰'}${o.name||''}${stg(o)}</div><span class="toggle">▼</span></div><div class="m"><span>🕐${sched}</span><span>▶${tm(o.next_run_at)}</span><span>◀${tm(o.last_run_at)}</span></div>${o.last_error?`<div class="err">${tr(o.last_error,55)}</div>`:''}<div class="b"><span>${sd}</span><span>🔄${o.repeat&&o.repeat.completed||0}次</span></div><div class="extra"><div class="full-desc">状态: ${ok?'✅成功':'❌失败('+tm(o.last_run_at)+')'}\n运行: ${o.enabled===false?'⛔已关闭':o.paused_at?'⏸暂停':'▶运行中'}\n计划: ${sched}\n执行: ${o.repeat&&o.repeat.completed||0}次\n${o.prompt||o.script?'描述: '+(o.prompt||o.script):''}</div>${o.last_error?`<div class="full-desc">❌${o.last_error}</div>`:''}</div></div>`;
+  }).join(''):'<div class="empty">无定时任务</div>';
 
-function renderScripts(d){
-  const sr=d.scripts||[];$('scriptBadge').textContent=sr.length;
-  if(!sr.length){$('scriptList').innerHTML='<div class="empty">无脚本</div>';return}
-  $('scriptList').innerHTML=sr.map(s=>{
-    const py=s.name.endsWith('.py');
-    const prev=s.header?s.header.replace(/#/g,'').trim() : '(无说明)';
-    const fullHeader=s.header||'(无注释)';
-    return `<div class="card" onclick="this.classList.toggle('open')">
-      <div class="h">
-        <div class="n">${py?'🐍':'📜'}${s.name}</div>
-        <span class="toggle">▼</span>
-      </div>
-      <div class="b">
-        <span>📏${(s.size/1024).toFixed(1)}KB</span>
-        <span>📅${ago(s.modified)}</span>
-      </div>
-      <div class="preview">${tr(prev,60)}</div>
-      <div class="extra">
-        <div class="full-desc">文件名：${s.name}\n大小：${(s.size/1024).toFixed(1)}KB\n修改：${ago(s.modified)}\n\n${fullHeader}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
+  $('scriptBadge').textContent=sp.length;
+  $('scriptList').innerHTML=sp.length?sp.map(s=>{
+    const py=s.name.endsWith('.py'),pv=s.header?s.header.replace(/#/g,'').trim():'(无说明)';
+    return `<div class="card" onclick="this.classList.toggle('open')"><div class="h"><div class="n">${py?'🐍':'📜'}${s.name}</div><span class="toggle">▼</span></div><div class="b"><span>📏${(s.size/1024).toFixed(1)}KB</span><span>📅${ago(s.modified)}</span></div><div class="preview">${tr(pv,60)}</div><div class="extra"><div class="full-desc">${s.name}\n${(s.size/1024).toFixed(1)}KB\n${ago(s.modified)}前修改\n\n${s.header||''}</div></div></div>`;
+  }).join(''):'<div class="empty">无脚本</div>';
 
-function renderProjects(d){
-  const p=d.projects||[];$('projectBadge').textContent=p.length;
-  if(!p.length){$('projectList').innerHTML='<div class="empty">无系统</div>';return}
-  const g={};p.forEach(o=>{const c=o.category||'其他';if(!g[c])g[c]=[];g[c].push(o)});
-  let html='';
-  Object.entries(g).forEach(([cat,items])=>{
-    html+=`<div class="cat">${cat} (${items.length})</div><div class="grid">`;
-    items.forEach(o=>{html+=`<div class="card" onclick="this.classList.toggle('open')">
-      <div class="h"><div class="n">${o.icon||'🔧'}${o.name}</div><span class="toggle">▼</span></div>
-      <div class="d">${tr(o.desc,60)}</div>
-      <div class="b"><span>🔧${o.tech||'—'}</span>${o.version?'<span>📌v'+o.version+'</span>':''}</div>
-      <div class="extra"><div class="full-desc">${o.desc||'无详细描述'}\n技术栈：${o.tech||'—'}\n${o.version?'版本：v'+o.version:''}</div></div>
-    </div>`;});
-    html+=`</div>`;
-  });$('projectList').innerHTML=html;
-}
+  $('projectBadge').textContent=pj.length;
+  if(pj.length){const g={};pj.forEach(o=>{const c=o.category||'其他';if(!g[c])g[c]=[];g[c].push(o)});let h='';Object.entries(g).forEach(([c,is])=>{h+=`<div class="cat">${c} (${is.length})</div><div class="grid">`;is.forEach(o=>{h+=`<div class="card" onclick="this.classList.toggle('open')"><div class="h"><div class="n">${o.icon||'🔧'}${o.name}</div><span class="toggle">▼</span></div><div class="d">${tr(o.desc,60)}</div><div class="b"><span>🔧${o.tech||'—'}</span>${o.version?'<span>📌v'+o.version+'</span>':''}</div><div class="extra"><div class="full-desc">${o.desc||''}\n技术栈: ${o.tech||'—'}${o.version?'\n版本: v'+o.version:''}</div></div></div>`;});h+=`</div>`;});$('projectList').innerHTML=h;}else $('projectList').innerHTML='<div class="empty">无系统</div>';
 
-function renderSkills(d){
-  const cs=d.byCategory||{},t=d.total||0;$('skillBadge').textContent=t;$('skillTotal').textContent=t;
-  const es=Object.entries(cs);if(!es.length){$('skillList').innerHTML='<div class="empty">无技能</div>';return}
-  const labels={'restaurant-management':'🍽️餐饮','apple':'🍎Apple','autonomous-ai-agents':'🤖AI代理','data-science':'📊数据','openclaw-imports':'📦导入','mlops':'🧪MLOps','productivity':'⚡效率','creative':'🎨创意'};
-  $('skillList').innerHTML=es.slice(0,4).map(([cat,items])=>{
-    const lb=labels[cat]||cat.replace(/-/g,'·');
-    return `<div style="margin-bottom:5px"><div style="font-size:10px;font-weight:600;color:var(--accent);margin-bottom:2px">${lb} (${items.length})</div><div class="skills-row">${items.slice(0,6).map(n=>`<span>${n}</span>`).join('')}${items.length>6?`<span style="background:rgba(249,115,22,.08);color:var(--accent)">+${items.length-6}</span>`:''}</div></div>`;
-  }).join('');
-  if(es.length>4)$('skillList').innerHTML+=`<div style="font-size:9px;color:var(--t3);margin-top:3px;cursor:pointer" onclick="showSkills()">📋查看全部${t}个→</div>`;
-  $('skillDetail').innerHTML=es.map(([cat,items])=>`<div class="sc"><h4>${cat.replace(/-/g,'·')} (${items.length})</h4>${items.map(n=>`<div class="si">${n}</div>`).join('')}</div>`).join('');
-}
+  const t=sk&&sk.total||0;$('skillBadge').textContent=t;$('skillTotal').textContent=t;
+  const es=sk&&sk.byCategory?Object.entries(sk.byCategory):[];
+  if(es.length){const lbs={'restaurant-management':'🍽️餐饮','apple':'🍎Apple','autonomous-ai-agents':'🤖AI代理','data-science':'📊数据','openclaw-imports':'📦导入','mlops':'🧪MLOps','productivity':'⚡效率','creative':'🎨创意'};$('skillList').innerHTML=es.slice(0,4).map(([c,is])=>`<div style="margin-bottom:5px"><div style="font-size:10px;font-weight:600;color:var(--accent);margin-bottom:2px">${lbs[c]||c.replace(/-/g,'·')} (${is.length})</div><div class="skills-row">${is.slice(0,6).map(n=>`<span>${n}</span>`).join('')}${is.length>6?`<span style="background:rgba(249,115,22,.08);color:var(--accent)">+${is.length-6}</span>`:''}</div></div>`).join('');if(es.length>4)$('skillList').innerHTML+=`<div style="font-size:9px;color:var(--t3);margin-top:3px;cursor:pointer" onclick="showSkills()">📋查看全部${t}个→</div>`;$('skillDetail').innerHTML=es.map(([c,is])=>`<div class="sc"><h4>${c.replace(/-/g,'·')} (${is.length})</h4>${is.map(n=>`<div class="si">${n}</div>`).join('')}</div>`).join('');}else $('skillList').innerHTML='<div class="empty">无技能</div>';
 
-function renderTL(d){
-  const runs=(d.cron&&d.cron.jobs||[]).filter(j=>j.last_run_at).sort((a,b)=>new Date(b.last_run_at)-new Date(a.last_run_at)).slice(0,8);
-  if(!runs.length){$('tlList').innerHTML='<div class="empty">暂无记录</div>';return}
-  $('tlList').innerHTML=runs.map(j=>{const ok=j.last_status==='ok';return `<div class="tl-item ${ok?'ok':'ko'}"><div class="tt">${tm(j.last_run_at)} · ${ago(j.last_run_at)}</div><div class="tn">${j.name||'未知'}</div><div class="ts ${ok?'ok':'ko'}">${ok?'✅成功':'❌失败'}</div></div>`;}).join('');
+  const runs=j.filter(j=>j.last_run_at).sort((a,b)=>new Date(b.last_run_at)-new Date(a.last_run_at)).slice(0,8);
+  $('tlList').innerHTML=runs.length?runs.map(j=>{const ok=j.last_status==='ok';return`<div class="tl-item ${ok?'ok':'ko'}"><div class="tt">${tm(j.last_run_at)} · ${ago(j.last_run_at)}</div><div class="tn">${j.name||'未知'}</div><div class="ts ${ok?'ok':'ko'}">${ok?'✅成功':'❌失败'}</div></div>`;}).join(''):'<div class="empty">暂无记录</div>';
+
+  $('updateTime').textContent=new Date().toLocaleTimeString('zh-CN',{hour12:false});
 }
 
 function showSkills(){$('skillPopup').classList.add('show')}
 function hideSkills(){$('skillPopup').classList.remove('show')}
-
-function toggleTheme(){
-  const html=document.documentElement;
-  const isLight=html.getAttribute('data-theme')==='light';
-  if(isLight){html.removeAttribute('data-theme');$('themeBtn').textContent='☀️';localStorage.setItem('zm_dash_theme','dark')}
-  else{html.setAttribute('data-theme','light');$('themeBtn').textContent='🌙';localStorage.setItem('zm_dash_theme','light')}
-}
-(function initTheme(){const s=localStorage.getItem('zm_dash_theme');if(s==='light'){document.documentElement.setAttribute('data-theme','light');if($('themeBtn'))$('themeBtn').textContent='🌙'}})();
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';if(l){h.removeAttribute('data-theme');$('themeBtn').textContent='☀️';localStorage.setItem('zm_dash_theme','dark')}else{h.setAttribute('data-theme','light');$('themeBtn').textContent='🌙';localStorage.setItem('zm_dash_theme','light')}}
+(function(){const s=localStorage.getItem('zm_dash_theme');if(s==='light'){document.documentElement.setAttribute('data-theme','light');if($('themeBtn'))$('themeBtn').textContent='🌙'}})();
 
 async function refresh(){
-  $('updateTime').textContent='刷新中...';
-  const t=Date.now();
-  let isLive=false,cr,sr,pr,sk;
   try{
-    [cr,sr,pr,sk]=await Promise.all([
-      fetch(API+'/cron?_='+t).then(r=>r.json()),
-      fetch(API+'/scripts?_='+t).then(r=>r.json()),
-      fetch(API+'/projects?_='+t).then(r=>r.json()),
-      fetch(API+'/skills?_='+t).then(r=>r.json()),
+    const t=Date.now();
+    const [cr,sr,pr,sk]=await Promise.all([
+      fetch('/api/automation/cron?_='+t).then(r=>r.json()).catch(()=>null),
+      fetch('/api/automation/scripts?_='+t).then(r=>r.json()).catch(()=>null),
+      fetch('/api/automation/projects?_='+t).then(r=>r.json()).catch(()=>null),
+      fetch('/api/automation/skills?_='+t).then(r=>r.json()).catch(()=>null),
     ]);
-    isLive=cr.jobs&&cr.jobs.length>0;
-  }catch(e){isLive=false}
-  if(!isLive){
-    cr=__SNAPSHOT__.cron||{jobs:[]};
-    sr={scripts:__SNAPSHOT__.scripts||[]};
-    pr={projects:__SNAPSHOT__.projects||[]};
-    sk=__SNAPSHOT__.skills||{total:0,byCategory:{}};
-    $('dataSrc').textContent='📷快照';
-    $('dataSrc').className='src src-snap';
-  } else {
-    $('dataSrc').textContent='🟢实时';
-    $('dataSrc').className='src src-local';
-  }
-  renderStats(cr,sr,sk,pr);
-  renderCron(cr);
-  renderScripts(sr);
-  renderProjects(pr);
-  renderSkills(sk);
-  renderTL({cron:cr});
-  $('updateTime').textContent=new Date().toLocaleTimeString('zh-CN',{hour12:false});
+    if(cr&&cr.jobs&&cr.jobs.length){render(cr,sr||{scripts:[]},pr||{projects:[]},sk||{});return}
+  }catch(e){}
+  // Fallback to snapshot
+  if(SNAP)render(SNAP.cron||{jobs:[]},{scripts:SNAP.scripts||[]},{projects:SNAP.projects||[]},SNAP.skills||{});
 }
 refresh();
 setInterval(refresh,30000);
 </script>
-</body>
-</html>
+</body></html>
