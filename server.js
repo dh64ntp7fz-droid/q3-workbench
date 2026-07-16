@@ -198,11 +198,11 @@ app.get('/api/automation/projects', (req, res) => {
   const home = require('os').homedir();
   const projects = [
     // ── 在线运行系统 ──
-    { name: '包间预订系统', path: path.join(home, 'room-reservation-supabase'), tech: 'Node.js + Supabase + Render', icon: '📅', desc: '5店包间预订管理，每日自动推送4次（09:30/17:00/22:00/03:00），手机号AES加密，Token认证', category: '🌐 在线系统' },
-    { name: '食材上报系统', path: null, tech: 'FastAPI + Supabase · Render', icon: '🥩', desc: '不能隔夜菜品上报，5店全覆盖，每日早10晚17两次推送，7天累计50条记录', category: '🌐 在线系统' },
-    { name: '三季度工作台', path: path.join(home, 'Documents/Codex/三季度工作台'), tech: 'Node.js + Express', icon: '🧭', desc: '驻店检查、任务追踪、经营看板（含本自动化看板页）', category: '🌐 在线系统' },
-    { name: '排队叫号系统', path: null, tech: 'Supabase + 共享账号', icon: '🔢', desc: '与预订系统共享Supabase项目，门店排队取号管理', category: '🌐 在线系统' },
-    { name: '新鲜食材·菜品推荐系统', path: null, tech: 'FastAPI + Supabase', icon: '🍲', desc: '新鲜食材推荐+菜品搭配推荐，独立部署', category: '🌐 在线系统' },
+    { name: '包间预订系统', path: path.join(home, 'room-reservation-supabase'), tech: 'Node.js + Supabase + Render', icon: '📅', desc: '5店包间预订管理，每日自动推送4次', category: '🌐 在线系统', url: 'https://room-reservation-davw.onrender.com' },
+    { name: '食材上报系统', path: null, tech: 'Node.js + Render', icon: '🥩', desc: '不能隔夜菜品上报，5店全覆盖，每日两次推送', category: '🌐 在线系统', url: 'https://food-dongxgll.onrender.com' },
+    { name: '三季度工作台', path: path.join(home, 'Documents/Codex/三季度工作台'), tech: 'Node.js + Express', icon: '🧭', desc: '驻店检查、任务追踪、经营看板', category: '🌐 在线系统', url: 'https://q3-workbench.onrender.com' },
+    { name: '排队叫号系统', path: null, tech: 'Node + Supabase · Render', icon: '🔢', desc: '门店排队取号管理，独立部署', category: '🌐 在线系统', url: 'https://queue-system.onrender.com' },
+    { name: '新鲜食材·菜品推荐系统', path: null, tech: 'FastAPI + Supabase', icon: '🍲', desc: '新鲜食材推荐+菜品搭配推荐，独立部署', category: '🌐 在线系统', url: 'https://food-report.onrender.com' },
     // ── 独立部署页面 ──
     { name: '招聘聊天系统', path: null, tech: '纯前端 · GitHub Pages', icon: '💼', desc: '湘阁里辣招聘对话机器人，GLM AI兜底，企微通知', category: '📄 独立页面' },
     { name: '发票自动开票系统', path: null, tech: '百望金穗云 · 自动化', icon: '🧾', desc: '数电自助开票+自动登录扫码认证，输入金额自动生成二维码', category: '📄 独立页面' },
