@@ -204,7 +204,7 @@ app.get('/api/automation/projects', (req, res) => {
     { name: '排队叫号系统', path: null, tech: 'Node + Supabase · Render', icon: '🔢', desc: '门店排队取号管理，独立部署', category: '🌐 在线系统', url: 'https://queue-system.onrender.com' },
     { name: '新鲜食材·菜品推荐系统', path: null, tech: 'FastAPI + Supabase', icon: '🍲', desc: '新鲜食材推荐+菜品搭配推荐，独立部署', category: '🌐 在线系统', url: 'https://food-report.onrender.com' },
     // ── 独立部署页面 ──
-    { name: '招聘聊天系统', path: null, tech: '纯前端 · GitHub Pages', icon: '💼', desc: '湘阁里辣招聘对话机器人，GLM AI兜底，企微通知', category: '📄 独立页面', url: 'https://dh64ntp7fz-droid.github.io/recruit-chat/' },
+    { name: '招聘聊天系统', path: null, tech: '纯前端 · GitHub Pages', icon: '💼', desc: '湘阁里辣招聘对话机器人，GLM AI兜底，企微通知', category: '🌐 在线系统', url: 'https://dh64ntp7fz-droid.github.io/recruit-chat/' },
     { name: '发票自动开票系统', path: null, tech: '百望金穗云 · 自动化', icon: '🧾', desc: '数电自助开票+自动登录扫码认证，输入金额自动生成二维码', category: '📄 独立页面' },
     { name: '免费伞借还追踪系统', path: null, tech: '小程序', icon: '☂️', desc: '门店免费伞借用/归还登记，陈总排雷文档中有记载', category: '📄 独立页面' },
     // ── 自动化工具/报表 ──
