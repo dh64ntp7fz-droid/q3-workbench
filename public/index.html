@@ -572,6 +572,28 @@ function svExportCSV(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='驻店记录_'+todayStr()+'.csv';a.click();toast('✅ CSV导出完成');
 }
 function svDelete(i){if(!confirm('确定删除此条驻店记录？'))return;const s=load();s.sv=s.sv||[];s.sv.splice(i,1);save(s);renderSV()}
+function svResend(i){
+  const s=load();const r=s.sv[i];if(!r)return;
+  const dims=[{id:'dim1',label:'👤 人员形象与精神面貌'},{id:'dim2',label:'🍽️ 顾客满意'},{id:'dim3',label:'🧹 环境卫生（4D标准）'}];
+  let bullet='';
+  SV_DIMENSIONS.forEach(function(dim){
+    bullet+=dim.label+'\\n';
+    dim.items.forEach(function(it){
+      if(it.checks)it.checks.forEach(function(ch){bullet+=(ch.text==='达标'?it.label+'→':'')+ch.text.substring(0,22)+'：'+(r.checks[ch.key]?'✓':'✗')+'\\n';});
+      if(it.type==='number')bullet+=it.label+'：'+((r.numbers||{})[it.key]||'未填')+it.unit+'\\n';
+      if(it.type==='text')bullet+=it.label+'：'+((r.notes||{})[it.key]||'未填').substring(0,40)+'\\n';
+    });
+  });
+  var n=r.notes||{};
+  fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    store:r.store,date:r.date,time:r.time,checkCount:r.checkCount||0,totalItems:Object.values(r.checks).length,
+    resolved:r.resolved||'',notes:{zhenggai:n.zhenggai||'',wenti:n.wenti||'',daijiao:n.daijiao||''},
+    bulletList:bullet,pushSummary:''
+  })}).then(function(r2){return r2.json()}).then(function(j){
+    if(j.errcode===0)toast('✅ 已重发至企业微信');
+    else toast('❌ 重发失败:'+(j.errmsg||''));
+  }).catch(function(){toast('❌ 重发失败，网络错误')});
+}
 
 // Export/Import
 function exportData(){
@@ -734,7 +756,7 @@ function renderSV(){
   // History
   if(s.sv.length>0){
     h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b">📜 最近记录</div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
-    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
+    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svResend(${i})" title="重发到企微">↻</button><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
   }
   document.getElementById('svZone').innerHTML=h;
 }
