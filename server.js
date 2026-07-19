@@ -302,6 +302,33 @@ app.post('/api/cron/:id/toggle', (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// ── 每日回顾提醒（21:00 推送企业微信群） ──
+function scheduleDailyReview() {
+  const now = new Date();
+  const target = new Date();
+  target.setHours(21, 0, 0, 0);
+  let ms = target - now;
+  if (ms < 0) { target.setDate(target.getDate() + 1); ms = target - now; }
+  setTimeout(async () => {
+    const hook = process.env.WEBHOOK_DAILY_REVIEW;
+    if (hook) {
+      try {
+        const r = await fetch(hook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            msgtype: 'text',
+            text: { content: '美好的一天即将结束，请把今天的事情做一下回顾，发送到群内！坚持就是胜利✌️✌️✌️✌️', mentioned_list: ['@all'] }
+          })
+        });
+        console.log('每日回顾提醒:', r.ok ? '✅ 已推送' : `❌ ${r.status}`);
+      } catch (e) { console.error('每日回顾提醒失败:', e.message); }
+    }
+    scheduleDailyReview();
+  }, ms);
+}
+scheduleDailyReview();
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🧭 三季度工作台服务已启动`);
   console.log(`   本地地址: http://localhost:${PORT}`);

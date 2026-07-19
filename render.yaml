@@ -7,3 +7,5 @@ services:
     envVars:
       - key: PORT
         value: 3721
+      - key: WEBHOOK_DAILY_REVIEW
+        value: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=b7ebcf61-b7cf-4d62-8f05-8794fd33ffec
