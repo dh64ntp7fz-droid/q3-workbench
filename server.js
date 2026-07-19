@@ -306,7 +306,7 @@ app.post('/api/cron/:id/toggle', (req, res) => {
 function scheduleDailyReview() {
   const now = new Date();
   const target = new Date();
-  target.setHours(21, 0, 0, 0);
+  target.setHours(22, 5, 0, 0);
   let ms = target - now;
   if (ms < 0) { target.setDate(target.getDate() + 1); ms = target - now; }
   setTimeout(async () => {
