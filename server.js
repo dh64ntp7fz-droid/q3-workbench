@@ -304,11 +304,12 @@ app.post('/api/cron/:id/toggle', (req, res) => {
 
 // ── 每日回顾提醒（21:00 推送企业微信群） ──
 function scheduleDailyReview() {
-  const now = new Date();
+  // 北京时间 22:05 = UTC 14:05（Render 默认 UTC 时区）
+  const now = Date.now();
   const target = new Date();
-  target.setHours(22, 5, 0, 0);
+  target.setUTCHours(14, 5, 0, 0);
   let ms = target - now;
-  if (ms < 0) { target.setDate(target.getDate() + 1); ms = target - now; }
+  if (ms < 0) { target.setUTCDate(target.getUTCDate() + 1); ms = target - now; }
   setTimeout(async () => {
     const hook = process.env.WEBHOOK_DAILY_REVIEW;
     if (hook) {
