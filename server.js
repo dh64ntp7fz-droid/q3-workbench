@@ -246,6 +246,30 @@ app.get('/api/automation/stats', (req, res) => {
   });
 });
 
+// 7. 腾讯云服务器状态（仅腾讯云可用）
+app.get('/api/automation/server-status', (req, res) => {
+  try {
+    const exec = require('child_process').execSync;
+    const memStr = exec("free -h | awk '/Mem/ {print $2,$3,$7}'", {encoding:'utf8',timeout:3000}).trim();
+    const diskStr = exec("df -h / | awk 'NR==2 {print $2,$3,$4,$5}'", {encoding:'utf8',timeout:3000}).trim();
+    const upStr = exec("uptime -p | sed 's/up //'", {encoding:'utf8',timeout:3000}).trim();
+    const cpuStr = exec("nproc", {encoding:'utf8',timeout:3000}).trim();
+    const netStr = exec("cat /proc/net/dev | awk '/eth|ens/ {print $2,$10}'", {encoding:'utf8',timeout:3000}).trim();
+    const rxRaw = '0', txRaw = '0';
+    if (netStr) { const p = netStr.split(/\s+/); rxRaw = p[0]||'0'; txRaw = p[1]||'0'; }
+    function fmt(b) { const n=parseInt(b); if(n>1073741824) return (n/1073741824).toFixed(1)+'G'; if(n>1048576) return (n/1048576).toFixed(1)+'M'; if(n>1024) return (n/1024).toFixed(1)+'K'; return n+'B'; }
+    const ms = memStr.split(/\s+/);
+    const ds = diskStr.split(/\s+/);
+    res.json({
+      memory: { total: ms[0]||'\u2014', used: ms[1]||'\u2014', avail: ms[2]||'\u2014' },
+      disk: { total: ds[0]||'\u2014', used: ds[1]||'\u2014', free: ds[2]||'\u2014', pct: ds[3]||'\u2014' },
+      cpu: cpuStr+'\u6838', uptime: upStr||'\u2014',
+      traffic: { rx: fmt(rxRaw), tx: fmt(txRaw) },
+      ip: '101.33.212.238', serverTime: Date.now()
+    });
+  } catch(e) { res.json({ error: e.message }); }
+});
+
 // 健康检查
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() });
