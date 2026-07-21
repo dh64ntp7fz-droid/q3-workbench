@@ -198,13 +198,13 @@ app.get('/api/automation/projects', (req, res) => {
   const home = require('os').homedir();
   const projects = [
     // ── 在线运行系统 ──
-    { name: '包间预订系统', path: path.join(home, 'room-reservation-supabase'), tech: 'Node.js + Supabase + Render', icon: '📅', desc: '5店包间预订管理，每日自动推送4次', category: '🌐 在线系统', url: 'https://room-reservation-davw.onrender.com', url_tx: 'http://101.33.212.238/' },
-    { name: '食材上报系统', path: null, tech: 'Node.js + Render', icon: '🥩', desc: '不能隔夜菜品上报，5店全覆盖，每日两次推送', category: '🌐 在线系统', url: 'https://food-dongxgll.onrender.com', url_tx: 'http://101.33.212.238/dongxgll/' },
-    { name: '三季度工作台', path: path.join(home, 'Documents/Codex/三季度工作台'), tech: 'Node.js + Express', icon: '🧭', desc: '驻店检查、任务追踪、经营看板', category: '🌐 在线系统', url: 'https://q3-workbench.onrender.com', url_tx: 'http://101.33.212.238/dashboard/' },
-    { name: '排队叫号系统', path: null, tech: 'Node + Supabase · Render', icon: '🔢', desc: '门店排队取号管理，独立部署', category: '🌐 在线系统', url: 'https://queue-system.onrender.com', url_tx: 'http://101.33.212.238/queue/' },
-    { name: '新鲜食材·菜品推荐系统', path: null, tech: 'FastAPI + Supabase', icon: '🍲', desc: '新鲜食材推荐+菜品搭配推荐，独立部署', category: '🌐 在线系统', url: 'https://food-report.onrender.com', url_tx: 'http://101.33.212.238/food/' },
+    { name: '包间预订系统', path: path.join(home, 'room-reservation-supabase'), tech: 'Node.js + Supabase + Render', icon: '📅', desc: '5店包间预订管理，每日自动推送4次', category: '🌐 在线系统', url: 'https://room-reservation-davw.onrender.com', url_tx: 'http://101.33.212.238/', url_local: 'file:///Users/johnny/room-reservation-supabase' },
+    { name: '食材上报系统', path: path.join(home, 'food-waste-app'), tech: 'Node.js + Render', icon: '🥩', desc: '不能隔夜菜品上报，5店全覆盖，每日两次推送', category: '🌐 在线系统', url: 'https://food-dongxgll.onrender.com', url_tx: 'http://101.33.212.238/dongxgll/', url_local: 'file:///Users/johnny/food-waste-app' },
+    { name: '三季度工作台', path: path.join(home, 'Documents/Codex/三季度工作台'), tech: 'Node.js + Express', icon: '🧭', desc: '驻店检查、任务追踪、经营看板', category: '🌐 在线系统', url: 'https://q3-workbench.onrender.com', url_tx: 'http://101.33.212.238/dashboard/', url_local: 'file:///Users/johnny/Documents/Codex/三季度工作台' },
+    { name: '排队叫号系统', path: path.join(home, 'queue-system'), tech: 'Node + Supabase · Render', icon: '🔢', desc: '门店排队取号管理，独立部署', category: '🌐 在线系统', url: 'https://queue-system.onrender.com', url_tx: 'http://101.33.212.238/queue/', url_local: 'file:///Users/johnny/queue-system' },
+    { name: '新鲜食材·菜品推荐系统', path: path.join(home, 'food-report'), tech: 'FastAPI + Supabase', icon: '🍲', desc: '新鲜食材推荐+菜品搭配推荐，独立部署', category: '🌐 在线系统', url: 'https://food-report.onrender.com', url_tx: 'http://101.33.212.238/food/', url_admin: 'http://101.33.212.238/food/admin', url_local: 'file:///Users/johnny/food-report' },
     // ── 独立部署页面 ──
-    { name: '招聘聊天系统', path: null, tech: '纯前端 · GitHub Pages', icon: '💼', desc: '湘阁里辣招聘对话机器人，GLM AI兜底，企微通知', category: '🌐 在线系统', url: 'https://dh64ntp7fz-droid.github.io/recruit-chat/' },
+    { name: '招聘聊天系统', path: null, tech: '纯前端 · GitHub Pages', icon: '💼', desc: '湘阁里辣招聘对话机器人，GLM AI兜底，企微通知', category: '🌐 在线系统', url: 'https://dh64ntp7fz-droid.github.io/recruit-chat/', url_admin: 'https://dh64ntp7fz-droid.github.io/recruit-chat/admin.html' },
     { name: '发票自动开票系统', path: null, tech: '百望金穗云 · 自动化', icon: '🧾', desc: '数电自助开票+自动登录扫码认证，输入金额自动生成二维码', category: '📄 独立页面' },
     { name: '免费伞借还追踪系统', path: null, tech: '小程序', icon: '☂️', desc: '门店免费伞借用/归还登记，陈总排雷文档中有记载', category: '📄 独立页面' },
     // ── 自动化工具/报表 ──
@@ -214,7 +214,7 @@ app.get('/api/automation/projects', (req, res) => {
     { name: '日报自动同步系统', path: null, tech: 'Cron + Python + AppleScript', icon: '📝', desc: '每日23:30自动扫描日报文件→同步到Apple备忘录，已自动运行26次', category: '🤖 自动化工具' },
     { name: '每日回顾提醒', path: null, tech: 'Cron + Shell + 企微', icon: '🔔', desc: '每日22:10企业微信提醒回顾（已执行12次）', category: '🤖 自动化工具' },
     // ── 数据/知识库 ──
-    { name: 'AI知识库', path: path.join(home, 'AI知识库'), tech: '本地文件系统', icon: '📚', desc: '门店运营/会议纪要/AI脚本工具/固定规则库/素材资料统一归档', category: '📁 数据资产' },
+    { name: 'AI知识库', path: path.join(home, 'AI知识库'), tech: '本地文件系统', icon: '📚', desc: '门店运营/会议纪要/AI脚本工具/固定规则库/素材资料统一归档', category: '📁 数据资产', url_local: 'file:///Users/johnny/AI知识库' },
     { name: '三季度工具表格（15张）', path: null, tech: 'Excel', icon: '📑', desc: '整改完成表/顾客反馈/维修追踪/早例会复盘/带教辅导/场景考核/明星员工/宿舍检查等', category: '📁 数据资产' },
   ];
   for (const p of projects) {
