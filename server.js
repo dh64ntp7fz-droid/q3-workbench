@@ -255,7 +255,7 @@ app.get('/api/automation/server-status', (req, res) => {
     const upStr = exec("uptime -p | sed 's/up //'", {encoding:'utf8',timeout:3000}).trim();
     const cpuStr = exec("nproc", {encoding:'utf8',timeout:3000}).trim();
     const netStr = exec("cat /proc/net/dev | awk '/eth|ens/ {print $2,$10}'", {encoding:'utf8',timeout:3000}).trim();
-    const rxRaw = '0', txRaw = '0';
+    let rxRaw = '0', txRaw = '0';
     if (netStr) { const p = netStr.split(/\s+/); rxRaw = p[0]||'0'; txRaw = p[1]||'0'; }
     function fmt(b) { const n=parseInt(b); if(n>1073741824) return (n/1073741824).toFixed(1)+'G'; if(n>1048576) return (n/1048576).toFixed(1)+'M'; if(n>1024) return (n/1024).toFixed(1)+'K'; return n+'B'; }
     const ms = memStr.split(/\s+/);
