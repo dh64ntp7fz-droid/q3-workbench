@@ -285,7 +285,7 @@ function deleteItem(id,cat){if(!confirm('确定删除？'))return;var s=load();s
 function getPushSummary(){var s=load();s.pushItems=s.pushItems||{};var t=todayStr();var items=[];MUST.forEach(function(m){if(s.pushItems[m.id]&&s.mu&&s.mu[m.id]===t)items.push((s.cust&&s.cust[m.id])||m.title);});WACT.forEach(function(w){if(s.pushItems[w.id]&&s.wk&&s.wk[w.id]===weekStr())items.push((s.cust&&s.cust[w.id])||w.text);});return items.length?'✅ '+items.join('\n✅ '):'暂无';}
 
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
-function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}fetch('/dashboard/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})}
 function toast(msg,isBig){
   const wrap=document.getElementById('toastWrap');
   const box=document.getElementById('toastBox');
@@ -546,7 +546,7 @@ function svSave(){
     }).filter(Boolean).join('\n');
     return section;
   }).join('\n\n');
-  fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+  fetch('/dashboard/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     store:record.store,date:record.date,time:record.time,
     checkCount:totalChecks,totalItems:totalItems,
     resolved:svDraft.resolved||'',
@@ -585,7 +585,7 @@ function svResend(i){
     });
   });
   var n=r.notes||{};
-  fetch('/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+  fetch('/dashboard/api/send-wecom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     store:r.store,date:r.date,time:r.time,checkCount:r.checkCount||0,totalItems:Object.values(r.checks).length,
     resolved:r.resolved||'',notes:{zhenggai:n.zhenggai||'',wenti:n.wenti||'',daijiao:n.daijiao||''},
     bulletList:bullet,pushSummary:''
@@ -789,7 +789,7 @@ function boot(){
   renderAll();
   initSections();
   
-  fetch('/api/workflow').then(r=>r.json()).then(j=>{
+  fetch('/dashboard/api/workflow').then(r=>r.json()).then(j=>{
     if(j.data&&Object.keys(j.data).length>0){
       try{
         const existing=JSON.parse(localStorage.getItem(KEY))||{};
@@ -804,7 +804,7 @@ function boot(){
       }catch(e){/*ignore*/}
     }
   }).catch(()=>{});
-  setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
+  setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/dashboard/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
   setInterval(function(){var s=load();s._date=s._date||'';var t=todayStr();if(s._date&&s._date!==t){s.mu={};s.dy={};s.wk={};s._date=t;save(s);renderAll();}},60000);
 }
 boot();

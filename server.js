@@ -83,7 +83,7 @@ ${ps}
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
     });
     const result = await resp.json();
-    res.json({ ok: result.errcode === 0, errmsg: result.errmsg });
+    res.json({ errcode: result.errcode, errmsg: result.errmsg });
   } catch (e) {
     res.json({ ok: false, errmsg: e.message });
   }

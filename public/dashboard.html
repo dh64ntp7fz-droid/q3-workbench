@@ -186,10 +186,10 @@ async function refresh(){
   try{
     const t=Date.now();
     const [cr,sr,pr,sk]=await Promise.all([
-      fetch('/api/automation/cron?_='+t).then(r=>r.json()).catch(()=>null),
-      fetch('/api/automation/scripts?_='+t).then(r=>r.json()).catch(()=>null),
-      fetch('/api/automation/projects?_='+t).then(r=>r.json()).catch(()=>null),
-      fetch('/api/automation/skills?_='+t).then(r=>r.json()).catch(()=>null),
+      fetch('/dashboard/api/automation/cron?_='+t).then(r=>r.json()).catch(()=>null),
+      fetch('/dashboard/api/automation/scripts?_='+t).then(r=>r.json()).catch(()=>null),
+      fetch('/dashboard/api/automation/projects?_='+t).then(r=>r.json()).catch(()=>null),
+      fetch('/dashboard/api/automation/skills?_='+t).then(r=>r.json()).catch(()=>null),
     ]);
     if(cr&&cr.jobs&&cr.jobs.length){window.__IS_LIVE__=true;render(cr,sr||{scripts:[]},pr||{projects:[]},sk||{});return}
   }catch(e){}
@@ -201,7 +201,7 @@ setInterval(refresh,30000);
 // ── 管理功能 ──
 async function toggleCron(id){
   try{
-    const r=await fetch('/api/cron/'+id+'/toggle',{method:'POST'});
+    const r=await fetch('/dashboard/api/cron/'+id+'/toggle',{method:'POST'});
     const d=await r.json();
     if(d.ok)refresh();else alert(d.error||'操作失败');
   }catch(e){alert('操作失败: '+e.message)}
@@ -210,7 +210,7 @@ async function toggleCron(id){
 async function runScript(name){
   const btn=event&&event.target;if(btn){btn.textContent='⏳';btn.style.opacity='.5'}
   try{
-    const r=await fetch('/api/scripts/'+encodeURIComponent(name)+'/run',{method:'POST'});
+    const r=await fetch('/dashboard/api/scripts/'+encodeURIComponent(name)+'/run',{method:'POST'});
     const d=await r.json();
     alert(d.ok?'✅执行成功\n\n'+d.output.slice(0,500):'❌执行失败\n\n'+d.error);
   }catch(e){alert('执行失败: '+e.message)}
@@ -221,7 +221,7 @@ function editScript(name){
   $('editName').textContent=name;
   $('editArea').value='加载中...';
   $('editPopup').classList.add('show');
-  fetch('/api/scripts/'+encodeURIComponent(name)+'/content').then(r=>r.json()).then(d=>{
+  fetch('/dashboard/api/scripts/'+encodeURIComponent(name)+'/content').then(r=>r.json()).then(d=>{
     $('editArea').value=d.content||'加载失败';
   }).catch(()=>{$('editArea').value='加载失败'});
 }
@@ -229,7 +229,7 @@ async function saveEdit(){
   const name=$('editName').textContent;
   const content=$('editArea').value;
   try{
-    const r=await fetch('/api/scripts/'+encodeURIComponent(name)+'/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})});
+    const r=await fetch('/dashboard/api/scripts/'+encodeURIComponent(name)+'/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content})});
     const d=await r.json();
     if(d.ok){alert('✅ 已保存');hideEdit()}else alert('❌ 保存失败: '+d.error);
   }catch(e){alert('保存失败: '+e.message)}
