@@ -67,6 +67,8 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 .edit-btn{background:none;border:none;font-size:11px;cursor:pointer;padding:2px 5px;border-radius:4px;color:#cbd5e1;transition:.2s;flex-shrink:0}
 .edit-btn:hover{color:var(--t2);background:#f1f5f9}
+.sv-resend-btn{background:none;border:1.5px solid #6366f1;font-size:11px;cursor:pointer;padding:3px 8px;border-radius:6px;color:#6366f1;font-weight:700;transition:.2s;flex-shrink:0;white-space:nowrap}
+.sv-resend-btn:hover{background:#6366f1;color:#fff}
 
 .dl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--bd2);cursor:pointer;transition:background .15s;min-height:48px}
 .dl:last-child{border-bottom:none}
@@ -198,6 +200,7 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 <div class="btns">
   <button onclick="window.print()">🖨️ 打印</button>
+  <button onclick="refreshFromServer()">🔄 刷新</button>
   <button onclick="exportData()">📦 备份数据</button>
   <button onclick="document.getElementById('importInput').click()">📂 恢复备份</button>
   <button onclick="if(confirm('确定清空全部？'))resetAll()">↻ 清空</button>
@@ -571,17 +574,29 @@ function svExportCSV(){
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='驻店记录_'+todayStr()+'.csv';a.click();toast('✅ CSV导出完成');
 }
-function svDelete(i){if(!confirm('确定删除此条驻店记录？'))return;const s=load();s.sv=s.sv||[];s.sv.splice(i,1);save(s);renderSV()}
+function svDelete(i){
+  if(!confirm('确定删除此条驻店记录？'))return;
+  const s=load();s.sv=s.sv||[];const r=s.sv[i];
+  if(!r)return;
+  s.sv.splice(i,1);
+  if(r.date&&r.time&&r.store){
+    s.svDeleted=s.svDeleted||[];
+    const k=r.date+'_'+r.time+'_'+r.store;
+    if(s.svDeleted.indexOf(k)<0)s.svDeleted.push(k);
+    if(s.svDeleted.length>50)s.svDeleted=s.svDeleted.slice(-50);
+  }
+  save(s);renderSV();
+}
 function svResend(i){
   const s=load();const r=s.sv[i];if(!r)return;
   const dims=[{id:'dim1',label:'👤 人员形象与精神面貌'},{id:'dim2',label:'🍽️ 顾客满意'},{id:'dim3',label:'🧹 环境卫生（4D标准）'}];
   let bullet='';
   SV_DIMENSIONS.forEach(function(dim){
-    bullet+=dim.label+'\\n';
+    bullet+=dim.label+'\n';
     dim.items.forEach(function(it){
-      if(it.checks)it.checks.forEach(function(ch){bullet+=(ch.text==='达标'?it.label+'→':'')+ch.text.substring(0,22)+'：'+(r.checks[ch.key]?'✓':'✗')+'\\n';});
-      if(it.type==='number')bullet+=it.label+'：'+((r.numbers||{})[it.key]||'未填')+it.unit+'\\n';
-      if(it.type==='text')bullet+=it.label+'：'+((r.notes||{})[it.key]||'未填').substring(0,40)+'\\n';
+      if(it.checks)it.checks.forEach(function(ch){bullet+=(ch.text==='达标'?it.label+'→':'')+ch.text.substring(0,22)+'：'+(r.checks[ch.key]?'✓':'✗')+'\n';});
+      if(it.type==='number')bullet+=it.label+'：'+((r.numbers||{})[it.key]||'未填')+it.unit+'\n';
+      if(it.type==='text')bullet+=it.label+'：'+((r.notes||{})[it.key]||'未填').substring(0,40)+'\n';
     });
   });
   var n=r.notes||{};
@@ -719,20 +734,20 @@ function renderSV(){
           // Number input
           if(it.type==='number'){
             const val=svDraft.numbers[it.key]||'';
-            h+=`<div style="display:flex;align-items:center;gap:6px;margin-top:4px"><input type="number" placeholder="${it.placeholder}" value="${val}" onchange="svSetNum('${it.key}',this.value)" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:12px;background:#fff;color:#1e293b"/><span style="font-size:11px;color:#94a3b8">${it.unit}</span></div>`;
+            h+=`<div style="display:flex;align-items:center;gap:6px;margin-top:4px"><input type="number" placeholder="${it.placeholder}" value="${val}" oninput="svSetNum('${it.key}',this.value)" style="width:70px;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;font-size:12px;background:#fff;color:#1e293b"/><span style="font-size:11px;color:#94a3b8">${it.unit}</span></div>`;
           }
 
           // Text input
           if(it.type==='text'){
             const val=svDraft.notes[it.key]||'';
             h+=`<div style="margin-top:4px;font-size:11px;color:var(--t3);margin-bottom:3px">${it.text}</div>`;
-            h+=`<textarea placeholder="${it.placeholder}" onchange="svSetNote('${it.key}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:11px;background:#fff;color:var(--txt);min-height:40px;resize:vertical;font-family:inherit">${val}</textarea>`;
+            h+=`<textarea placeholder="${it.placeholder}" oninput="svSetNote('${it.key}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;font-size:11px;background:#fff;color:var(--txt);min-height:40px;resize:vertical;font-family:inherit">${val}</textarea>`;
           }
 
           // Notes for every item
           const noteKey='note_'+it.id;
           const noteVal=svDraft.notes[noteKey]||'';
-          h+=`<input placeholder="补充备注..." value="${noteVal}" onchange="svSetNote('${noteKey}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;margin-top:6px;font-size:11px;background:var(--inp);color:#475569;font-family:inherit"/>`;
+          h+=`<input placeholder="补充备注..." value="${noteVal}" oninput="svSetNote('${noteKey}',this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;margin-top:6px;font-size:11px;background:var(--inp);color:#475569;font-family:inherit"/>`;
           h+=`</div>`;
         }
         h+=`</div>`;
@@ -743,12 +758,12 @@ function renderSV(){
 
   // Communication and resolution
   h+=`<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)">`;
-  h+=`<div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:8px"><div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">📋 驻店整改记录汇报</div><textarea placeholder="记录驻店整改内容..." onchange="svDraft.notes.zhenggai=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.zhenggai||''}</textarea></div>
-<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">🔍 输出驻店问题点发现改善</div><textarea placeholder="发现的问题点及改善方案..." onchange="svDraft.notes.wenti=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.wenti||''}</textarea></div>
-<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">📝 现场输出店长带教案例</div><textarea placeholder="带教案例..." onchange="svDraft.notes.daijiao=this.value" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.daijiao||''}</textarea></div>
+  h+=`<div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:8px"><div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">📋 驻店整改记录汇报</div><textarea placeholder="记录驻店整改内容..." oninput="svDraft.notes.zhenggai=this.value;localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft))" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.zhenggai||''}</textarea></div>
+<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">🔍 输出驻店问题点发现改善</div><textarea placeholder="发现的问题点及改善方案..." oninput="svDraft.notes.wenti=this.value;localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft))" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.wenti||''}</textarea></div>
+<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)"><div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">📝 现场输出店长带教案例</div><textarea placeholder="带教案例..." oninput="svDraft.notes.daijiao=this.value;localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft))" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:13px;min-height:60px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical">${svDraft.notes.daijiao||''}</textarea></div>
 
 <div style="font-size:14px;font-weight:700;color:var(--txt);margin-bottom:8px">`;
-  h+=`<textarea placeholder="沟通重点、共识行动..." onchange="svDraft.resolved=this.value" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:var(--inp);color:var(--txt);min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
+  h+=`<textarea placeholder="沟通重点、共识行动..." oninput="svDraft.resolved=this.value;localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft))" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:var(--inp);color:var(--txt);min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
   h+=`</div>`;
 
   h+=`<button class="sv-submit" onclick="svSave()" style="margin-bottom:12px">💾 保存本次驻店记录</button>`;
@@ -756,7 +771,7 @@ function renderSV(){
   // History
   if(s.sv.length>0){
     h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b">📜 最近记录</div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
-    s.sv.slice(0,8).forEach((r,i)=>{h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svResend(${i})" title="重发到企微">↻</button><button class="edit-btn" onclick="svDelete(${i})">✕</button></div>`;});
+    s.sv.slice(0,15).forEach((r,i) => {const ri=s.sv.indexOf(r);h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="sv-resend-btn" onclick="svResend(${ri})" title="重发到企微">↻ 重推</button><button class="edit-btn" onclick="svDelete(${ri})">✕</button></div>`;});
   }
   document.getElementById('svZone').innerHTML=h;
 }
@@ -772,6 +787,43 @@ setInterval(()=>{
     g.textContent=GREETINGS[n][Math.floor(Math.random()*GREETINGS[n].length)];
   }
 },600000);
+function isEditing(){
+  const el=document.activeElement;
+  return !!(el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.tagName==='SELECT'));
+}
+function mergeServerData(server,local){
+  const merged={...server};
+  if(!Array.isArray(merged.delIds))merged.delIds=[];
+  const serverSv=Array.isArray(server.sv)?server.sv:[];
+  const localSv=Array.isArray(local.sv)?local.sv:[];
+  const skey=r=>r.date+'_'+r.time+'_'+r.store;
+  const sset=new Set(serverSv.map(skey));
+  const delSet=new Set(Array.isArray(local.svDeleted)?local.svDeleted:[]);
+  merged.sv=[...localSv.filter(r=>!sset.has(skey(r))), ...serverSv].filter(r=>!delSet.has(skey(r))).slice(0,30);
+  if(Array.isArray(local.svDeleted)&&local.svDeleted.length){
+    merged.svDeleted=Array.from(new Set([...(Array.isArray(server.svDeleted)?server.svDeleted:[]),...local.svDeleted])).slice(-50);
+  }
+  ['mu','dy','wk','cy','dl','lg','lgd','tm','cust','cust2','pushItems'].forEach(k=>{
+    if(local[k]&&typeof local[k]==='object'&&!Array.isArray(local[k])){
+      merged[k]={...(server[k]||{}),...local[k]};
+    }
+  });
+  if(Array.isArray(local.delIds)&&local.delIds.length){
+    merged.delIds=Array.from(new Set([...merged.delIds,...local.delIds]));
+  }
+  return merged;
+}
+function refreshFromServer(){
+  fetch('/dashboard/api/workflow').then(r=>r.json()).then(j=>{
+    if(j.data&&Object.keys(j.data).length>0){
+      try{
+        const merged=mergeServerData(j.data,JSON.parse(localStorage.getItem(KEY))||{});
+        localStorage.setItem(KEY,JSON.stringify(merged));
+        if(!isEditing())renderAll();
+      }catch(e){/*ignore*/}
+    }
+  }).catch(()=>{/*静默，下轮自动重试*/});
+}
 function boot(){
   var el=document.createElement('div');
   el.id='splash';
@@ -792,19 +844,15 @@ function boot(){
   fetch('/dashboard/api/workflow').then(r=>r.json()).then(j=>{
     if(j.data&&Object.keys(j.data).length>0){
       try{
-        const existing=JSON.parse(localStorage.getItem(KEY))||{};
-        const merged={...j.data};
-        Object.keys(merged).forEach(k=>{
-          if(existing[k]!==undefined)delete merged[k];
-        });
-        if(Object.keys(merged).length>0){
-          localStorage.setItem(KEY,JSON.stringify({...existing,...merged}));
-          renderAll();
-        }
+        const merged=mergeServerData(j.data,JSON.parse(localStorage.getItem(KEY))||{});
+        localStorage.setItem(KEY,JSON.stringify(merged));
+        renderAll();
       }catch(e){/*ignore*/}
     }
   }).catch(()=>{});
   setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/dashboard/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
+  // 每60秒从服务器拉一次最新数据（跨设备同步）
+  setInterval(refreshFromServer, 60000);
   setInterval(function(){var s=load();s._date=s._date||'';var t=todayStr();if(s._date&&s._date!==t){s.mu={};s.dy={};s.wk={};s._date=t;save(s);renderAll();}},60000);
 }
 boot();

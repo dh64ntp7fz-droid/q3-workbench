@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, exec } = require('child_process');
 
 const app = express();
 const PORT = process.env.PORT || 3721;
@@ -32,12 +32,42 @@ app.get('/api/workflow', (req, res) => {
   res.json({ data, serverTime: Date.now() });
 });
 
-// POST 保存（合并）
+// POST 保存（深层合并 — 每个子对象按 key 合并，防止多端互盖）
 app.post('/api/workflow', (req, res) => {
   const existing = readJSON(DATA_FILE);
   const incoming = req.body;
   delete incoming._t;
+  // 深层合并：对每个已知的子对象，逐 key 合并而非整体覆盖
+  // 对象字段逐 key 合并（数组字段绝不参与对象合并）
+  const subKeys = ['mu','dy','wk','cy','dl','lg','lgd','tm','cust','cust2','pushItems'];
   const merged = { ...existing, ...incoming, _savedAt: Date.now() };
+  for (const k of subKeys) {
+    if (incoming[k] && typeof incoming[k] === 'object' && !Array.isArray(incoming[k])) {
+      merged[k] = { ...(existing[k]||{}), ...incoming[k] };
+    }
+  }
+  // sv 记录数组：按 门店+日期+时间 去重合并，任何设备都只增不减；
+  // svDeleted 墓碑列表（date_time_store）内的记录从合并结果剔除，实现跨设备删除
+  if (incoming.sv && Array.isArray(incoming.sv)) {
+    const existingSv = Array.isArray(existing.sv) ? existing.sv : [];
+    const existingKeys = existingSv.map(r => r.date+'_'+r.time+'_'+r.store);
+    const newSv = incoming.sv.filter(r => !existingKeys.includes(r.date+'_'+r.time+'_'+r.store));
+    const delSet = new Set([
+      ...(Array.isArray(existing.svDeleted) ? existing.svDeleted : []),
+      ...(Array.isArray(incoming.svDeleted) ? incoming.svDeleted : [])
+    ]);
+    merged.sv = [...newSv, ...existingSv]
+      .filter(r => !delSet.has(r.date+'_'+r.time+'_'+r.store))
+      .slice(0, 30);
+    if (incoming.svDeleted && Array.isArray(incoming.svDeleted)) {
+      merged.svDeleted = [...new Set([...(Array.isArray(existing.svDeleted) ? existing.svDeleted : []), ...incoming.svDeleted])].slice(-50);
+    }
+  }
+  // delIds 是数组：并集合并，不能走对象展开（会变成 {0:..,1:..} 导致前端崩溃）
+  if (incoming.delIds && Array.isArray(incoming.delIds)) {
+    const existingDel = Array.isArray(existing.delIds) ? existing.delIds : [];
+    merged.delIds = [...new Set([...existingDel, ...incoming.delIds])];
+  }
   writeJSON(DATA_FILE, merged);
   res.json({ ok: true, savedAt: Date.now() });
 });
@@ -198,7 +228,8 @@ app.get('/api/automation/projects', (req, res) => {
   const home = require('os').homedir();
   const projects = [
     // ── 在线运行系统 ──
-    { name: '包间预订系统', path: path.join(home, 'room-reservation-supabase'), tech: 'Node.js + Supabase + Render', icon: '📅', desc: '5店包间预订管理，每日自动推送4次', category: '🌐 在线系统', url: 'https://room-reservation-davw.onrender.com', url_tx: 'http://101.33.212.238/', url_local: 'file:///Users/johnny/room-reservation-supabase' },
+    { name: '让客人看见美好 · 项目', path: path.join(home, 'AI知识库/03_项目推进/让客人看见美好'), tech: '知识库', icon: '🌟', desc: '提升客人体验的核心项目，5个宝盒体系', category: '📋 让客人看见美好', url_local: 'file:///Users/johnny/AI知识库/03_项目推进/让客人看见美好/项目概览.md' },
+{ name: '包间预订系统', path: path.join(home, 'room-reservation-supabase'), tech: 'Node.js + Supabase + Render', icon: '📅', desc: '5店包间预订管理，每日自动推送4次', category: '🌐 在线系统', url: 'https://room-reservation-davw.onrender.com', url_tx: 'http://101.33.212.238/', url_local: 'file:///Users/johnny/room-reservation-supabase' },
     { name: '食材上报系统', path: path.join(home, 'food-waste-app'), tech: 'Node.js + Render', icon: '🥩', desc: '不能隔夜菜品上报，5店全覆盖，每日两次推送', category: '🌐 在线系统', url: 'https://food-dongxgll.onrender.com', url_tx: 'http://101.33.212.238/dongxgll/', url_local: 'file:///Users/johnny/food-waste-app' },
     { name: '三季度工作台', path: path.join(home, 'Documents/Codex/三季度工作台'), tech: 'Node.js + Express', icon: '🧭', desc: '驻店检查、任务追踪、经营看板', category: '🌐 在线系统', url: 'https://q3-workbench.onrender.com', url_tx: 'http://101.33.212.238/dashboard/', url_local: 'file:///Users/johnny/Documents/Codex/三季度工作台' },
     { name: '排队叫号系统', path: path.join(home, 'queue-system'), tech: 'Node + Supabase · Render', icon: '🔢', desc: '门店排队取号管理，独立部署', category: '🌐 在线系统', url: 'https://queue-system.onrender.com', url_tx: 'http://101.33.212.238/queue/', url_local: 'file:///Users/johnny/queue-system' },
@@ -213,6 +244,8 @@ app.get('/api/automation/projects', (req, res) => {
     { name: '能量辅导简报系统', path: null, tech: 'Skill + Python + Word', icon: '⚡', desc: '能量事件→6节框架+8维度+5心法分析→docx报告/HTML简报', category: '🤖 自动化工具' },
     { name: '日报自动同步系统', path: null, tech: 'Cron + Python + AppleScript', icon: '📝', desc: '每日23:30自动扫描日报文件→同步到Apple备忘录，已自动运行26次', category: '🤖 自动化工具' },
     { name: '每日回顾提醒', path: null, tech: 'Cron + Shell + 企微', icon: '🔔', desc: '每日22:10企业微信提醒回顾（已执行12次）', category: '🤖 自动化工具' },
+    { name: '酒水进销存差异推送', path: null, tech: 'Python + systemd + 企微', icon: '🍷', desc: '大朗环球店酒水进销存差异→每日22:15自动推送门店群', category: '🤖 自动化工具', runScript: 'bash /opt/scripts/wine-diff/run.sh' },
+    { name: '营业额预估差异率报表推送', path: null, tech: 'Playwright + GitHub Actions + 企微', icon: '📊', desc: 'BI报表→营业额预估差异率→导出图片+Excel→推送企微（每天23:00自动）', category: '🤖 自动化工具', runScript: 'bash /opt/scripts/revenue-forecast/run.sh' },
     // ── 数据/知识库 ──
     { name: 'AI知识库', path: path.join(home, 'AI知识库'), tech: '本地文件系统', icon: '📚', desc: '门店运营/会议纪要/AI脚本工具/固定规则库/素材资料统一归档', category: '📁 数据资产', url_local: 'file:///Users/johnny/AI知识库' },
     { name: '三季度工具表格（15张）', path: null, tech: 'Excel', icon: '📑', desc: '整改完成表/顾客反馈/维修追踪/早例会复盘/带教辅导/场景考核/明星员工/宿舍检查等', category: '📁 数据资产' },
@@ -306,6 +339,24 @@ app.post('/api/scripts/:name/run', (req, res) => {
     if (!fs.existsSync(f)) return res.status(404).json({ error: 'Not found' });
     const cmd = f.endsWith('.py') ? `python3 "${f}"` : `bash "${f}"`;
     const out = execSync(cmd, { encoding: 'utf8', timeout: 30000, maxBuffer: 1024*50 });
+    res.json({ ok: true, output: out.slice(0, 5000) });
+  } catch (e) {
+    const output = e.stdout || '';
+    res.json({ ok: false, error: e.message.slice(0, 200), output: (output+'').slice(0, 5000) });
+  }
+});
+
+// 手动运行项目脚本
+app.post('/api/projects/:name/run', (req, res) => {
+  try {
+    const home = require('os').homedir();
+    const allProjects = [
+      { name: '酒水进销存差异推送', runScript: 'bash /opt/scripts/wine-diff/run.sh' },
+      { name: '营业额预估差异率报表推送', runScript: 'bash /opt/scripts/revenue-forecast/run.sh' },
+    ];
+    const proj = allProjects.find(p => p.name === req.params.name);
+    if (!proj || !proj.runScript) return res.status(404).json({ error: '项目没有可执行的脚本' });
+    const out = execSync(proj.runScript, { encoding: 'utf8', timeout: 300000, maxBuffer: 1024*50 });
     res.json({ ok: true, output: out.slice(0, 5000) });
   } catch (e) {
     const output = e.stdout || '';
