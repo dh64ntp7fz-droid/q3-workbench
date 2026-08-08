@@ -247,12 +247,6 @@ const WACT=[
 ];
 
 const CYCLES=[
-  {key:'weekly',label:'📅 每周交',cyc:'周一重置',tasks:[
-    {id:'w1',title:'驻店排班表',desc:'按周更新',who:'运营部',tab:'驻店排班表'},
-    {id:'w2',title:'驻店整改记录',desc:'问题点+改善',who:'运营部',tab:'整改完成表'},
-    {id:'w3',title:'服务员辅导记录',desc:'一对一培训辅导',who:'自查',tab:'—'},
-    {id:'w4',title:'店长带教案例输出',desc:'本周带教记录',who:'自查',tab:'—'},
-  ]},
   {key:'biweekly',label:'🔄 每两周交',cyc:'隔周周三',tasks:[
     {id:'b1',title:'线上案例分享记录表',desc:'周三≥40分钟',who:'运营部',tab:'案例分享记录表'},
   ]},
@@ -269,7 +263,7 @@ const DEADLINES=[
   {id:'l2',type:'dl',title:'🔴 客户资料协议签订+微信交公司',meta:'门店签协议+微信交公司',due:'2026-07-31',tab:'微信移交协议'},
   {id:'l3',type:'dl',title:'📦 闲置资产清理',meta:'图片+规格+数量',due:'2026-09-30',tab:'闲置资产盘点'},
   {id:'l4',type:'dl',title:'🔧 区域维修完成（无超2000以上大修）',meta:'季度内',due:'2026-09-30',tab:'区域维修追踪表'},
-  {id:'l5',type:'dl',title:'🛏️ 宿舍最后一个月不扣分',meta:'季度末赵总检核',due:'2026-09-30'},
+  {id:'l5',type:'dl',title:'🛏️ 宿舍季度零扣分（季末赵总检核）',meta:'9月最后一个月不扣分',due:'2026-09-30'},
   {id:'l6',type:'dl',title:'🎥 视频抽检分鱼头80%执行',meta:'季度末赵总检核',due:'2026-09-30'},
 ];
 
@@ -411,6 +405,7 @@ function editTemp(id){const s=load();const tsk=s.tm[id];if(!tsk)return;const nt=
 
 // Store visit
 const SV_NAMES={长安花园:'长安花园',长安锦厦:'长安锦厦',大朗环球:'大朗环球',凤岗黄河:'凤岗黄河',凤岗天安:'凤岗天安'};
+const STORES=Object.keys(SV_NAMES);
 
 const SV_DIMENSIONS=[
   {id:'dim1',label:'👤 员工状态',open:true,items:[
@@ -589,7 +584,6 @@ function svDelete(i){
 }
 function svResend(i){
   const s=load();const r=s.sv[i];if(!r)return;
-  const dims=[{id:'dim1',label:'👤 人员形象与精神面貌'},{id:'dim2',label:'🍽️ 顾客满意'},{id:'dim3',label:'🧹 环境卫生（4D标准）'}];
   let bullet='';
   SV_DIMENSIONS.forEach(function(dim){
     bullet+=dim.label+'\n';
@@ -618,6 +612,11 @@ function exportData(){
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const j=JSON.parse(ev.target.result);const d=j.data||j;localStorage.setItem(KEY,JSON.stringify(d));renderAll();toast('✅ 备份已恢复')}catch(e){toast('❌ 格式错误')}};r.readAsText(f);e.target.value=''}
 function resetAll(){localStorage.removeItem(KEY);renderAll();toast('已清空')}
 
+function taskRow(o){
+  const done=o.done?' done':'';
+  const tags=(o.tags||[]).map(function(t){return '<span class="tg '+(t.cls||'')+'">'+t.txt+'</span>'}).join('');
+  return '<div class="row'+done+(o.cls?' '+o.cls:'')+'" onclick="'+o.onclick+'"><div class="ck">'+(done?'✓':'')+'</div><div class="r-b"><div class="r-t">'+o.title+'<button class="edit-btn" onclick="event.stopPropagation();'+o.edit+'" title="编辑">✎</button></div>'+(o.sub?'<div class="r-d">'+o.sub+'</div>':'')+(tags?'<div class="r-tags">'+tags+'</div>':'')+'</div></div>';
+}
 function renderAll(){
   const s=load();s.mu=s.mu||{};s.dy=s.dy||{};s.wk=s.wk||{};s.cy=s.cy||{};s.dl=s.dl||{};s.lg=s.lg||{};s.cust=s.cust||{};s.cust2=s.cust2||{};s.tm=s.tm||{};s.sv=s.sv||[];s.delIds=s.delIds||[];
   const t=todayStr();const wcur=weekStr();
@@ -643,14 +642,15 @@ function renderAll(){
   // Must
   let mz='';
   MUST.forEach(m=>{if(s.delIds.includes(m.id))return;const ttl=s.cust[m.id]||m.title;const done=s.mu[m.id]===t;
-    mz+=`<div class="row must-fine${done?' done':''}" onclick="tMust('${m.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${m.id}','must')" title="编辑">✎</button></div><div class="r-d">${m.desc}</div><div class="r-tags">${m.fine?'<span class="tg fine">不发罚款</span>':''}${done?'<span class="tg stamp">已交</span>':''}</div></div></div>`;});
+    const tags=[];if(m.fine)tags.push({cls:'fine',txt:'不发罚款'});if(done)tags.push({cls:'stamp',txt:'已交'});
+    mz+=taskRow({done:done,cls:'must-fine',title:ttl,onclick:"tMust('"+m.id+"')",edit:"editText('"+m.id+"','must')",sub:m.desc,tags:tags});});
   document.getElementById('mustZone').innerHTML=`<div class="grp-head"><span>🔴 每日必交 <span class="gear-btn" onclick="event.stopPropagation();openSettings('must')">⚙</span></span><span class="prog">${muDone}/${MUST.length}</span></div>`+mz;
 
 
   // Weekly
   let wz='',wDone=0;
   WACT.forEach(w=>{if(s.delIds.includes(w.id))return;const ttl=s.cust[w.id]||w.text;const done=s.wk[w.id]===wcur;if(done)wDone++;
-    wz+=`<div class="row${done?' done':''}" onclick="tWact('${w.id}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl}<button class="edit-btn" onclick="event.stopPropagation();editText('${w.id}','wact')" title="编辑">✎</button></div>${w.sub?`<div class="r-d">${w.sub}</div>`:''}</div></div>`;});
+    wz+=taskRow({done:done,title:ttl,onclick:"tWact('"+w.id+"')",edit:"editText('"+w.id+"','wact')",sub:w.sub});});
   document.getElementById('wactZone').innerHTML=`<div class="grp-head"><span>📅 每周固定动作 <span class="gear-btn" onclick="event.stopPropagation();openSettings('wact')">⚙</span></span><span class="prog">${wDone}/${WACT.length}</span></div>`+wz;
 
   // Cycles
@@ -660,7 +660,8 @@ function renderAll(){
     c.tasks.forEach(tk=>{if(s.cy[tk.id]&&s.cy[tk.id].p===cur)sd++;});
     cz+=`<div class="card grp-${c.key}" style="margin-bottom:10px"><div class="grp-head"><span>${c.label} <span class="cyc">· ${c.cyc}</span></span><span><span class="gear-btn" onclick="event.stopPropagation();openSettings('cycle')">⚙</span> <span class="prog">${sd}/${c.tasks.length}</span></span></div>`;
     c.tasks.forEach(tk=>{if(s.delIds.includes(tk.id))return;const ttl2=s.cust[tk.id]||tk.title;const rec=s.cy[tk.id];const done=rec&&rec.p===cur;
-      cz+=`<div class="row${done?' done':''}" onclick="tCycle('${tk.id}','${c.key}')"><div class="ck">${done?'✓':''}</div><div class="r-b"><div class="r-t">${ttl2}<button class="edit-btn" onclick="event.stopPropagation();editText('${tk.id}','cycle')">✎</button></div><div class="r-d">${tk.desc}</div><div class="r-tags"><span class="tg who">交：${tk.who}</span>${tk.tab!=='—'?`<span class="tg tab">📄${tk.tab}</span>`:''}${done?`<span class="tg stamp">✓${rec.d.slice(5)}交</span>`:''}</div></div></div>`;});
+      const tags=[{cls:'who',txt:'交：'+tk.who}];if(tk.tab!=='—')tags.push({cls:'tab',txt:'📄'+tk.tab});if(done&&rec.d)tags.push({cls:'stamp',txt:'✓'+rec.d.slice(5)+'交'});
+      cz+=taskRow({done:done,title:ttl2,onclick:"tCycle('"+tk.id+"','"+c.key+"')",edit:"editText('"+tk.id+"','cycle')",sub:tk.desc,tags:tags});});
     cz+=`</div>`;});
   document.getElementById('cycleZone').innerHTML=cz;
 
@@ -703,7 +704,7 @@ function renderSV(){
   if(svCollapsed){document.getElementById('svZone').style.display='none';return;}
   document.getElementById('svZone').style.display='block';
   let h=`<div style="display:flex;gap:8px;margin-bottom:14px;align-items:center"><select id="svStore" onchange="svDraft.store=this.value" style="flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:10px;font-size:14px;background:var(--inp);color:#1e293b">`;
-  ['长安花园','长安锦厦','大朗环球','凤岗黄河','凤岗天安'].forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
+  STORES.forEach(v=>{h+=`<option value="${v}"${svDraft.store===v?' selected':''}>${v}</option>`;});
   h+=`</select><span style="font-size:12px;color:var(--t2);white-space:nowrap;font-weight:600">📅 ${todayStr()}</span></div>`;
 
   SV_DIMENSIONS.forEach(dim=>{
@@ -850,7 +851,6 @@ function boot(){
       }catch(e){/*ignore*/}
     }
   }).catch(()=>{});
-  setInterval(()=>{const s=load();if(Object.keys(s).length>0)fetch('/dashboard/api/workflow',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...s,_t:Date.now()})}).catch(()=>{})},30000);
   // 每60秒从服务器拉一次最新数据（跨设备同步）
   setInterval(refreshFromServer, 60000);
   setInterval(function(){var s=load();s._date=s._date||'';var t=todayStr();if(s._date&&s._date!==t){s.mu={};s.dy={};s.wk={};s._date=t;save(s);renderAll();}},60000);
