@@ -496,6 +496,8 @@ function toggleSection(k){
   applySec(k);
 }
 let svCollapsed;
+let svHistoryCollapsed=true;
+function toggleSVHistory(){svHistoryCollapsed=!svHistoryCollapsed;renderSV();}
 function toggleSV(){
   svCollapsed=!svCollapsed;
   localStorage.setItem('zm_sv_collapsed',svCollapsed?'1':'0');
@@ -771,8 +773,11 @@ function renderSV(){
 
   // History
   if(s.sv.length>0){
-    h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b">📜 最近记录</div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
-    s.sv.slice(0,15).forEach((r,i) => {const ri=s.sv.indexOf(r);h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="sv-resend-btn" onclick="svResend(${ri})" title="重发到企微">↻ 重推</button><button class="edit-btn" onclick="svDelete(${ri})">✕</button></div>`;});
+    const hArrow=svHistoryCollapsed?'▸':'▾';
+    h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b;cursor:pointer;user-select:none;flex:1" onclick="toggleSVHistory()">${hArrow} 📜 最近记录 <span style="background:var(--dim);padding:1px 6px;border-radius:10px;font-size:10px">${s.sv.length}</span></div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
+    if(!svHistoryCollapsed){
+      s.sv.slice(0,15).forEach((r,i) => {const ri=s.sv.indexOf(r);h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="sv-resend-btn" onclick="svResend(${ri})" title="重发到企微">↻ 重推</button><button class="edit-btn" onclick="svDelete(${ri})">✕</button></div>`;});
+    }
   }
   document.getElementById('svZone').innerHTML=h;
 }
