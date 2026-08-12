@@ -109,7 +109,7 @@ ${ps}
 `;
       payload = { msgtype: 'text', text: { content } };
     }
-    const resp = await fetch('https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d35ec9fd-b3e2-4132-848c-0fbc7ab38107', {
+    const resp = await fetch(process.env.WEBHOOK_DAILY_REVIEW || 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4eb139cc-e9ef-462d-8ef0-8559e4b94ba1', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
     });
     const result = await resp.json();
