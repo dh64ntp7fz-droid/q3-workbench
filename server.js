@@ -109,7 +109,7 @@ ${ps}
 `;
       payload = { msgtype: 'text', text: { content } };
     }
-    const resp = await fetch(process.env.WEBHOOK_DAILY_REVIEW || 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4eb139cc-e9ef-462d-8ef0-8559e4b94ba1', {
+    const resp = await fetch('https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4eb139cc-e9ef-462d-8ef0-8559e4b94ba1', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
     });
     const result = await resp.json();
@@ -245,7 +245,6 @@ app.get('/api/automation/projects', (req, res) => {
     { name: '顾客反馈归类分析系统', path: null, tech: 'Python + python-docx', icon: '📋', desc: 'CSV导入→自动归类分析→Word报告输出，7类+8类投诉分类，锦厦/天安模板通用', category: '🤖 自动化工具' },
     { name: '能量辅导简报系统', path: null, tech: 'Skill + Python + Word', icon: '⚡', desc: '能量事件→6节框架+8维度+5心法分析→docx报告/HTML简报', category: '🤖 自动化工具' },
     { name: '日报自动同步系统', path: null, tech: 'Cron + Python + AppleScript', icon: '📝', desc: '每日23:30自动扫描日报文件→同步到Apple备忘录，已自动运行26次', category: '🤖 自动化工具' },
-    { name: '每日回顾提醒', path: null, tech: 'Cron + Shell + 企微', icon: '🔔', desc: '每日22:10企业微信提醒回顾（已执行12次）', category: '🤖 自动化工具' },
     { name: '酒水进销存差异推送', path: null, tech: 'Python + systemd + 企微', icon: '🍷', desc: '大朗环球店酒水进销存差异→每日22:15自动推送门店群', category: '🤖 自动化工具', runScript: 'bash /opt/scripts/wine-diff/run.sh' },
     { name: '营业额预估差异率报表推送', path: null, tech: 'Playwright + GitHub Actions + 企微', icon: '📊', desc: 'BI报表→营业额预估差异率→导出图片+Excel→推送企微（每天23:00自动）', category: '🤖 自动化工具', runScript: 'bash /opt/scripts/revenue-forecast/run.sh' },
     // ── 数据/知识库 ──
@@ -378,34 +377,6 @@ app.post('/api/cron/:id/toggle', (req, res) => {
     res.json({ ok: true, enabled: job.enabled });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
-
-// ── 每日回顾提醒（21:00 推送企业微信群） ──
-function scheduleDailyReview() {
-  // 北京时间 22:05 = UTC 14:05（Render 默认 UTC 时区）
-  const now = Date.now();
-  const target = new Date();
-  target.setUTCHours(14, 5, 0, 0);
-  let ms = target - now;
-  if (ms < 0) { target.setUTCDate(target.getUTCDate() + 1); ms = target - now; }
-  setTimeout(async () => {
-    const hook = process.env.WEBHOOK_DAILY_REVIEW;
-    if (hook) {
-      try {
-        const r = await fetch(hook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            msgtype: 'text',
-            text: { content: '美好的一天即将结束，请把今天的事情做一下回顾，发送到群内！坚持就是胜利✌️✌️✌️✌️', mentioned_list: ['@all'] }
-          })
-        });
-        console.log('每日回顾提醒:', r.ok ? '✅ 已推送' : `❌ ${r.status}`);
-      } catch (e) { console.error('每日回顾提醒失败:', e.message); }
-    }
-    scheduleDailyReview();
-  }, ms);
-}
-scheduleDailyReview();
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🧭 三季度工作台服务已启动`);
