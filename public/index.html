@@ -134,8 +134,8 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .card,.sv-card{animation:fadeIn .4s ease both}
 .card:nth-child(2){animation-delay:.04s}
 
-@media(min-width:600px){.stats{grid-template-columns:repeat(4,1fr)}body{padding:16px 16px 48px}}
-@media print{body{background:#fff;padding:0;color:#000}.header,.hint,.btns,.stats,.temp-form,.sv-card,.toast{display:none!important}.card{box-shadow:none;border:1px solid #ddd}}
+@media(min-width:600px){.stats{grid-template-columns:repeat(4,1fr)}body{padding:16px 16px 64px}}
+@media print{body{background:#fff;padding:0;color:#000}.header,.hint,.btns,.stats,.temp-form,.sv-card,.toast,.tabbar{display:none!important}.card{box-shadow:none;border:1px solid #ddd}.page{display:block!important}}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 .toast.show{font-size:15px;padding:14px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 32px rgba(99,102,241,.4)}
 
@@ -164,6 +164,18 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 @keyframes shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes streakGlow{0%,100%{box-shadow:0 0 8px rgba(251,191,36,.3)}50%{box-shadow:0 0 20px rgba(251,191,36,.6)}}
+
+/* ── 分页 Tab ── */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .25s ease}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bd);display:flex;z-index:999;padding:6px 2px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(0,0,0,.06)}
+.tab{flex:1;border:none;background:none;cursor:pointer;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--t3);transition:.2s;-webkit-tap-highlight-color:transparent}
+.tab .ic{font-size:19px;line-height:1}
+.tab .lb{font-size:10px;font-weight:600}
+.tab.active{color:#6366f1}
+.tab.active .ic{transform:scale(1.15)}
+.tab.active .lb{font-weight:800}
+body{padding-bottom:64px}
 </style>
 </head>
 <body style="min-height:100vh">
@@ -172,10 +184,29 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
   <div class="quote" id="dailyQuote"></div></div><button id="dmBtn" onclick="var h=document.documentElement;var cur=h.getAttribute('data-theme')||'light';var nxt=cur==='dark'?'light':'dark';h.setAttribute('data-theme',nxt);this.textContent=nxt==='dark'?'☀️':'🌙';localStorage.setItem('zm_theme',nxt)" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:22px;cursor:pointer;min-width:48px;min-height:48px;border-radius:50%;flex-shrink:0">🌙</button></div></div></div>
 <div class="stats" id="statsZone"></div>
 
-
-
+<!-- ═══════ 首页 · 今日概览 ═══════ -->
+<div class="page" id="page-home">
 <div class="hint" id="h_must" style="cursor:pointer;user-select:none" onclick="toggleSection('must')"><span id="a_must">▼</span> 🔴 每日必交 · 日报/打卡/锻造班</div>
 <div class="card grp-must" id="mustZone"></div>
+
+<div class="hint" id="h_dl" style="cursor:pointer;user-select:none" onclick="toggleSection('dl')"><span id="a_dl">▼</span> ⏰ 截止 & 日程 <span class="gear-btn" onclick="event.stopPropagation();openSettings('dl')" style="color:var(--t2)!important;font-size:12px">⚙</span></div>
+<div class="card" id="dlZone"></div>
+</div>
+
+<!-- ═══════ 计划 · 周期交付 ═══════ -->
+<div class="page" id="page-plan">
+<div class="hint" id="h_wact" style="cursor:pointer;user-select:none" onclick="toggleSection('wact')"><span id="a_wact">▼</span> 📅 每周固定动作 · 排班/整改/带教/辅导/驻店/宿舍</div>
+<div class="card grp-weekly" id="wactZone"></div>
+
+<div class="hint" id="h_cycle" style="cursor:pointer;user-select:none" onclick="toggleSection('cycle')"><span id="a_cycle">▼</span> 📤 周期交付 · 每周/双周/每月</div>
+<div id="cycleZone"></div>
+
+<div class="hint" id="h_ledger" style="cursor:pointer;user-select:none" onclick="toggleSection('ledger')"><span id="a_ledger">▼</span> 📁 简易台账 · 每日提交累计</div>
+<div class="card" id="ledgerZone"></div>
+</div>
+
+<!-- ═══════ 记录 · 随手记 ═══════ -->
+<div class="page" id="page-log">
 <div class="hint" id="h_dr" style="cursor:pointer;user-select:none" onclick="toggleSection('dr')"><span id="a_dr">▼</span> 🎤 日报记录 · 语音转文字随手记</div>
 <div class="card" id="drZone">
   <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">手机上语音转文字后粘贴到这里，口语化没关系，我会整理成正式日报</div>
@@ -187,36 +218,46 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
   <div id="drList" style="margin-top:12px"></div>
 </div>
 
-
-<div class="hint" id="h_wact" style="cursor:pointer;user-select:none" onclick="toggleSection('wact')"><span id="a_wact">▼</span> 📅 每周固定动作 · 排班/整改/带教/辅导/驻店/宿舍</div>
-<div class="card grp-weekly" id="wactZone"></div>
-
 <div class="hint" id="h_temp" style="cursor:pointer;user-select:none" onclick="toggleSection('temp')"><span id="a_temp">▼</span> 📋 临时事项 · 随手添加，自动同步</div>
 <div class="card" id="tempZone"></div>
 
-<div class="hint" id="h_cycle" style="cursor:pointer;user-select:none" onclick="toggleSection('cycle')"><span id="a_cycle">▼</span> 📤 周期交付 · 每周/双周/每月</div>
-<div id="cycleZone"></div>
+<div class="hint" id="h_evt" style="cursor:pointer;user-select:none" onclick="toggleSection('evt')"><span id="a_evt">▼</span> 📝 场景/能量事件 · 一次记录，两种格式</div>
+<div class="card" id="evtZone"></div>
+</div>
 
-<div class="hint" id="h_dl" style="cursor:pointer;user-select:none" onclick="toggleSection('dl')"><span id="a_dl">▼</span> ⏰ 截止 & 日程 <span class="gear-btn" onclick="event.stopPropagation();openSettings('dl')" style="color:var(--t2)!important;font-size:12px">⚙</span></div>
-<div class="card" id="dlZone"></div>
-
+<!-- ═══════ 巡店 · 驻店记录 ═══════ -->
+<div class="page" id="page-visit">
 <div class="hint" id="svToggle" style="cursor:pointer;user-select:none" onclick="toggleSV()">
   <span id="svArrow">▼</span> 📋 驻店记录 · 巡店检查（配套桌面巡店表）
 </div>
 <div class="sv-card" id="svZone"></div>
-
-<div class="hint" id="h_ledger" style="cursor:pointer;user-select:none" onclick="toggleSection('ledger')"><span id="a_ledger">▼</span> 📁 简易台账 · 每日提交累计</div>
-<div class="card" id="ledgerZone"></div>
-
-<div class="btns">
-  <button onclick="window.print()">🖨️ 打印</button>
-  <button onclick="refreshFromServer()">🔄 刷新</button>
-  <button onclick="exportData()">📦 备份数据</button>
-  <button onclick="document.getElementById('importInput').click()">📂 恢复备份</button>
-  <button onclick="if(confirm('确定清空全部？'))resetAll()">↻ 清空</button>
 </div>
+
+<!-- ═══════ 更多 · 工具 ═══════ -->
+<div class="page" id="page-more">
+<div class="card" style="padding:16px">
+  <div style="font-size:14px;font-weight:700;margin-bottom:12px">🛠️ 工具</div>
+  <div class="btns" style="margin-top:0">
+    <button onclick="window.print()">🖨️ 打印</button>
+    <button onclick="refreshFromServer()">🔄 刷新</button>
+    <button onclick="exportData()">📦 备份数据</button>
+    <button onclick="document.getElementById('importInput').click()">📂 恢复备份</button>
+  </div>
+  <div class="btns">
+    <button onclick="if(confirm('确定清空当前填写的内容？历史记录不受影响'))resetAll()">↻ 清空输入</button>
+  </div>
+  <div class="foot" style="text-align:left;margin-top:16px">数据自动保存到服务器 &nbsp;|&nbsp; 配套Excel表在桌面「三季度工具表格」文件夹</div>
+</div>
+</div>
+
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
-<div class="foot">数据自动保存到服务器 &nbsp;|&nbsp; 配套Excel表在桌面「三季度工具表格」文件夹</div>
+<nav class="tabbar" id="tabbar">
+  <button class="tab active" data-tab="home" onclick="switchTab('home')"><span class="ic">🏠</span><span class="lb">首页</span></button>
+  <button class="tab" data-tab="plan" onclick="switchTab('plan')"><span class="ic">📅</span><span class="lb">计划</span></button>
+  <button class="tab" data-tab="log" onclick="switchTab('log')"><span class="ic">📝</span><span class="lb">记录</span></button>
+  <button class="tab" data-tab="visit" onclick="switchTab('visit')"><span class="ic">🏪</span><span class="lb">巡店</span></button>
+  <button class="tab" data-tab="more" onclick="switchTab('more')"><span class="ic">⚙️</span><span class="lb">更多</span></button>
+</nav>
 <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"><div class="settings-panel" onclick="event.stopPropagation()"><h3 id="settingsTitle"></h3><div id="settingsItems"></div><button class="settings-close" onclick="closeSettings()">关闭</button></div></div>
 <div class="toast-wrap" id="toastWrap" onclick="closeBigToast()">
   <div class="toast-box" id="toastBox" onclick="event.stopPropagation()">🎉</div>
@@ -485,7 +526,7 @@ function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];localStorage.set
 
 let sections={};
 function initSections(){
-  ['dr','must','wact','temp','cycle','dl','ledger'].forEach(k=>{
+  ['dr','must','wact','temp','evt','cycle','dl','ledger'].forEach(k=>{
     const v=localStorage.getItem('sec_'+k);
     sections[k]=v===null?true:v==='1';
     applySec(k);
@@ -497,7 +538,7 @@ function initSections(){
 }
 function applySec(k){
   const a=document.getElementById('a_'+k);if(a)a.textContent=sections[k]?'▼':'▶';
-  const ids={dr:'drZone',must:'mustZone',wact:'wactZone',temp:'tempZone',cycle:'cycleZone',dl:'dlZone',ledger:'ledgerZone'};
+  const ids={dr:'drZone',must:'mustZone',wact:'wactZone',temp:'tempZone',evt:'evtZone',cycle:'cycleZone',dl:'dlZone',ledger:'ledgerZone'};
   const el=document.getElementById(ids[k]);if(el)el.style.display=sections[k]?'block':'none';
 }
 function toggleSection(k){
@@ -507,6 +548,23 @@ function toggleSection(k){
 }
 let svCollapsed;
 let svHistoryCollapsed=true;
+function switchTab(tab){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+tab);
+  if(pg)pg.classList.add('active');
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  try{localStorage.setItem('zm_tab',tab);}catch(e){}
+  window.scrollTo({top:0});
+  if(tab==='visit')renderSV();
+  if(tab==='log')drLoad();
+  if(tab==='home')renderAll();
+}
+function initTab(){
+  let tab='home';
+  try{tab=localStorage.getItem('zm_tab')||'home';}catch(e){}
+  if(!document.getElementById('page-'+tab))tab='home';
+  switchTab(tab);
+}
 function toggleSVHistory(){svHistoryCollapsed=!svHistoryCollapsed;renderSV();}
 function toggleSV(){
   svCollapsed=!svCollapsed;
@@ -517,14 +575,38 @@ function toggleSV(){
 }
 function svSetNum(key,val){svDraft.numbers[key]=val;localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));}
 function svSetNote(key,val){svDraft.notes[key]=val;localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));}
+function svEdit(i){
+  const s=load();s.sv=s.sv||[];
+  const r=s.sv[i];if(!r)return;
+  svDraft={store:r.store||'长安花园',checks:{...(r.checks||{})},notes:{...(r.notes||{})},numbers:{...(r.numbers||{})},resolved:r.resolved||'',editing:{date:r.date,time:r.time,store:r.store}};
+  localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
+  const z=document.getElementById('svZone');
+  if(z){z.scrollIntoView({behavior:'smooth',block:'start'});}
+  renderSV();
+  toast('✎ 正在编辑 '+r.date+' '+r.store+' 的记录');
+}
 function svSave(){
   const s=load();s.sv=s.sv||[];
   const totalChecks=Object.values(svDraft.checks).filter(Boolean).length;
   const totalItems=Object.values(svDraft.checks).length;
   const noteSummary=[];
   Object.keys(svDraft.notes).forEach(id=>{if(svDraft.notes[id])noteSummary.push(id+':'+svDraft.notes[id].substring(0,40));});
-  const record={store:svDraft.store,date:todayStr(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),checks:{...svDraft.checks},notes:{...svDraft.notes},numbers:{...svDraft.numbers},resolved:svDraft.resolved,checkCount:totalChecks,summary:noteSummary.join('; ')};
-  s.sv.unshift(record);
+  const record={store:svDraft.store,date:todayStr(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),checks:{...svDraft.checks},notes:{...svDraft.notes},numbers:{...svDraft.numbers},resolved:svDraft.resolved,checkCount:totalChecks,summary:noteSummary.join('; '),ts:Date.now()};
+  const ed=svDraft.editing;
+  if(ed){
+    // 编辑态：原地更新原记录（保留原 date/time/store 作为去重key）
+    const idx=s.sv.findIndex(r=>r.date===ed.date&&r.time===ed.time&&r.store===ed.store);
+    if(idx>=0){
+      const old=s.sv[idx];
+      record.date=old.date;record.time=old.time;record.store=old.store;
+      s.sv[idx]={...old,...record};
+    }else{
+      s.sv.unshift(record);
+    }
+    delete svDraft.editing;
+  }else{
+    s.sv.unshift(record);
+  }
   if(s.sv.length>30)s.sv=s.sv.slice(0,30);
   save(s);
 
@@ -622,7 +704,13 @@ function exportData(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='工作台备份_'+todayStr()+'.json';a.click();toast('✅ 备份下载完成')
 }
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const j=JSON.parse(ev.target.result);const d=j.data||j;localStorage.setItem(KEY,JSON.stringify(d));renderAll();toast('✅ 备份已恢复')}catch(e){toast('❌ 格式错误')}};r.readAsText(f);e.target.value=''}
-function resetAll(){localStorage.removeItem(KEY);renderAll();toast('已清空')}
+function resetAll(){
+  svDraft={store:svDraft.store||'长安花园',checks:{},notes:{},numbers:{},resolved:''};
+  localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft));
+  localStorage.removeItem('zm_evt_draft');
+  renderSV();renderEvt();
+  toast('已清空当前填写内容（历史记录保留）');
+}
 
 function taskRow(o){
   const done=o.done?' done':'';
@@ -707,6 +795,7 @@ function renderAll(){
   document.getElementById('tempZone').innerHTML=tz;
 
   renderSV();
+  renderEvt();
 }
 
 // Render Store Visit (separate to avoid ES escaping issues with svToggle)
@@ -779,17 +868,139 @@ function renderSV(){
   h+=`<textarea placeholder="沟通重点、共识行动..." oninput="svDraft.resolved=this.value;localStorage.setItem('zm_sv_draft',JSON.stringify(svDraft))" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;background:var(--inp);color:var(--txt);min-height:60px;resize:vertical;font-family:inherit">${svDraft.resolved}</textarea>`;
   h+=`</div>`;
 
-  h+=`<button class="sv-submit" onclick="svSave()" style="margin-bottom:12px">💾 保存本次驻店记录</button>`;
+  h+=`<button class="sv-submit" onclick="svSave()" style="margin-bottom:12px">${svDraft.editing?'✎ 保存修改（更新原记录）':'💾 保存本次驻店记录'}</button>`;
 
   // History
   if(s.sv.length>0){
     const hArrow=svHistoryCollapsed?'▸':'▾';
     h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px"><div style="font-size:12px;font-weight:700;color:#64748b;cursor:pointer;user-select:none;flex:1" onclick="toggleSVHistory()">${hArrow} 📜 最近记录 <span style="background:var(--dim);padding:1px 6px;border-radius:10px;font-size:10px">${s.sv.length}</span></div><button class="edit-btn" onclick="svExportCSV()" style="font-weight:700;color:#6366f1;font-size:12px">📥 导出CSV</button></div>`;
     if(!svHistoryCollapsed){
-      s.sv.slice(0,15).forEach((r,i) => {const ri=s.sv.indexOf(r);h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="sv-resend-btn" onclick="svResend(${ri})" title="重发到企微">↻ 重推</button><button class="edit-btn" onclick="svDelete(${ri})">✕</button></div>`;});
+      s.sv.slice(0,15).forEach((r,i) => {const ri=s.sv.indexOf(r);h+=`<div class="sv-hist-item"><div style="flex:1"><b>${r.store}</b> · ${r.date.slice(5)}${r.time?' '+r.time:''} · <span style="color:#10b981">${r.checkCount||0}✓</span>${r.summary?`<div style="font-size:9px;color:var(--t3);margin-top:1px">${r.summary.substring(0,60)}</div>`:''}</div><span style="font-size:10px;color:#cbd5e1;white-space:nowrap">${r.date.slice(5)}</span><button class="edit-btn" onclick="svEdit(${ri})" title="编辑">✎</button><button class="sv-resend-btn" onclick="svResend(${ri})" title="重发到企微">↻ 重推</button><button class="edit-btn" onclick="svDelete(${ri})">✕</button></div>`;});
     }
   }
   document.getElementById('svZone').innerHTML=h;
+}
+
+// Render Scene / Energy events (场景记录 & 能量事件，一个输入框两种格式)
+const EVT_NAME='邹慧明';
+function evtEsc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+let evtEditingId=null;
+function evtDraft(){let d={desc:''};try{const j=JSON.parse(localStorage.getItem('zm_evt_draft'));if(j)d={...d,...j};}catch(e){}return d;}
+function evtSetDraft(k,v){const d=evtDraft();d[k]=v;localStorage.setItem('zm_evt_draft',JSON.stringify(d));}
+function evtEdit(id){
+  const s=load();s.evt=s.evt||[];
+  const e=s.evt.find(x=>x.id===id);if(!e)return;
+  evtEditingId=id;
+  const d={desc:e.desc||''};
+  localStorage.setItem('zm_evt_draft',JSON.stringify(d));
+  renderEvt();
+  const z=document.getElementById('evtZone');
+  if(z){z.scrollIntoView({behavior:'smooth',block:'start'});const ta=document.getElementById('evtDesc');if(ta)ta.focus();}
+  toast('✎ 正在编辑该记录');
+}
+function evtSave(){
+  const d=evtDraft();
+  const desc=d.desc.trim();
+  if(!desc){toast('请填写事实描述');return;}
+  const s=load();s.evt=s.evt||[];
+  if(evtEditingId){
+    const e=s.evt.find(x=>x.id===evtEditingId);
+    if(e){e.desc=desc;e.ts=Date.now();}
+    evtEditingId=null;
+    save(s);renderEvt();toast('✅ 已更新');
+  }else{
+    s.evt.unshift({id:'evt_'+Date.now(),date:todayStr(),desc:desc,ts:Date.now()});
+    if(s.evt.length>200)s.evt=s.evt.slice(0,200);
+    localStorage.removeItem('zm_evt_draft');
+    save(s);renderEvt();toast('✅ 已保存');
+  }
+}
+function evtDel(id){
+  if(!confirm('确定删除此条记录？'))return;
+  const s=load();s.evt=s.evt||[];
+  s.evt=s.evt.filter(e=>e.id!==id);
+  s.evtDeleted=s.evtDeleted||[];
+  if(s.evtDeleted.indexOf(id)<0)s.evtDeleted.push(id);
+  if(s.evtDeleted.length>100)s.evtDeleted=s.evtDeleted.slice(-100);
+  save(s);renderEvt();toast('已删除');
+}
+function evtFormatTxt(e){
+  const y=parseInt((e.date||'').slice(0,4))||new Date().getFullYear();
+  const m=parseInt((e.date||'').slice(5,7))||(new Date().getMonth()+1);
+  const n=s_evtSeq(e);
+  return '【事件'+n+'】'+y+'年'+m+'月，'+EVT_NAME+'。\n'+((e.desc||''));
+}
+function s_evtSeq(e){
+  const s=load();s.evt=s.evt||[];
+  const month=(e.date||'').slice(0,7);
+  const inList=s.evt.some(x=>x.id===e.id);
+  if(!inList){
+    // 未保存的草稿：当月条数+1
+    return s.evt.filter(x=>(x.date||'').slice(0,7)===month).length+1;
+  }
+  return s.evt.filter(x=>(x.date||'').slice(0,7)===month&&x.ts>=e.ts).length;
+}
+function evtSceneTxt(e){
+  return '姓名：'+EVT_NAME+'\n日期：'+(e.date||todayStr())+'\n事实描述（我看到/听到/观察到）：'+(e.desc||'');
+}
+function evtCopyTxt(id,fmt){
+  const s=load();s.evt=s.evt||[];
+  const e=s.evt.find(x=>x.id===id);if(!e)return;
+  const txt=fmt==='scene'?evtSceneTxt(e):evtFormatTxt(e);
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('✅ 已复制'+(fmt==='scene'?'场景案例格式':'能量事件格式'));}
+  catch(err){toast('复制失败，请长按选择复制');}
+  document.body.removeChild(ta);
+}
+function evtGen(fmt){
+  // 从输入框直接生成对应格式（不保存）
+  const ta=document.getElementById('evtDesc');
+  const desc=(ta?ta.value:'').trim();
+  if(!desc){toast('先填写事实描述');return;}
+  const d=evtDraft();
+  const fake={id:'',date:d.date||todayStr(),desc:desc,ts:Date.now()};
+  const txt=fmt==='scene'?evtSceneTxt(fake):evtFormatTxt(fake);
+  const tb=document.createElement('textarea');
+  tb.value=txt;tb.style.position='fixed';tb.style.opacity='0';
+  document.body.appendChild(tb);tb.select();
+  try{document.execCommand('copy');toast('✅ 已复制'+(fmt==='scene'?'场景案例格式':'能量事件格式'));}
+  catch(err){toast('复制失败，请长按选择复制');}
+  document.body.removeChild(tb);
+}
+function renderEvt(){
+  const zone=document.getElementById('evtZone');if(!zone)return;
+  const s=load();s.evt=s.evt||[];
+  const d=evtDraft();
+  let h=`<div style="padding:12px 14px">
+    <textarea id="evtDesc" placeholder="✍️ 事实描述（我看到/听到/观察到）：" oninput="evtSetDraft('desc',this.value)" style="width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:13px;min-height:72px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical;outline:none;box-sizing:border-box">${evtEsc(d.desc)}</textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="sv-submit" onclick="evtSave()" style="flex:1.2">${evtEditingId?'✎ 保存修改':'💾 保存记录'}</button>
+      <button class="sv-resend-btn" onclick="evtGen('scene')" style="flex:1">📋 场景案例</button>
+      <button class="sv-resend-btn" onclick="evtGen('energy')" style="flex:1;border-color:#8b5cf6;color:#8b5cf6">⚡ 能量事件</button>
+    </div>
+  </div>`;
+  if(s.evt.length){
+    h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 14px 4px;border-top:2px solid #f1f5f9"><span style="font-size:12px;font-weight:700;color:#64748b">📜 记录 <span style="background:var(--dim);padding:1px 6px;border-radius:10px;font-size:10px">${s.evt.length}</span></span></div>`;
+    s.evt.slice(0,30).forEach(e=>{
+      h+=`<div class="sv-hist-item" style="flex-direction:column;align-items:stretch;gap:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <b>${evtEsc(e.date||'')}</b> <span style="font-size:10px;color:var(--t3);white-space:nowrap">${evtEsc(EVT_NAME)}</span>
+        </div>
+        <div style="font-size:12px;color:var(--txt);line-height:1.5;white-space:pre-wrap">${evtEsc(e.desc)}</div>
+        <div style="display:flex;gap:6px;margin-top:2px">
+          <button class="sv-resend-btn" onclick="evtCopyTxt('${e.id}','scene')">📋 场景案例</button>
+          <button class="sv-resend-btn" onclick="evtCopyTxt('${e.id}','energy')" style="border-color:#8b5cf6;color:#8b5cf6">⚡ 能量事件</button>
+          <button class="edit-btn" onclick="evtEdit('${e.id}')" title="编辑">✎</button>
+          <button class="edit-btn" onclick="evtDel('${e.id}')">✕</button>
+        </div>
+      </div>`;
+    });
+  }else{
+    h+=`<div style="padding:18px;text-align:center;font-size:12px;color:#cbd5e1">暂无记录 · 填上面内容保存 ✨</div>`;
+  }
+  zone.innerHTML=h;
 }
 // Init
 
@@ -813,11 +1024,32 @@ function mergeServerData(server,local){
   const serverSv=Array.isArray(server.sv)?server.sv:[];
   const localSv=Array.isArray(local.sv)?local.sv:[];
   const skey=r=>r.date+'_'+r.time+'_'+r.store;
-  const sset=new Set(serverSv.map(skey));
-  const delSet=new Set(Array.isArray(local.svDeleted)?local.svDeleted:[]);
-  merged.sv=[...localSv.filter(r=>!sset.has(skey(r))), ...serverSv].filter(r=>!delSet.has(skey(r))).slice(0,30);
+  const delSet=new Set([...(Array.isArray(server.svDeleted)?server.svDeleted:[]),...(Array.isArray(local.svDeleted)?local.svDeleted:[])]);
+  // sv 按 key 合并，同 key 取 ts 较新者（支持编辑更新），墓碑剔除已删
+  const svByKey=new Map();
+  [...serverSv,...localSv].forEach(r=>{
+    const k=skey(r);
+    if(delSet.has(k))return;
+    const old=svByKey.get(k);
+    if(!old||(r.ts||0)>(old.ts||0))svByKey.set(k,r);
+  });
+  merged.sv=[...svByKey.values()].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,30);
   if(Array.isArray(local.svDeleted)&&local.svDeleted.length){
     merged.svDeleted=Array.from(new Set([...(Array.isArray(server.svDeleted)?server.svDeleted:[]),...local.svDeleted])).slice(-50);
+  }
+  // evt 数组按 id 合并，同 id 取 ts 较新者（支持编辑更新），墓碑剔除已删
+  const serverEvt=Array.isArray(server.evt)?server.evt:[];
+  const localEvt=Array.isArray(local.evt)?local.evt:[];
+  const evtDelSet=new Set([...(Array.isArray(server.evtDeleted)?server.evtDeleted:[]),...(Array.isArray(local.evtDeleted)?local.evtDeleted:[])]);
+  const evtById=new Map();
+  [...serverEvt,...localEvt].forEach(e=>{
+    if(!e.id||evtDelSet.has(e.id))return;
+    const old=evtById.get(e.id);
+    if(!old||(e.ts||0)>(old.ts||0))evtById.set(e.id,e);
+  });
+  merged.evt=[...evtById.values()].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,200);
+  if(Array.isArray(local.evtDeleted)&&local.evtDeleted.length){
+    merged.evtDeleted=Array.from(new Set([...(Array.isArray(server.evtDeleted)?server.evtDeleted:[]),...local.evtDeleted])).slice(-100);
   }
   ['mu','dy','wk','cy','dl','lg','lgd','tm','cust','cust2','pushItems','dr'].forEach(k=>{
     if(local[k]&&typeof local[k]==='object'&&!Array.isArray(local[k])){
@@ -891,6 +1123,7 @@ function boot(){
   document.head.appendChild(ss);
   renderAll();
   initSections();
+  initTab();
   drLoad();
   
   fetch('/dashboard/api/workflow').then(r=>r.json()).then(j=>{

@@ -46,18 +46,20 @@ app.post('/api/workflow', (req, res) => {
       merged[k] = { ...(existing[k]||{}), ...incoming[k] };
     }
   }
-  // sv 记录数组：按 门店+日期+时间 去重合并，任何设备都只增不减；
+  // sv 记录数组：按 门店+日期+时间 合并，同 key 用新内容覆盖（支持编辑更新）；
   // svDeleted 墓碑列表（date_time_store）内的记录从合并结果剔除，实现跨设备删除
   if (incoming.sv && Array.isArray(incoming.sv)) {
     const existingSv = Array.isArray(existing.sv) ? existing.sv : [];
-    const existingKeys = existingSv.map(r => r.date+'_'+r.time+'_'+r.store);
-    const newSv = incoming.sv.filter(r => !existingKeys.includes(r.date+'_'+r.time+'_'+r.store));
     const delSet = new Set([
       ...(Array.isArray(existing.svDeleted) ? existing.svDeleted : []),
       ...(Array.isArray(incoming.svDeleted) ? incoming.svDeleted : [])
     ]);
-    merged.sv = [...newSv, ...existingSv]
+    const byKey = new Map();
+    existingSv.forEach(r => { const k=r.date+'_'+r.time+'_'+r.store; if(k) byKey.set(k, r); });
+    incoming.sv.forEach(r => { const k=r.date+'_'+r.time+'_'+r.store; if(k && !delSet.has(k)) byKey.set(k, r); });
+    merged.sv = [...byKey.values()]
       .filter(r => !delSet.has(r.date+'_'+r.time+'_'+r.store))
+      .sort((a,b)=>(b.ts||0)-(a.ts||0))
       .slice(0, 30);
     if (incoming.svDeleted && Array.isArray(incoming.svDeleted)) {
       merged.svDeleted = [...new Set([...(Array.isArray(existing.svDeleted) ? existing.svDeleted : []), ...incoming.svDeleted])].slice(-50);
@@ -67,6 +69,24 @@ app.post('/api/workflow', (req, res) => {
   if (incoming.delIds && Array.isArray(incoming.delIds)) {
     const existingDel = Array.isArray(existing.delIds) ? existing.delIds : [];
     merged.delIds = [...new Set([...existingDel, ...incoming.delIds])];
+  }
+  // evt 记录数组（场景/能量事件）：按 id 合并，同 id 用新内容覆盖（支持编辑更新），上限 200 条
+  if (incoming.evt && Array.isArray(incoming.evt)) {
+    const existingEvt = Array.isArray(existing.evt) ? existing.evt : [];
+    const evtDelSet = new Set([
+      ...(Array.isArray(existing.evtDeleted) ? existing.evtDeleted : []),
+      ...(Array.isArray(incoming.evtDeleted) ? incoming.evtDeleted : [])
+    ]);
+    const evtById = new Map();
+    existingEvt.forEach(r => { if(r.id) evtById.set(r.id, r); });
+    incoming.evt.forEach(r => { if(r.id && !evtDelSet.has(r.id)) evtById.set(r.id, r); });
+    merged.evt = [...evtById.values()]
+      .filter(r => !evtDelSet.has(r.id))
+      .sort((a,b)=>(b.ts||0)-(a.ts||0))
+      .slice(0, 200);
+    if (incoming.evtDeleted && Array.isArray(incoming.evtDeleted)) {
+      merged.evtDeleted = [...new Set([...(Array.isArray(existing.evtDeleted) ? existing.evtDeleted : []), ...incoming.evtDeleted])].slice(-100);
+    }
   }
   writeJSON(DATA_FILE, merged);
   res.json({ ok: true, savedAt: Date.now() });
