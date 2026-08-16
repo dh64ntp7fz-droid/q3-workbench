@@ -169,12 +169,12 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 .page{display:none}
 .page.active{display:block;animation:fadeIn .25s ease}
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bd);display:flex;z-index:999;padding:6px 2px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(0,0,0,.06)}
-.tab{flex:1;border:none;background:none;cursor:pointer;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--t3);transition:.2s;-webkit-tap-highlight-color:transparent}
-.tab .ic{font-size:19px;line-height:1}
-.tab .lb{font-size:10px;font-weight:600}
-.tab.active{color:#6366f1}
-.tab.active .ic{transform:scale(1.15)}
-.tab.active .lb{font-weight:800}
+.tabbtn{flex:1;border:none;background:none;cursor:pointer;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--t3);transition:.2s;-webkit-tap-highlight-color:transparent}
+.tabbtn .ic{font-size:19px;line-height:1}
+.tabbtn .lb{font-size:10px;font-weight:600}
+.tabbtn.active{color:#6366f1}
+.tabbtn.active .ic{transform:scale(1.15)}
+.tabbtn.active .lb{font-weight:800}
 body{padding-bottom:64px}
 </style>
 </head>
@@ -252,11 +252,11 @@ body{padding-bottom:64px}
 
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
 <nav class="tabbar" id="tabbar">
-  <button class="tab active" data-tab="home" onclick="switchTab('home')"><span class="ic">🏠</span><span class="lb">首页</span></button>
-  <button class="tab" data-tab="plan" onclick="switchTab('plan')"><span class="ic">📅</span><span class="lb">计划</span></button>
-  <button class="tab" data-tab="log" onclick="switchTab('log')"><span class="ic">📝</span><span class="lb">记录</span></button>
-  <button class="tab" data-tab="visit" onclick="switchTab('visit')"><span class="ic">🏪</span><span class="lb">巡店</span></button>
-  <button class="tab" data-tab="more" onclick="switchTab('more')"><span class="ic">⚙️</span><span class="lb">更多</span></button>
+  <button class="tabbtn active" data-tab="home" onclick="switchTab('home')"><span class="ic">🏠</span><span class="lb">首页</span></button>
+  <button class="tabbtn" data-tab="plan" onclick="switchTab('plan')"><span class="ic">📅</span><span class="lb">计划</span></button>
+  <button class="tabbtn" data-tab="log" onclick="switchTab('log')"><span class="ic">📝</span><span class="lb">记录</span></button>
+  <button class="tabbtn" data-tab="visit" onclick="switchTab('visit')"><span class="ic">🏪</span><span class="lb">巡店</span></button>
+  <button class="tabbtn" data-tab="more" onclick="switchTab('more')"><span class="ic">⚙️</span><span class="lb">更多</span></button>
 </nav>
 <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"><div class="settings-panel" onclick="event.stopPropagation()"><h3 id="settingsTitle"></h3><div id="settingsItems"></div><button class="settings-close" onclick="closeSettings()">关闭</button></div></div>
 <div class="toast-wrap" id="toastWrap" onclick="closeBigToast()">
@@ -552,7 +552,7 @@ function switchTab(tab){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const pg=document.getElementById('page-'+tab);
   if(pg)pg.classList.add('active');
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  document.querySelectorAll('.tabbtn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   try{localStorage.setItem('zm_tab',tab);}catch(e){}
   window.scrollTo({top:0});
   if(tab==='visit')renderSV();
