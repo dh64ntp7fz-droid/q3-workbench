@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3721;
 const DATA_FILE = path.join(__dirname, 'data', 'workflow.json');
 
 app.use(express.json({ limit: '5mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { setHeaders: (res, p) => { if (p.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache'); } }));
 
 function ensureData() {
   if (!fs.existsSync(path.join(__dirname, 'data'))) {
@@ -39,7 +39,7 @@ app.post('/api/workflow', (req, res) => {
   delete incoming._t;
   // 深层合并：对每个已知的子对象，逐 key 合并而非整体覆盖
   // 对象字段逐 key 合并（数组字段绝不参与对象合并）
-  const subKeys = ['mu','dy','wk','cy','dl','lg','lgd','tm','cust','cust2','pushItems'];
+  const subKeys = ['mu','dy','wk','cy','dl','lg','lgd','tm','cust','cust2','pushItems','dr'];
   const merged = { ...existing, ...incoming, _savedAt: Date.now() };
   for (const k of subKeys) {
     if (incoming[k] && typeof incoming[k] === 'object' && !Array.isArray(incoming[k])) {

@@ -176,6 +176,16 @@ body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);col
 
 <div class="hint" id="h_must" style="cursor:pointer;user-select:none" onclick="toggleSection('must')"><span id="a_must">▼</span> 🔴 每日必交 · 日报/打卡/锻造班</div>
 <div class="card grp-must" id="mustZone"></div>
+<div class="hint" id="h_dr" style="cursor:pointer;user-select:none" onclick="toggleSection('dr')"><span id="a_dr">▼</span> 🎤 日报记录 · 语音转文字随手记</div>
+<div class="card" id="drZone">
+  <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">手机上语音转文字后粘贴到这里，口语化没关系，我会整理成正式日报</div>
+  <textarea id="drInput" placeholder="例：今天上午去大朗环球整理报销单、带教撤物料新流程，下午去黄河追第一旬计划，晚上跟小胖聊了，他想离职要重点关注……" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:14px;min-height:110px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical;box-sizing:border-box"></textarea>
+  <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
+    <button class="sv-submit" onclick="drSave()" style="min-height:40px">💾 保存日报记录</button>
+    <span id="drStatus" style="font-size:12px;color:#94a3b8"></span>
+  </div>
+  <div id="drList" style="margin-top:12px"></div>
+</div>
 
 
 <div class="hint" id="h_wact" style="cursor:pointer;user-select:none" onclick="toggleSection('wact')"><span id="a_wact">▼</span> 📅 每周固定动作 · 排班/整改/带教/辅导/驻店/宿舍</div>
@@ -475,7 +485,7 @@ function svToggle(key){svDraft.checks[key]=!svDraft.checks[key];localStorage.set
 
 let sections={};
 function initSections(){
-  ['must','wact','temp','cycle','dl','ledger'].forEach(k=>{
+  ['dr','must','wact','temp','cycle','dl','ledger'].forEach(k=>{
     const v=localStorage.getItem('sec_'+k);
     sections[k]=v===null?true:v==='1';
     applySec(k);
@@ -487,7 +497,7 @@ function initSections(){
 }
 function applySec(k){
   const a=document.getElementById('a_'+k);if(a)a.textContent=sections[k]?'▼':'▶';
-  const ids={must:'mustZone',wact:'wactZone',temp:'tempZone',cycle:'cycleZone',dl:'dlZone',ledger:'ledgerZone'};
+  const ids={dr:'drZone',must:'mustZone',wact:'wactZone',temp:'tempZone',cycle:'cycleZone',dl:'dlZone',ledger:'ledgerZone'};
   const el=document.getElementById(ids[k]);if(el)el.style.display=sections[k]?'block':'none';
 }
 function toggleSection(k){
@@ -809,7 +819,7 @@ function mergeServerData(server,local){
   if(Array.isArray(local.svDeleted)&&local.svDeleted.length){
     merged.svDeleted=Array.from(new Set([...(Array.isArray(server.svDeleted)?server.svDeleted:[]),...local.svDeleted])).slice(-50);
   }
-  ['mu','dy','wk','cy','dl','lg','lgd','tm','cust','cust2','pushItems'].forEach(k=>{
+  ['mu','dy','wk','cy','dl','lg','lgd','tm','cust','cust2','pushItems','dr'].forEach(k=>{
     if(local[k]&&typeof local[k]==='object'&&!Array.isArray(local[k])){
       merged[k]={...(server[k]||{}),...local[k]};
     }
@@ -830,6 +840,41 @@ function refreshFromServer(){
     }
   }).catch(()=>{/*静默，下轮自动重试*/});
 }
+/* ── 日报记录（语音转文字随手记）── */
+function drEsc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function drLoad(){
+  fetch('/dashboard/api/workflow').then(r=>r.json()).then(j=>{
+    const dr=(j.data&&j.data.dr)||{};
+    const zone=document.getElementById('drZone');if(!zone)return;
+    const t=todayStr();
+    const rec=dr[t]||{};
+    const ta=document.getElementById('drInput');
+    if(ta&&!ta.value)ta.value=rec.raw||'';
+    const st=document.getElementById('drStatus');
+    if(st)st.textContent=rec.raw?('今天已记录 · '+(rec.cleaned?'✅ 已整理':'⏳ 待我整理')):'今天还没记录';
+    const dates=Object.keys(dr).sort().reverse().slice(0,7);
+    const list=document.getElementById('drList');if(!list)return;
+    let h='';
+    if(!dates.length){h='<div style="color:#94a3b8;font-size:12px">还没有记录，今天第一次用就在这里写</div>';}
+    dates.forEach(d=>{
+      const r=dr[d]||{};
+      const preview=(r.cleaned||r.raw||'').replace(/\n/g,' ').substring(0,60);
+      const badge=r.cleaned?'<span style="color:#10b981;font-size:11px">✅ 已整理</span>':'<span style="color:#f59e0b;font-size:11px">⏳ 待整理</span>';
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #e2e8f0;gap:8px"><span style="font-size:12px;color:#64748b;flex-shrink:0">'+(d===t?'今天':d.slice(5))+'</span><span style="font-size:12px;color:var(--txt);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+drEsc(preview)+'</span>'+badge+'</div>';
+    });
+    list.innerHTML=h;
+  }).catch(()=>{});
+}
+function drSave(){
+  const ta=document.getElementById('drInput');const raw=(ta?ta.value:'').trim();
+  if(!raw){toast('先写点内容再保存');return;}
+  const s=load();s.dr=s.dr||{};const t=todayStr();
+  const old=s.dr[t]||{};
+  s.dr[t]={raw:raw,savedAt:Date.now(),cleaned:old.cleaned||''};
+  save(s);
+  toast('✅ 日报记录已保存');
+  setTimeout(drLoad,300);
+}
 function boot(){
   var el=document.createElement('div');
   el.id='splash';
@@ -846,6 +891,7 @@ function boot(){
   document.head.appendChild(ss);
   renderAll();
   initSections();
+  drLoad();
   
   fetch('/dashboard/api/workflow').then(r=>r.json()).then(j=>{
     if(j.data&&Object.keys(j.data).length>0){
