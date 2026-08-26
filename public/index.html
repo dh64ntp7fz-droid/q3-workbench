@@ -331,7 +331,7 @@ body{padding-top:8px!important}
  
   <textarea id="drInput" placeholder="今天的工作流水（语音转文字后粘贴到这里）" style="width:100%;border:2px solid #cbd5e1;border-radius:10px;padding:10px;font-size:14px;min-height:110px;background:var(--inp);color:var(--txt);font-family:inherit;resize:vertical;box-sizing:border-box"></textarea>
   <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
-    <button id="drSaveBtn" class="sv-submit" onclick="drSave()" style="min-height:40px">💾 追加保存</button><button onclick="drClear()" style="min-height:40px;background:#fff;border:1px solid #e2e8f0;color:#ef4444;border-radius:10px;padding:0 14px;cursor:pointer">🗑 清空今天</button><button onclick="drAi()" style="min-height:40px;background:#6366f1;color:#fff;border:none;border-radius:10px;padding:0 14px;cursor:pointer">✨ AI整理今天</button><button onclick="drAiAll()" style="min-height:40px;background:#fff;border:1px solid #6366f1;color:#6366f1;border-radius:10px;padding:0 14px;cursor:pointer">🧹 整理全部</button>
+    <button id="drSaveBtn" class="sv-submit" onclick="drSave()" style="min-height:40px">💾 追加保存</button><button onclick="drPullFromSV()" style="min-height:40px;background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;border-radius:10px;padding:0 10px;cursor:pointer;font-size:12px">📥 从巡店带入问题点</button><button onclick="drClear()" style="min-height:40px;background:#fff;border:1px solid #e2e8f0;color:#ef4444;border-radius:10px;padding:0 14px;cursor:pointer">🗑 清空今天</button><button onclick="drAi()" style="min-height:40px;background:#6366f1;color:#fff;border:none;border-radius:10px;padding:0 14px;cursor:pointer">✨ AI整理今天</button><button onclick="drAiAll()" style="min-height:40px;background:#fff;border:1px solid #6366f1;color:#6366f1;border-radius:10px;padding:0 14px;cursor:pointer">🧹 整理全部</button>
     <span id="drStatus" style="font-size:12px;color:#94a3b8"></span>
   </div>
   <div id="drList" style="margin-top:12px"></div>
@@ -1274,6 +1274,51 @@ async function drSave(){
   drCheckTs=0;drIssueState=null;   // 日报有更新，重置驻店提示条检测，下次进巡店页立即同步最新问题点
   toast('✅ 已追加到 '+t+'（共'+cnt+'字）'+(dupCnt?'，已跳过 '+dupCnt+' 行重复':'')+(m?'，按内容日期归属':''));
   setTimeout(drLoad,300);
+}
+// 从巡店记录带出今日问题点到日报输入框（反向数据流，2026-08-26 用户拍板：问题点直接口语讲进巡店记录，日报从巡店带入）
+async function drPullFromSV(){
+  const ta=document.getElementById('drInput');if(!ta)return;
+  let srv={};
+  try{const r=await fetch('/dashboard/api/workflow');const j=await r.json();srv=(j.data&&j.data)||{};}catch(e){toast('拉取失败，请重试');return;}
+  const today=todayStr();
+  const recs=(srv.sv||[]).filter(x=>x.date===today&&((x.notes&&x.notes.wenti)||'').trim());
+  if(!recs.length){toast('今天还没有巡店问题点记录');return;}
+  // 按店分组：巡店记录本身带店名，天然不串店
+  const byStore={};
+  recs.forEach(r=>{
+    const store=r.store||'未指定店';
+    if(!byStore[store])byStore[store]=[];
+    String(r.notes.wenti).split('\n').forEach(l=>{
+      const t=l.trim();if(!t)return;
+      if(/^【.+】$/.test(t))return;                    // 分类标题行（【环境】等）
+      const t2=drCleanTalk(t.replace(/^\d+[/、．.]\s*/,'').replace(/^(今日问题|问题)[:：]?/,'')); // 去旧序号+"问题："前缀+口语转书面
+      if(!t2)return;
+      byStore[store].push(t2);
+    });
+  });
+  // 同店行去重（归一化比较，防同店多条记录重复）
+  Object.keys(byStore).forEach(s=>{
+    const _seen=new Set();const _uniq=[];
+    byStore[s].forEach(l=>{const k=l.replace(/[。，、；：！？\s]/g,'');if(!_seen.has(k)){_seen.add(k);_uniq.push(l);}});
+    byStore[s]=_uniq;
+  });
+  let block='';
+  Object.keys(byStore).forEach(s=>{
+    const ls=byStore[s];if(!ls.length)return;
+    block+='巡店问题点（'+s+'）：\n'+ls.map((l,i)=>(i+1)+'/'+l).join('\n')+'\n';
+  });
+  block=block.trim();
+  if(!block){toast('今天巡店记录里没识别到问题点');return;}
+  // 去重：输入框已有内容 + 今天已保存的 raw（标题行与内容行都算，重复不追加）
+  const cur=ta.value||'';
+  const saved=(srv.dr&&srv.dr[today]&&srv.dr[today].raw)||'';
+  const exist=new Set((cur+'\n'+saved).split('\n').map(l=>l.trim()).filter(Boolean));
+  const freshLines=block.split('\n').filter(l=>!exist.has(l.trim()));
+  if(!freshLines.length){toast('问题点已在日报里，无需重复带入');return;}
+  ta.value=(cur?cur+'\n':'')+freshLines.join('\n');
+  autoGrow(ta);
+  try{localStorage.setItem('zm_dr_input_cleared','0');}catch(e){}
+  toast('✅ 已带入 '+freshLines.length+' 行（'+Object.keys(byStore).join('、')+'）到日报，确认后点追加保存');
 }
 function drAutoFormat(raw){
   if(!raw)return '';
