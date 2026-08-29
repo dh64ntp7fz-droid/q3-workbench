@@ -262,6 +262,10 @@ app.get('/api/automation/projects', (req, res) => {
     { name: '发票自动开票系统', path: null, tech: '百望金穗云 · 自动化', icon: '🧾', desc: '数电自助开票+自动登录扫码认证，输入金额自动生成二维码', category: '📄 独立页面' },
     { name: '免费伞借还追踪系统', path: null, tech: '小程序', icon: '☂️', desc: '门店免费伞借用/归还登记，陈总排雷文档中有记载', category: '📄 独立页面' },
     // ── 自动化工具/报表 ──
+    { name: 'AI每日新闻推送', path: path.join(home, 'ai-news-push'), tech: 'GitHub Actions + Python', icon: '📰', desc: '每天11:00自动整理AI动态并推送企微', category: '🤖 自动化工具', url: 'https://github.com/dh64ntp7fz-droid/ai-news-push', url_local: 'file:///Users/johnny/ai-news-push' },
+    { name: '长安花园冲刺追踪', path: path.join(home, 'WorkBuddy/2026-07-17-03-16-47/wecom-automation'), tech: 'macOS launchd + Python + 企微Bot', icon: '🎯', desc: '8/26-31每日00:05查昨日经营数据并对比推送', category: '🤖 自动化工具', url_local: 'file:///Users/johnny/WorkBuddy/2026-07-17-03-16-47/wecom-automation/chase_tracker.py' },
+    { name: 'Codex每日复盘', path: path.join(home, '.codex'), tech: 'macOS launchd + Python', icon: '🗂️', desc: '每日01:00读取前日Codex会话并写入项目复盘', category: '🤖 自动化工具', url_local: 'file:///Users/johnny/AI知识库/_AI协同/CodexMemory/项目复盘' },
+    { name: '本地云端大脑同步', path: path.join(home, '.hermes'), tech: 'macOS launchd + rsync + Python', icon: '🧠', desc: '每10分钟双向同步记忆、技能、SOUL与云端日报', category: '🤖 自动化工具', url_local: 'file:///Users/johnny/.hermes/scripts/sync-brain.sh' },
     { name: '竞品每日早报系统', path: null, tech: 'Cron + Python + Word', icon: '📊', desc: '每日9:00自动抓取大众点评评分+竞品数据，生成Word报告推送（已执行47次）', category: '🤖 自动化工具' },
     { name: '顾客反馈归类分析系统', path: null, tech: 'Python + python-docx', icon: '📋', desc: 'CSV导入→自动归类分析→Word报告输出，7类+8类投诉分类，锦厦/天安模板通用', category: '🤖 自动化工具' },
     { name: '能量辅导简报系统', path: null, tech: 'Skill + Python + Word', icon: '⚡', desc: '能量事件→6节框架+8维度+5心法分析→docx报告/HTML简报', category: '🤖 自动化工具' },
